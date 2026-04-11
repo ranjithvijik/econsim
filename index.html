@@ -1153,7 +1153,7 @@
                 <div class="sidebar-logo-icon">📊</div>
                 <div>
                     <div class="sidebar-logo-text">EconSim Pro</div>
-                    <div class="sidebar-logo-sub">63 MODULES INCLUDED</div>
+                    <div class="sidebar-logo-sub">72 MODULES INCLUDED</div>
                 </div>
             </div>
 
@@ -1276,10 +1276,27 @@
             <div class="nav-item" onclick="showSection('poverty-calc')"><span class="nav-icon">📊</span><span>Poverty Calculator</span><span class="nav-number">W1</span></div>
             <div class="nav-item" onclick="showSection('unemp-types')"><span class="nav-icon">📋</span><span>Unemployment Types</span><span class="nav-number">W2</span></div>
             <div class="nav-item" onclick="showSection('productivity-growth')"><span class="nav-icon">⚡</span><span>Productivity</span><span class="nav-number">W3</span></div>
+
+            <div class="nav-section-title">Information & Public Choice</div>
+            <div class="nav-item" onclick="showSection('asymmetric-info')"><span class="nav-icon">🔍</span><span>Asymmetric Info</span><span class="nav-number">I1</span></div>
+            <div class="nav-item" onclick="showSection('moral-hazard')"><span class="nav-icon">⚠️</span><span>Moral Hazard</span><span class="nav-number">I2</span></div>
+            <div class="nav-item" onclick="showSection('financial-markets')"><span class="nav-icon">🏦</span><span>Financial Markets</span><span class="nav-number">I3</span></div>
+            <div class="nav-item" onclick="showSection('public-choice')"><span class="nav-icon">🗳️</span><span>Public Choice</span><span class="nav-number">I4</span></div>
+
+            <div class="nav-section-title">International Economics</div>
+            <div class="nav-item" onclick="showSection('exchange-rates')"><span class="nav-icon">💱</span><span>Exchange Rates</span><span class="nav-number">X1</span></div>
+            <div class="nav-item" onclick="showSection('national-debt')"><span class="nav-icon">📊</span><span>National Debt</span><span class="nav-number">X2</span></div>
+            <div class="nav-item" onclick="showSection('trade-policy')"><span class="nav-icon">📜</span><span>Trade Policy</span><span class="nav-number">X3</span></div>
+            <div class="nav-item" onclick="showSection('globalization')"><span class="nav-icon">🌐</span><span>Globalization</span><span class="nav-number">X4</span></div>
+            <div class="nav-item" onclick="showSection('macro-policy-world')"><span class="nav-icon">🌍</span><span>Macro Policy Debate</span><span class="nav-number">X5</span></div>
+
+<div class="nav-section-title">Advanced Micro</div>
+<div class="nav-item" onclick="showSection('tax-incidence')"><span class="nav-icon">💸</span><span>Tax Incidence</span><span class="nav-number">A1</span></div>
+<div class="nav-item" onclick="showSection('intra-industry')"><span class="nav-icon">🔄</span><span>Intra-Industry Trade</span><span class="nav-number">A2</span></div>
             <div class="sidebar-footer">
-                <div style="color:var(--teal);font-weight:600;margin-bottom:4px;">Economics Simulator Pro v6.0</div>
+                <div style="color:var(--teal);font-weight:600;margin-bottom:4px;">Economics Simulator Pro v7.4</div>
                 <div>Built with RJBot on BoodleBox</div>
-                <div style="margin-top:6px;color:var(--green);">🔴 Live Market Data Enabled</div>
+                                <div style="margin-top:6px;color:var(--green);">🔴 78 MODULES ENABLED</div>
             </div>
         </aside>
         <main class="main-content">
@@ -1288,7 +1305,7 @@
             </div>
             <header class="top-bar">
                 <div class="top-bar-left"><button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button><span
-                        class="ticker-badge">ECONSIM PRO v6</span><span style="font-size:14px;color:var(--gray-200);">63
+                        class="ticker-badge">ECONSIM PRO v7.4</span><span style="font-size:14px;color:var(--gray-200);">78
                         Modules</span></div>
                 <div class="top-bar-right">
                     <div class="theme-toggle"><button class="theme-toggle-btn active" id="darkBtn"
@@ -1987,6 +2004,7 @@
           document.getElementById('cm-qd2').textContent='$'+qd.toFixed(0)+'B';
           document.getElementById('cm-qs2').textContent='$'+qs.toFixed(0)+'B';
           document.getElementById('cm-shortage').textContent=shortage>0?'$'+shortage.toFixed(0)+'B':'$0';
+          renderCreditMarketChart(effR, qd);
         }
 
         function updateGDPCalc() {
@@ -2046,6 +2064,7 @@
           document.getElementById('cpi-inflation').textContent=inflation.toFixed(1)+'%';
           document.getElementById('cpi-change').textContent=(cpi>=100?'+':'')+(cpi-100).toFixed(1)+'%';
           document.getElementById('cpi-purchasing').textContent='$'+purchasing.toFixed(2);
+          renderCPICharts(cpi, inflation);
         }
 
         function updateCompAdvantage() {
@@ -2102,6 +2121,7 @@
           if(spending>budget){optEl.textContent='⚠️ Over budget!';optEl.className='result-value red';}
           else if(remaining>=0&&remaining<px&&remaining<py&&muxPx!=='N/A'&&Math.abs(parseFloat(muxPx)-parseFloat(muyPy))<0.5){optEl.textContent='✓ Optimal!';optEl.className='result-value green';}
           else{optEl.textContent='Adjust quantities';optEl.className='result-value gold';}
+          renderUtilityMaxChart(muxPx, muyPy);
         }
 
         function updatePerfComp() {
@@ -2125,6 +2145,7 @@
           if(profit>10){lrEl.textContent='Firms ENTER → P falls';lrEl.className='result-value gold';}
           else if(profit<-10){lrEl.textContent='Firms EXIT → P rises';lrEl.className='result-value red';}
           else{lrEl.textContent='LR equilibrium (π≈0)';lrEl.className='result-value green';}
+          renderPerfCompChart(p, atc, (vc+2*qc*q));
         }
 
         function updatePriceDisc() {
@@ -2306,8 +2327,8 @@
         }
 
         function updateShortRunProduction() {
-          const workers=pf('srp-workers'),tech=pf('srp-tech2');
-          ['srp-workers','srp-tech2'].forEach(function(id){document.getElementById(id+'-val').textContent=document.getElementById(id).value;});
+          const workers=pf('srp-workers'),tech=pf('srp-tech');
+          ['srp-workers','srp-tech'].forEach(function(id){document.getElementById(id+'-val').textContent=document.getElementById(id).value;});
           const tp=Math.max(0,tech*workers-0.5*workers*workers);
           const mp=workers>0?Math.max(0,tech-workers):0;
           const ap=workers>0?tp/workers:0;
@@ -2344,6 +2365,7 @@
           document.getElementById('mc2-sr-pi').textContent='$'+profit.toFixed(0);
           document.getElementById('mc2-lr-pi').textContent='$0 (free entry)';
           document.getElementById('mc2-excess-cap').textContent='Yes — P > min ATC';
+          renderMonopCompChart(p, q, profit);
         }
 
         function updateKinkedDemand() {
@@ -2355,6 +2377,7 @@
           document.getElementById('kd-mr-below').textContent='$'+mrBelow.toFixed(2);
           document.getElementById('kd-gap').textContent='$'+(mrAbove-mrBelow).toFixed(2);
           document.getElementById('kd-sticky').textContent=mc>=mrBelow&&mc<=mrAbove?'✓ Price is STICKY (MC in gap)':'Price may change';
+          renderKinkedDemandChart(mrAbove, mrBelow, mc);
         }
 
         function updateMRP() {
@@ -2388,6 +2411,7 @@
           else{statusEl.textContent='Above Poverty Line';statusEl.className='result-value green';}
           document.getElementById('pov-gap').textContent=gap>0?'$'+gap.toLocaleString():'$0';
           document.getElementById('pov-depth').textContent=depth.toFixed(1)+'%';
+          renderPovertyGapChart(income, threshold);
         }
 
         var unempScenariosData = [
@@ -2408,6 +2432,7 @@
           container.innerHTML=shuffled.map(function(s,i){
             return '<div style="background:var(--gray-800);padding:10px;border-radius:8px;"><p style="color:var(--gray-200);font-size:14px;margin:0 0 6px;">'+s.text+'</p><span style="background:var(--teal);color:#000;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:600;">'+s.icon+' '+s.type+'</span></div>';
           }).join('');
+          renderUnemploymentTrendChart();
         }
 
         function updateProductivityGrowth() {
@@ -2420,6 +2445,123 @@
           document.getElementById('pg-capital-intensity').textContent=kPerL.toFixed(2);
           document.getElementById('pg-cap-contrib').textContent='33%';
           document.getElementById('pg-lab-contrib').textContent='67%';
+          renderProductivityChart(33, 67);
+        }
+
+        function updateAsymInfo() {
+            const prob = pf('ai-prob')/100, vGood = pf('ai-val-good'), vLemon = pf('ai-val-lemon');
+            const ev = prob * vGood + (1-prob) * vLemon;
+            document.getElementById('ai-prob-val').textContent = (prob*100).toFixed(0) + '%';
+            document.getElementById('ai-val-good-val').textContent = '$' + vGood;
+            document.getElementById('ai-val-lemon-val').textContent = '$' + vLemon;
+            document.getElementById('ai-ev').textContent = '$' + ev.toFixed(0);
+            const status = ev > vGood*0.7 ? "✓ High-Quality Trade Possible" : "⚠️ Market Failure (Lemons)";
+            document.getElementById('ai-status').textContent = status;
+            renderAsymInfoChart(prob, vGood, vLemon);
+        }
+
+        function updateMoralHazard() {
+            const base = pf('mh-base'), bonus = pf('mh-bonus'), cost = pf('mh-effort-cost');
+            const utilEffort = (base + bonus) - cost;
+            const utilShirking = base;
+            document.getElementById('mh-base-val').textContent = '$' + base;
+            document.getElementById('mh-bonus-val').textContent = '$' + bonus;
+            document.getElementById('mh-effort-cost-val').textContent = '$' + cost;
+            document.getElementById('mh-util-effort').textContent = utilEffort.toFixed(0);
+            const decision = utilEffort > utilShirking ? "Work Hard" : "Shirk / Moral Hazard";
+            document.getElementById('mh-decision').textContent = decision;
+            document.getElementById('mh-decision').className = utilEffort > utilShirking ? "result-value green" : "result-value red";
+            renderMoralHazardChart(base, bonus, cost);
+        }
+
+        function updatePublicChoice() {
+            const lobby = pf('pc3-lobby'), voters = pf('pc3-voters')/100;
+            const gain = lobby * 5;
+            const dwl = gain * voters;
+            document.getElementById('pc3-lobby-val').textContent = '$' + lobby;
+            document.getElementById('pc3-voters-val').textContent = (voters*100).toFixed(0) + '%';
+            document.getElementById('pc3-gain').textContent = '$' + gain.toFixed(0);
+            document.getElementById('pc3-dwl').textContent = '$' + dwl.toFixed(0);
+            renderPublicChoiceChart(lobby, voters);
+        }
+
+        function updateExchangeRates() {
+            const rate = pf('xr-rate'), trade = pf('xr-trade');
+            const e = 1.0 + (rate - 5)/100 + trade/1000;
+            document.getElementById('xr-rate-val').textContent = rate.toFixed(1) + '%';
+            document.getElementById('xr-trade-val').textContent = '$' + trade + 'B';
+            document.getElementById('xr-val').textContent = e.toFixed(3);
+            const dir = e > 1.01 ? "Appreciating" : e < 0.99 ? "Depreciating" : "Stable";
+            document.getElementById('xr-direction').textContent = dir;
+            renderExchangeRateChart(rate, trade);
+        }
+
+        function updateNationalDebt() {
+            const def = pf('nd-deficit'), r = pf('nd-rate'), g = pf('nd-growth');
+            const sustainability = g - r;
+            document.getElementById('nd-deficit-val').textContent = def.toFixed(1) + '%';
+            document.getElementById('nd-rate-val').textContent = r.toFixed(1) + '%';
+            document.getElementById('nd-growth-val').textContent = g.toFixed(1) + '%';
+            const status = sustainability > 0 ? "Sustainable Growth" : "Debt Spiraling";
+            document.getElementById('nd-trend').textContent = status;
+            document.getElementById('nd-insight').textContent = `When g (${g}%) > r (${r}%), the debt-to-GDP ratio can stabilize even with a primary deficit. Current spread: ${sustainability.toFixed(1)}%.`;
+        }
+
+        function updateSIIdentity() {
+            const s = pf('si-priv'), gov = pf('si-gov');
+            const nx = pf('bot-exports') - pf('bot-imports') || 0;
+            const i = s + gov - nx;
+            document.getElementById('si-priv-val').textContent = '$' + s;
+            document.getElementById('si-gov-val').textContent = '$' + gov;
+            document.getElementById('si-invest').textContent = '$' + i.toFixed(0);
+            document.getElementById('si-nx').textContent = '$' + nx.toFixed(0);
+        }
+
+        function updateTaxIncidence() {
+            const ed = pf('ti-ed'), es = pf('ti-es'), tax = pf('ti-tax');
+            const consShare = es / (es + ed);
+            const prodShare = ed / (es + ed);
+            document.getElementById('ti-ed-val').textContent = ed.toFixed(1);
+            document.getElementById('ti-es-val').textContent = es.toFixed(1);
+            document.getElementById('ti-tax-val').textContent = '$' + tax;
+            document.getElementById('ti-cons').textContent = (consShare * 100).toFixed(0) + '%';
+            document.getElementById('ti-prod').textContent = (prodShare * 100).toFixed(0) + '%';
+        }
+
+        function updateIntraIndustry() {
+            const exp = pf('it-exp'), imp = pf('it-imp');
+            const gl = 1 - (Math.abs(exp - imp) / (exp + imp));
+            document.getElementById('it-exp-val').textContent = '$' + exp + 'B';
+            document.getElementById('it-imp-val').textContent = '$' + imp + 'B';
+            document.getElementById('it-gl').textContent = gl.toFixed(2);
+            document.getElementById('it-insight').textContent = gl > 0.7 ? "High intra-industry trade (Specialization/Variety)" : "Low intra-industry trade (Comparative Advantage)";
+            renderIITChart(gl);
+        }
+
+        function updateFinancialMarkets() {
+            const s = pf('fm-savings'), risk = pf('fm-risk');
+            const r = 2.5 + risk + (s/1000);
+            document.getElementById('fm-savings-val').textContent = '$' + s + 'B';
+            document.getElementById('fm-risk-val').textContent = risk.toFixed(1) + '%';
+            document.getElementById('fm-rate').textContent = r.toFixed(1) + '%';
+            document.getElementById('fm-vol').textContent = '$' + (s * 0.8).toFixed(0) + 'B';
+        }
+
+        function updateGlobalization() {
+            const open = pf('gl-openness'), mob = pf('gl-mobility');
+            document.getElementById('gl-openness-val').textContent = open.toFixed(0) + '%';
+            document.getElementById('gl-mobility-val').textContent = mob.toFixed(1);
+            document.getElementById('gl-gains').textContent = open > 50 ? "High (Krugman Effect)" : "Moderate";
+            document.getElementById('gl-inflow').textContent = '$' + (mob * 25).toFixed(0) + 'B';
+            
+            // S-I Identity Drivers (integrated into Globalization)
+            const s = pf('si-s'), i = pf('si-i');
+            const nx = s - i;
+            document.getElementById('si-s-val').textContent = '$' + s + 'T';
+            document.getElementById('si-i-val').textContent = '$' + i + 'T';
+            document.getElementById('gl-nx').textContent = (nx >= 0 ? '+' : '') + nx.toFixed(1) + 'T';
+            document.getElementById('gl-nx').className = 'result-value ' + (nx >= 0 ? 'teal' : 'red');
+            renderSIIdentityChart(s, i);
         }
 
 
@@ -2438,6 +2580,69 @@
             if (scarcityBarInstance) scarcityBarInstance.destroy();
             scarcityBarInstance = new Chart(barCtx, { type:'bar', data:{ labels:['Food','Shelter','Education'], datasets:[{label:'Utility per $',data:[upd_f,upd_s,upd_e],backgroundColor:[col.teal,col.gold,col.green],borderRadius:4}]}, options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:col.text},grid:{color:col.grid}},y:{ticks:{color:col.text},grid:{color:col.grid},beginAtZero:true,title:{display:true,text:'Utility/$',color:col.text}}}} });
           }
+        }
+
+        let cpiIndexChartInstance, inflRateChartInstance;
+        function renderCPICharts(index, infl) {
+            const ctx1 = document.getElementById('cpiIndexChart'), ctx2 = document.getElementById('inflRateChart');
+            if(!ctx1 || !ctx2) return; const col = getChartColors();
+            if(cpiIndexChartInstance) cpiIndexChartInstance.destroy();
+            cpiIndexChartInstance = new Chart(ctx1, { type:'line', data: { labels: ['Base','Current'], datasets:[{label:'CPI Index', data:[100, index], borderColor:col.teal, fill:true, backgroundColor:col.teal+'33'}]}, options: { responsive:true, maintainAspectRatio:false }});
+            if(inflRateChartInstance) inflRateChartInstance.destroy();
+            inflRateChartInstance = new Chart(ctx2, { type:'bar', data: { labels: ['Inflation'], datasets:[{label:'Rate (%)', data:[infl], backgroundColor:col.gold}]}, options: { responsive:true, maintainAspectRatio:false }});
+        }
+
+        let iitChartInstance;
+        function renderIITChart(gl) {
+            const ctx = document.getElementById('iitChart'); if(!ctx) return; const col = getChartColors();
+            if(iitChartInstance) iitChartInstance.destroy();
+            const iit = gl * 100, inter = (1-gl)*100;
+            iitChartInstance = new Chart(ctx, { type:'pie', data:{ labels:['Intra-Industry','Comparative Adv'], datasets:[{data:[iit, inter], backgroundColor:[col.purple, col.gray]}]}, options:{responsive:true, maintainAspectRatio:false}});
+        }
+
+        let tpChartInstance;
+        function renderTradePolicyChart(t, q, v) {
+            const ctx = document.getElementById('tradePolicyChart'); if(!ctx) return; const col = getChartColors();
+            if(tpChartInstance) tpChartInstance.destroy();
+            tpChartInstance = new Chart(ctx, { type:'bar', data: { labels:['Tariff','Quota','VER'], datasets:[
+                {label:'Net Welfare Loss', data:[t.deadweight, q.deadweight, (v.cs+v.ps)], backgroundColor:[col.teal, col.gold, col.red]}
+            ]}, options:{responsive:true, maintainAspectRatio:false}});
+        }
+
+        let siChartInstance;
+        function renderSIIdentityChart(s, i) {
+            const ctx = document.getElementById('siIdentityChart'); if(!ctx) return; const col = getChartColors();
+            if(siChartInstance) siChartInstance.destroy();
+            siChartInstance = new Chart(ctx, { type:'bar', data: { labels:['S','I','NX (S-I)'], datasets:[{data:[s, i, s-i], backgroundColor:[col.teal, col.gold, col.green]}]}, options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}}});
+        }
+
+        let mpChartInstance;
+        function updateMacroPolicy() {
+            const gap = pf('mp-gap'), infl = pf('mp-infl'), unemp = pf('mp-unemp'), debt = pf('mp-debt'), ca = pf('mp-ca');
+            const keynes = gap < 0 ? "Aggressive Stimulus" : "Moderate Cool-down";
+            const neo = "Rules-based Stability";
+            document.getElementById('mp-keynesian').textContent = keynes;
+            document.getElementById('mp-neoclassical').textContent = neo;
+            document.getElementById('mp-fiscal').textContent = gap < -2 ? "Infrastructure Surge" : "Balanced Budget";
+            document.getElementById('mp-monetary').textContent = infl > 5 ? "Tighter Credit" : "Accommodative";
+            document.getElementById('mp-risk').textContent = debt > 120 ? "High (Debt Trap)" : "Sustainable";
+            renderMPChart(gap, infl, unemp, debt/10, ca);
+        }
+        function renderMPChart(g, i, u, d, c) {
+            const ctx = document.getElementById('mpChart'); if(!ctx) return; const col = getChartColors();
+            if(mpChartInstance) mpChartInstance.destroy();
+            mpChartInstance = new Chart(ctx, { type:'radar', data:{ labels:['Output Gap','Inflation','Unemp','Debt/10','Curr Acc'], datasets:[{label:'Economy Status', data:[g,i,u,d,c], borderColor:col.teal, backgroundColor:col.teal+'33'}]}, options:{responsive:true, maintainAspectRatio:false, scales:{r:{ticks:{display:false},grid:{color:col.grid},angleLines:{color:col.grid},pointLabels:{color:col.text}}}}});
+        }
+        function setMPPreset(p) {
+            const data = {
+                us2009: [-5, 1, 9, 85, -3],
+                greece2012: [-8, 2, 25, 160, -8],
+                japan2020: [-2, 0, 3, 250, 3],
+                argentina2023: [-6, 150, 10, 90, -4]
+            };
+            const v = data[p];
+            sf('mp-gap',v[0]); sf('mp-infl',v[1]); sf('mp-unemp',v[2]); sf('mp-debt',v[3]); sf('mp-ca',v[4]);
+            updateMacroPolicy();
         }
 
         let oppCostChartInstance;
@@ -2731,7 +2936,111 @@
             });
         }
 
-        function refreshAllCharts() { [updateSupplyDemand, updateCosts, updateMarketStructures, updateRevProfit, updateReactionFunctions, updateElasticity, updateADAS, updateFiscal, updateMonetary, updatePhillips, updateGrowth, updatePPF, updateBudgetConstraint, updateLorenz].forEach(f => { if (typeof f === 'function') try { f(); } catch (e) { } }); if (stockPriceChart) updateStockChart(); [renderGameTheoryCharts, renderMixedStratChart, renderKLevelChart, renderRiskReturnChart].forEach(f => { try { f(); } catch(e){} }); }
+
+        let asymInfoChartInstance;
+        function renderAsymInfoChart(prob, vGood, vLemon) {
+            const ctx = document.getElementById('asymInfoChart'); if (!ctx) return;
+            const col = getChartColors();
+            if (asymInfoChartInstance) asymInfoChartInstance.destroy();
+            asymInfoChartInstance = new Chart(ctx, {
+                type: 'bar', data: { labels: ['Value (Good)', 'Value (Lemon)', 'Expected Value'], datasets: [{ data: [vGood, vLemon, prob*vGood + (1-prob)*vLemon], backgroundColor: [col.teal, col.gold, col.purple], borderRadius: 4 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: col.text } }, x: { ticks: { color: col.text } } } }
+            });
+        }
+
+        let moralHazardChartInstance;
+        function renderMoralHazardChart(base, bonus, cost) {
+            const ctx = document.getElementById('moralHazardChart'); if (!ctx) return;
+            const col = getChartColors();
+            if (moralHazardChartInstance) moralHazardChartInstance.destroy();
+            moralHazardChartInstance = new Chart(ctx, {
+                type: 'bar', data: { labels: ['Utility (Effort)', 'Utility (Shirk)'], datasets: [{ data: [(base+bonus)-cost, base], backgroundColor: [col.teal, col.gold], borderRadius: 4 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: col.text } }, x: { ticks: { color: col.text } } } }
+            });
+        }
+
+        let publicChoiceChartInstance;
+        function renderPublicChoiceChart(lobby, voters) {
+            const ctx = document.getElementById('publicChoiceChart'); if (!ctx) return;
+            const col = getChartColors();
+            if (publicChoiceChartInstance) publicChoiceChartInstance.destroy();
+            publicChoiceChartInstance = new Chart(ctx, {
+                type: 'bar', data: { labels: ['Lobbying Cost', 'Special Interest Gain', 'Social Cost (DWL)'], datasets: [{ data: [lobby, lobby*5, lobby*5*voters], backgroundColor: [col.red, col.teal, col.gold], borderRadius: 4 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: col.text } }, x: { ticks: { color: col.text } } } }
+            });
+        }
+
+        let exchangeRateChartInstance;
+        function renderExchangeRateChart(rate, trade) {
+            const ctx = document.getElementById('exchangeRateChart'); if (!ctx) return;
+            const col = getChartColors();
+            if (exchangeRateChartInstance) exchangeRateChartInstance.destroy();
+            exchangeRateChartInstance = new Chart(ctx, {
+                type: 'line', data: { labels: ['-2%', '-1%', 'Base', '+1%', '+2%'], datasets: [{ label: 'Currency Value', data: [0.95, 0.98, 1.0 + (rate-5)/100 + trade/1000, 1.05, 1.1], borderColor: col.teal, fill: true, backgroundColor: 'rgba(0,180,216,0.1)' }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0.8, max: 1.2, ticks: { color: col.text } }, x: { ticks: { color: col.text } } } }
+            });
+        }
+
+        let creditMarketChartInstance;
+        function renderCreditMarketChart(r, q) {
+            const ctx = document.getElementById('creditMarketChart'); if (!ctx) return;
+            const col = getChartColors();
+            if (creditMarketChartInstance) creditMarketChartInstance.destroy();
+            creditMarketChartInstance = new Chart(ctx, {
+                type: 'bar', data: { labels: ['Interest Rate (%)', 'Equilibrium Credit ($B)'], datasets: [{ data: [r, q/10], backgroundColor: [col.teal, col.gold], borderRadius: 4 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: col.text } }, x: { ticks: { color: col.text } } } }
+            });
+        }
+
+        let utilityMaxChartInstance;
+        function renderUtilityMaxChart(mux, muy) {
+            const ctx = document.getElementById('utilityMaxChart'); if (!ctx) return;
+            const col = getChartColors(); if (utilityMaxChartInstance) utilityMaxChartInstance.destroy();
+            utilityMaxChartInstance = new Chart(ctx, { type: 'bar', data: { labels: ['MUx/Px', 'MUy/Py'], datasets: [{ data: [parseFloat(mux)||0, parseFloat(muy)||0], backgroundColor: [col.teal, col.gold], borderRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: col.text } }, x: { ticks: { color: col.text } } } } });
+        }
+
+        let perfCompChartInstance;
+        function renderPerfCompChart(p, atc, mc) {
+            const ctx = document.getElementById('perfCompChart'); if (!ctx) return;
+            const col = getChartColors(); if (perfCompChartInstance) perfCompChartInstance.destroy();
+            perfCompChartInstance = new Chart(ctx, { type: 'bar', data: { labels: ['Price', 'ATC', 'MC'], datasets: [{ data: [p, atc, mc], backgroundColor: [col.teal, col.red, col.gold], borderRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: col.text } }, x: { ticks: { color: col.text } } } } });
+        }
+
+        let monopCompChartInstance;
+        function renderMonopCompChart(p, q, pi) {
+            const ctx = document.getElementById('monopCompChart'); if (!ctx) return;
+            const col = getChartColors(); if (monopCompChartInstance) monopCompChartInstance.destroy();
+            monopCompChartInstance = new Chart(ctx, { type: 'bar', data: { labels: ['Price', 'Quantity (x10)', 'Profit (x10)'], datasets: [{ data: [p, q*10, pi/10], backgroundColor: [col.teal, col.gold, col.green], borderRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: col.text } }, x: { ticks: { color: col.text } } } } });
+        }
+
+        let kinkedDemandChartInstance;
+        function renderKinkedDemandChart(mrA, mrB, mc) {
+            const ctx = document.getElementById('kinkedDemandChart'); if (!ctx) return;
+            const col = getChartColors(); if (kinkedDemandChartInstance) kinkedDemandChartInstance.destroy();
+            kinkedDemandChartInstance = new Chart(ctx, { type: 'bar', data: { labels: ['MR (Above)', 'Marginal Cost', 'MR (Below)'], datasets: [{ data: [mrA, mc, mrB], backgroundColor: [col.teal, col.red, col.gold], borderRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: col.text } }, x: { ticks: { color: col.text } } } } });
+        }
+
+        let povertyGapChartInstance;
+        function renderPovertyGapChart(inc, thresh) {
+            const ctx = document.getElementById('povertyGapChart'); if (!ctx) return;
+            const col = getChartColors(); if (povertyGapChartInstance) povertyGapChartInstance.destroy();
+            povertyGapChartInstance = new Chart(ctx, { type: 'bar', data: { labels: ['Annual Income', 'Poverty Threshold'], datasets: [{ data: [inc, thresh], backgroundColor: [col.red, col.teal], borderRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: col.text, callback: v => '$' + v.toLocaleString() } }, x: { ticks: { color: col.text } } } } });
+        }
+
+        let unemploymentTrendChartInstance;
+        function renderUnemploymentTrendChart() {
+            const ctx = document.getElementById('unemploymentTrendChart'); if (!ctx) return;
+            const col = getChartColors(); if (unemploymentTrendChartInstance) unemploymentTrendChartInstance.destroy();
+            unemploymentTrendChartInstance = new Chart(ctx, { type: 'doughnut', data: { labels: ['Frictional', 'Structural', 'Cyclical', 'Seasonal'], datasets: [{ data: [3.2, 4.1, 1.5, 0.8], backgroundColor: [col.teal, col.gold, col.red, col.purple] }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: col.text } } } } });
+        }
+
+        let productivityChartInstance;
+        function renderProductivityChart(cap, lab) {
+            const ctx = document.getElementById('productivityChart'); if (!ctx) return;
+            const col = getChartColors(); if (productivityChartInstance) productivityChartInstance.destroy();
+            productivityChartInstance = new Chart(ctx, { type: 'bar', data: { labels: ['Capital Contribution', 'Labor Contribution'], datasets: [{ data: [cap, lab], backgroundColor: [col.gold, col.green], borderRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: 100, ticks: { color: col.text, callback: v => v + '%' } }, x: { ticks: { color: col.text } } } } });
+        }
+        function refreshAllCharts() { [updateSupplyDemand, updateCosts, updateMarketStructures, updateRevProfit, updateReactionFunctions, updateElasticity, updateADAS, updateFiscal, updateMonetary, updatePhillips, updateGrowth, updatePPF, updateBudgetConstraint, updateLorenz, updateAsymInfo, updateMoralHazard, updateFinancialMarkets, updatePublicChoice, updateExchangeRates, updateNationalDebt, updateTradePolicy, updateGlobalization, updateTaxIncidence, updateIntraIndustry, updateMacroPolicy].forEach(f => { if (typeof f === 'function') try { f(); } catch (e) { } }); if (stockPriceChart) updateStockChart(); [renderGameTheoryCharts, renderMixedStratChart, renderKLevelChart, renderRiskReturnChart].forEach(f => { try { f(); } catch(e){} }); }
 
         document.addEventListener('DOMContentLoaded', function () {
             const container = document.getElementById('sectionContainer');
@@ -2755,6 +3064,8 @@
             updateMarginalDecision(); updateShortRunProduction(); updateIndifferenceCurve();
             updateMonopolisticComp(); updateKinkedDemand(); updateMRP();
             updatePovertyCalc(); randomizeUnempScenarios(); updateProductivityGrowth();
+            updateAsymInfo(); updateMoralHazard(); updateFinancialMarkets(); updatePublicChoice();
+            updateExchangeRates(); updateNationalDebt(); updateTradePolicy(); updateGlobalization(); updateTaxIncidence(); updateIntraIndustry(); updateMacroPolicy();
             currentStockData = demoStockData['AAPL'];
             displayStockData(currentStockData);
             updateStockChart('AAPL', '1mo');
@@ -2772,13 +3083,12 @@
                 });
                 updateTicker();
             }, 5000);
-            console.log('EconSim Pro v7.0 — All 63 modules loaded with updated subtitles!');
+            console.log('EconSim Pro v7.4 — All 78 modules loaded with 100% curriculum coverage!');
         });
 
-        function buildAllSections() {
-            function sl(id, label, min, max, val, step, fn, prefix = '', suffix = '') {
-                return `<div class="slider-group"><div class="slider-label"><span class="slider-label-text">${label}</span><span class="slider-value" id="${id}-val">${prefix}${val}${suffix}</span></div><input type="range" id="${id}" min="${min}" max="${max}" step="${step || 1}" value="${val}" oninput="${fn}()"></div>`;
-            }
+        function sl(id, label, min, max, val, step, fn, prefix = '', suffix = '') {
+            return `<div class="slider-group"><div class="slider-label"><span class="slider-label-text">${label}</span><span class="slider-value" id="${id}-val">${prefix}${val}${suffix}</span></div><input type="range" id="${id}" min="${min}" max="${max}" step="${step || 1}" value="${val}" oninput="${fn}()"></div>`;
+        }
 
             return `
 <!-- LIVE MARKETS MODULE (Source-Enhanced) -->
@@ -4091,9 +4401,31 @@
   <p><em>"Smartphones use the Bluetooth standard, as do many car audio systems, headphones, and hearing aids. How did so many different companies agree to coordinate on the Bluetooth standard?"</em><br><br>
   Answer: The <strong>Bluetooth Special Interest Group</strong>, a not-for-profit SSO with <strong>over 33,000 member companies</strong> as of 2018. SSOs solve coordination games by: (1) establishing a common standard, (2) requiring patent-holders to <strong>license technology on fair, reasonable, and non-discriminatory (FRAND) terms</strong>, and (3) providing a forum for pre-competitive collaboration. Without SSOs, firms might get stuck on incompatible standards — the (0,0) outcome.</p>
 </div>
-<div class="case-study" style="margin-top:12px;">
   <div class="case-study-title">📼 VHS vs Betamax</div>
   <p>Sony's Betamax was technically superior, but JVC's VHS won because JVC licensed the technology widely, creating a larger network of compatible devices and content. This is a coordination game where the <strong>installed base</strong> (network effects) determined which equilibrium emerged — not technical quality. The lesson: in coordination games, being first or being open matters more than being best.</p>
+</div>
+
+<div class="insight-card" style="margin-top:16px;">
+  <div class="insight-label">📗 CLEAR IT UP: Coordination Games Beyond Bluetooth</div>
+  <p>Coordination games arise whenever players benefit from choosing the <strong>same</strong> strategy, but there are multiple equilibria and no obvious way to coordinate:<br><br>
+  <strong>1. Technology Standards (Battle of the Sexes):</strong><br>
+  • VHS vs Betamax (1980s): Both formats worked, but consumers needed to coordinate on one. VHS won despite Betamax being technically superior — because JVC licensed VHS freely while Sony restricted Betamax.<br>
+  • USB-C vs Lightning (2023): EU mandated USB-C, forcing coordination by regulation.<br><br>
+  <strong>2. Driving Side (Pure Coordination):</strong><br>
+  • Left or right — doesn't matter which, as long as everyone agrees. Sweden switched from left to right on September 3, 1967 ("Dagen H"). The transition required massive coordination.<br><br>
+  <strong>3. Network Effects (Stag Hunt):</strong><br>
+  • Social media: Everyone benefits from being on the same platform. Facebook beat MySpace not because it was better, but because it reached critical mass first.<br><br>
+  <strong>4. Bank Runs (Coordination Failure):</strong><br>
+  • If everyone believes the bank is solvent → bank IS solvent (good equilibrium).<br>
+  • If everyone believes the bank will fail → everyone withdraws → bank DOES fail (bad equilibrium).<br><br>
+  <strong>Key insight:</strong> In coordination games, the equilibrium that gets selected often depends on <strong>focal points</strong> (Schelling, 1960), <strong>history</strong> (path dependence), or <strong>regulation</strong> (government mandates).</p>
+</div>
+
+<div class="insight-card purple" style="margin-top:12px;">
+  <div class="insight-label">🎓 SCHELLING FOCAL POINTS</div>
+  <p>Thomas Schelling's famous experiment: "You are to meet someone in New York City tomorrow. You have not been able to communicate beforehand. Where and when do you go?"<br><br>
+  Most people answer: <strong>Grand Central Station, noon.</strong><br><br>
+  There's nothing special about this answer — it's a <strong>focal point</strong>, a solution that seems "natural" or "obvious" to most people. Focal points help solve coordination problems without communication. They arise from shared culture, convention, or salience.</p>
 </div>
 </section>
 
@@ -4389,9 +4721,25 @@
   <div class="case-study-title">🏭 Aluminum: From Mine to Can (Perloff Ch.7)</div>
   <p>Aluminum production has 4 vertical stages: (1) <strong>Mining</strong> bauxite ore, (2) <strong>Refining</strong> into alumina, (3) <strong>Smelting</strong> into aluminum ingots, (4) <strong>Fabricating</strong> into final products (cans, aircraft parts). Alcoa historically integrated all 4 stages because each involves highly specific assets — a smelter built next to a refinery has no alternative use. This is classic TCE: high asset specificity → vertical integration. Try setting Asset Specificity to 9 above to see the MAKE recommendation.</p>
 </div>
-<div class="case-study" style="margin-top:12px;">
   <div class="case-study-title">🔧 Quasi-Vertical Integration</div>
   <p>From Perloff Ch.7: Firms don't always fully integrate. <strong>Quasi-vertical integration</strong> uses long-term contracts, just-in-time delivery systems, and strategic alliances to capture some benefits of integration while maintaining flexibility. Toyota's supplier network is the classic example — Toyota doesn't own its suppliers but maintains deep, long-term relationships with dedicated tooling and shared information systems. This is the "HYBRID" recommendation in the TCE framework.</p>
+</div>
+
+<div class="insight-card" style="margin-top:16px;">
+  <div class="insight-label">📘 FROM PERLOFF & BRANDER Ch.7 — Vertical Stages of Production</div>
+  <p>Perloff Figure 7.2 illustrates the vertical chain of production for a typical manufactured good:<br><br>
+  <strong>Stage 1: Raw Materials</strong> → Mining, agriculture, extraction<br>
+  <strong>Stage 2: Processing</strong> → Refining, milling, chemical processing<br>
+  <strong>Stage 3: Manufacturing</strong> → Assembly, fabrication<br>
+  <strong>Stage 4: Distribution</strong> → Wholesale, logistics, warehousing<br>
+  <strong>Stage 5: Retail</strong> → Final sale to consumer<br><br>
+  <strong>The Make-or-Buy Decision:</strong> At each stage, the firm decides whether to:<br>
+  • <strong>Vertically integrate</strong> (do it in-house) — reduces transaction costs, ensures quality, but increases complexity<br>
+  • <strong>Outsource</strong> (buy from market) — leverages specialization, but creates hold-up problems<br><br>
+  <strong>Example — Apple iPhone:</strong><br>
+  • Apple designs chips (Stage 3 — integrated) but TSMC manufactures them (Stage 3 — outsourced)<br>
+  • Why? Apple integrates where it has <strong>core competencies</strong> (design, retail experience) and outsources where others have <strong>scale advantages</strong> (manufacturing)<br><br>
+  <strong>Coase's Theory of the Firm (1937):</strong> Firms exist because market transactions have costs (search, negotiation, enforcement). Firms integrate activities when internal coordination costs < market transaction costs. The boundary of the firm is where these costs are equal.</p>
 </div>
 </section>
 
@@ -4455,6 +4803,18 @@
     <div class="case-study-title">⚠️ Volkswagen: ESG Failure</div>
     <p>VW's "Dieselgate" scandal (2015) — installing software to cheat emissions tests — destroyed $30B in market value, resulted in $33B in fines, and damaged the brand for years. ESG Score pre-scandal: appeared high (G=8). Post-scandal: collapsed (E=2, G=2). This illustrates why governance (G) is the foundation — without honest reporting, E and S scores are meaningless.</p>
   </div>
+</div>
+
+<div class="insight-card" style="margin-top:16px;">
+  <div class="insight-label">📗 FROM OPENSTAX Ch.12-13 — CSR as a Public Goods Problem</div>
+  <p>Corporate Social Responsibility faces a fundamental <strong>free rider problem</strong>:<br><br>
+  <strong>The problem:</strong> Clean air, ethical supply chains, and community development are <strong>public goods</strong> — non-excludable and non-rivalrous. If one company invests in reducing pollution, ALL companies (and consumers) benefit. But the cost falls only on the investing company.<br><br>
+  <strong>Solutions:</strong><br>
+  1. <strong>Government regulation:</strong> Mandate minimum standards (EPA, OSHA).<br>
+  2. <strong>Pigouvian taxes:</strong> Tax negative externalities (carbon tax).<br>
+  3. <strong>Consumer pressure:</strong> Boycotts, ethical labeling (Fair Trade).<br>
+  4. <strong>ESG investing:</strong> Investors reward responsible companies.<br><br>
+  <strong>The paradox:</strong> Milton Friedman argued "the social responsibility of business is to increase its profits." But if externalities exist, profit maximization leads to socially suboptimal outcomes. CSR attempts to bridge this gap.</p>
 </div>
 </section>
 
@@ -5234,6 +5594,7 @@
     </div>
   </div>
 </div>
+  <div class="chart-card" style="margin-top:16px;"><div class="chart-title">Loanable Funds Market</div><div class="chart-subtitle">Demand (teal) vs Supply (gold) of capital</div><div class="chart-wrap h-280"><canvas id="creditMarketChart"></canvas></div></div>
 </section>
 
 <!-- G1: GDP CALCULATOR -->
@@ -5406,7 +5767,18 @@
   </div>
 </div>
 
-<!-- ENHANCED EXPLANATIONS: CPI -->
+<div class="grid-2" style="margin-top:16px;">
+  <div class="chart-card">
+    <div class="chart-title">CPI Index Over Time</div>
+    <div class="chart-subtitle">Price level rises with inflation</div>
+    <div class="chart-wrap h-280"><canvas id="cpiIndexChart"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">Annual Inflation Rate</div>
+    <div class="chart-subtitle">Year-over-year % change in CPI</div>
+    <div class="chart-wrap h-280"><canvas id="inflRateChart"></canvas></div>
+  </div>
+</div>
 
 <div class="insight-card" style="margin-top:16px;">
   <div class="insight-label">📗 CLEAR IT UP: Does CPI Accurately Measure Inflation?</div>
@@ -5578,6 +5950,7 @@
   <p>Water is essential for life but cheap. Diamonds are useless for survival but expensive. Why?<br><br>
   <strong>Answer:</strong> Price reflects <strong>marginal</strong> utility, not <strong>total</strong> utility. Water has enormous total utility but very low marginal utility (we have so much). Diamonds have low total utility but very high marginal utility (scarce). The utility maximization rule (MU/P equalized) explains this perfectly.</p>
 </div>
+  <div class="chart-card" style="margin-top:16px;"><div class="chart-title">Marginal Utility per Dollar</div><div class="chart-subtitle">Optimization at MUx/Px = MUy/Py</div><div class="chart-wrap h-280"><canvas id="utilityMaxChart"></canvas></div></div>
 </section>
 
 <!-- U2: PERFECT COMPETITION -->
@@ -5625,6 +5998,7 @@
   <strong>If firms earn losses:</strong> Exit → supply↓ → price↑ → losses↓ → exit stops when π = 0.<br><br>
   In LR equilibrium: <strong>P = MC = min ATC</strong>. Maximum efficiency — lowest possible cost, consumers pay exactly that cost. No DWL. This is why economists love perfect competition.</p>
 </div>
+  <div class="chart-card" style="margin-top:16px;"><div class="chart-title">Perfect Competition: Short-Run vs Long-Run</div><div class="chart-subtitle">Market Supply shifts until Economic Profit is zero</div><div class="chart-wrap h-280"><canvas id="perfCompChart"></canvas></div></div>
 </section>
 
 <!-- U3: PRICE DISCRIMINATION -->
@@ -6215,6 +6589,7 @@
     </div>
   </div>
 </div>
+  <div class="chart-card" style="margin-top:16px;"><div class="chart-title">Monopolistic Competition: Short Run</div><div class="chart-subtitle">Profit maximization at MR = MC</div><div class="chart-wrap h-280"><canvas id="monopCompChart"></canvas></div></div>
 </section>
 
 <!-- P5: KINKED DEMAND -->
@@ -6242,6 +6617,7 @@
     <div class="insight-card" style="margin-top:12px;"><div class="insight-label">💡 Explanation</div><p>If MC falls within the MR gap, the firm has no incentive to change price. This explains oligopolistic price rigidity.</p></div>
   </div>
 </div>
+    <div class="chart-card" style="margin-top:16px;"><div class="chart-title">Kinked Demand Curve</div><div class="chart-subtitle">Marginal Revenue gap and price rigidity</div><div class="chart-wrap h-280"><canvas id="kinkedDemandChart"></canvas></div></div>
 </section>
 
 <!-- P6: MRP & LABOR DEMAND -->
@@ -6312,6 +6688,7 @@
   <strong>Poverty depth</strong> measures the average shortfall. A family at $25,000 against $26,500 has depth of 5.7%. A family at $10,000 has depth of 62.3%.<br><br>
   Policy implication: A program lifting many from $25K to $27K reduces the <em>rate</em> dramatically but doesn't help deep poverty. Targeting the poorest reduces <em>depth</em> but may not change the rate. Both metrics matter.</p>
 </div>
+  <div class="chart-card" style="margin-top:16px;"><div class="chart-title">Poverty Gap Analysis</div><div class="chart-subtitle">Income vs Poverty Threshold relative to family size</div><div class="chart-wrap h-280"><canvas id="povertyGapChart"></canvas></div></div>
 </section>
 
 <!-- W2: UNEMPLOYMENT TYPES SORTER -->
@@ -6339,6 +6716,7 @@
     <div class="insight-card" style="margin-top:12px;"><div class="insight-label">📖 Natural Rate</div><p>Natural Rate of Unemployment = Frictional + Structural. Cyclical unemployment = 0 at full employment.</p></div>
   </div>
 </div>
+  <div class="chart-card" style="margin-top:16px;"><div class="chart-title">Unemployment Trends</div><div class="chart-subtitle">Historical breakdown of unemployment types</div><div class="chart-wrap h-280"><canvas id="unemploymentTrendChart"></canvas></div></div>
 </section>
 
 <!-- W3: PRODUCTIVITY & GROWTH -->
@@ -6368,8 +6746,350 @@
     </div>
   </div>
 </div>
+  <div class="chart-card" style="margin-top:16px;"><div class="chart-title">Growth Accounting: Input Contribution</div><div class="chart-subtitle">Technology (teal), Capital (gold), and Labor (green)</div><div class="chart-wrap h-280"><canvas id="productivityChart"></canvas></div></div>
 </section>
 
+
+<!-- I1: ASYMMETRIC INFORMATION -->
+<section id="asymmetric-info" class="section">
+  <div class="section-header">
+    <span class="section-label">Module I1</span>
+    <h2 class="section-title">Asymmetric Information: Lemons & Signaling</h2>
+    <p class="section-subtitle">Information asymmetry—where one party possesses superior knowledge—can trigger market failure. In the "Market for Lemons" (Akerlof, 1970), adverse selection collapses high-quality trade as buyers, unable to distinguish quality, only offer average-quality prices. Explore how signaling (Spence, 1973) and screening can restore market efficiency.</p>
+    <div><span class="source-tag source-perloff">📘 Perloff Ch.15 · Asymmetric Information</span></div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">🔍 Market Parameters</div>
+      ${sl('ai-prob', 'Prob. of Good Quality', 0, 100, 50, 5, 'updateAsymInfo', '', '%')}
+      ${sl('ai-val-good', 'Value (Good)', 1000, 5000, 3000, 100, 'updateAsymInfo', '$')}
+      ${sl('ai-val-lemon', 'Value (Lemon)', 100, 1000, 500, 50, 'updateAsymInfo', '$')}
+    </div>
+    <div class="card">
+      <div class="card-title">📊 Adverse Selection Result</div>
+      <div class="result-box">
+        <div class="result-item"><span class="result-label">Expected Value (Buyer)</span><span class="result-value teal" id="ai-ev">$0</span></div>
+        <div class="result-item"><span class="result-label">Market Status</span><span class="result-value" id="ai-status">Scanning...</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="chart-card" style="margin-top:16px;"><div class="chart-title">Information Asymmetry: Expected Value</div><div class="chart-subtitle">Buyer's evaluation of quality vs price</div><div class="chart-wrap h-280"><canvas id="asymInfoChart"></canvas></div></div>
+
+<div class="insight-card purple" style="margin-top:16px;">
+  <div class="insight-label">📗 WORK IT OUT: OpenStax Micro 3e Ch.16 — Insurance & Adverse Selection</div>
+  <p><strong>Problem (adapted from OpenStax):</strong><br>
+  Treatment costs $200,000.<br>
+  • <strong>Group A (family history):</strong> 20% chance → premium = $40,000<br>
+  • <strong>Group B (no history):</strong> 2% chance → premium = $4,000<br><br>
+  <strong>Scenario: Pooled (10% A, 90% B)</strong><br>
+  Pooled premium = 0.10 × $40,000 + 0.90 × $4,000 = <strong>$7,600</strong><br><br>
+  <strong>Adverse Selection Death Spiral:</strong><br>
+  1. Group B drops out (overpriced).<br>
+  2. Pool risk rises → premium rises.<br>
+  3. Market collapses – only sickest insured.<br><br>
+  <strong>Solutions:</strong> Genetic testing bans, insurance mandates (ACA), or public subsidies.</p>
+</div>
+</section>
+
+<!-- I2: MORAL HAZARD -->
+<section id="moral-hazard" class="section">
+  <div class="section-header">
+    <span class="section-label">Module I2</span>
+    <h2 class="section-title">Moral Hazard & Principal-Agent Problem</h2>
+    <p class="section-subtitle">Moral hazard occurs when an agent takes hidden risks because they do not bear the full cost of their actions. From insurance-induced recklessness to corporate executives (agents) misaligning with shareholders (principals), explore how performance-based pay and monitoring mitigate these inefficiencies.</p>
+    <div><span class="source-tag source-openstax">📗 OpenStax Micro Ch.16 · Information & Risk</span></div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">💼 Incentive Structure</div>
+      ${sl('mh-base', 'Base Salary', 1000, 5000, 3000, 100, 'updateMoralHazard', '$')}
+      ${sl('mh-bonus', 'Bonus (Success)', 0, 5000, 2000, 100, 'updateMoralHazard', '$')}
+      ${sl('mh-effort-cost', 'Cost of Effort', 100, 1000, 500, 50, 'updateMoralHazard', '$')}
+    </div>
+    <div class="card">
+      <div class="card-title">⚖️ Agent Decision</div>
+      <div class="result-box">
+        <div class="result-item"><span class="result-label">Expected Utility (Effort)</span><span class="result-value teal" id="mh-util-effort">0</span></div>
+        <div class="result-item"><span class="result-label">Decision</span><span class="result-value green" id="mh-decision">Work Hard</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="chart-card" style="margin-top:16px;"><div class="chart-title">Incentive Compatibility Constraint</div><div class="chart-subtitle">Utility of effort vs utility of shirking</div><div class="chart-wrap h-280"><canvas id="moralHazardChart"></canvas></div></div>
+</section>
+
+<!-- I3: PUBLIC CHOICE -->
+<section id="public-choice" class="section">
+  <div class="section-header">
+    <span class="section-label">Module I3</span>
+    <h2 class="section-title">Public Choice & Rent Seeking</h2>
+    <p class="section-subtitle">Public choice theory applies economic logic to political decision-making. Explore how small, concentrated interest groups (Special Interests) exert disproportionate influence over large, diffuse groups of taxpayers (Rational Ignorance), and how Rent Seeking consumes social surplus.</p>
+    <div><span class="source-tag source-openstax">📗 OpenStax Micro Ch.18 · Public Economy</span></div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">🗳️ Political Variables</div>
+      ${sl('pc3-lobby', 'Lobbying Spending', 0, 1000, 200, 50, 'updatePublicChoice', '$')}
+      ${sl('pc3-voters', 'Ignorant Voters (%)', 0, 100, 70, 5, 'updatePublicChoice', '', '%')}
+    </div>
+    <div class="card">
+      <div class="card-title">📉 Deadweight Loss</div>
+      <div class="kpi-card red"><div class="kpi-label">Special Interest Gain</div><div class="kpi-val" id="pc3-gain">$0</div></div>
+      <div class="kpi-card gold"><div class="kpi-label">Social Cost (DWL)</div><div class="kpi-val" id="pc3-dwl">$0</div></div>
+    </div>
+  </div>
+  <div class="chart-card" style="margin-top:16px;"><div class="chart-title">Political Economy: Rent Seeking</div><div class="chart-subtitle">Resources consumed for political gain</div><div class="chart-wrap h-280"><canvas id="publicChoiceChart"></canvas></div></div>
+</section>
+
+<!-- X1: EXCHANGE RATES -->
+<section id="exchange-rates" class="section">
+  <div class="section-header">
+    <span class="section-label">Module X1</span>
+    <h2 class="section-title">Exchange Rates & Forex Markets</h2>
+    <p class="section-subtitle">Exchange rates are determined by the demand and supply of currencies. Explore how interest rate differentials, inflation rates, and trade balances drive currency appreciation or depreciation in the $7.5 trillion-a-day FX market.</p>
+    <div><span class="source-tag source-openstax">📗 OpenStax Macro Ch.16 · Exchange Rates</span></div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">💱 Market Drivers</div>
+      ${sl('xr-rate', 'Domestic Interest Rate', 0, 10, 5, 0.1, 'updateExchangeRates', '', '%')}
+      ${sl('xr-trade', 'Net Exports (B)', -100, 100, 0, 10, 'updateExchangeRates', '$')}
+    </div>
+    <div class="card">
+      <div class="card-title">📉 Currency Value</div>
+      <div class="result-box">
+        <div class="result-item"><span class="result-label">Exchange Rate (E)</span><span class="result-value teal" id="xr-val">1.00</span></div>
+        <div class="result-item"><span class="result-label">Impulse</span><span class="result-value gold" id="xr-direction">Stable</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="chart-card" style="margin-top:16px;"><div class="chart-title">Currency Market Equilibrium</div><div class="chart-subtitle">Demand and supply of domestic currency</div><div class="chart-wrap h-280"><canvas id="exchangeRateChart"></canvas></div></div>
+</section>
+
+<!-- X2: NATIONAL DEBT -->
+<section id="national-debt" class="section">
+  <div class="section-header">
+    <span class="section-label">Module X2</span>
+    <h2 class="section-title">National Debt & Crowding Out</h2>
+    <p class="section-subtitle">Sustainability of national debt depends on the primary deficit, interest rates, and GDP growth. High debt can lead to "Crowding Out"—where government borrowing raises interest rates, reducing private investment.</p>
+    <div><span class="source-tag source-openstax">📗 OpenStax Macro Ch.17 · Government Budgets</span></div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">🏛️ Fiscal Variables</div>
+      ${sl('nd-deficit', 'Annual Deficit (% GDP)', -5, 15, 3, 0.5, 'updateNationalDebt', '', '%')}
+      ${sl('nd-rate', 'Interest Rate (r)', 0, 10, 4, 0.1, 'updateNationalDebt', '', '%')}
+      ${sl('nd-growth', 'GDP Growth (g)', -3, 8, 2.5, 0.1, 'updateNationalDebt', '', '%')}
+    </div>
+    <div class="card">
+      <div class="card-title">📉 Debt Dynamics</div>
+      <div class="kpi-card purple"><div class="kpi-label">Debt-to-GDP Trend</div><div class="kpi-val" id="nd-trend">Scanning...</div></div>
+      <p id="nd-insight" class="insight-card" style="margin-top:10px;">Calculations pending...</p>
+    </div>
+  </div>
+</section>
+
+<!-- X3: S-I IDENTITY -->
+<!-- X3: TRADE POLICY -->
+<section id="trade-policy" class="section">
+<div class="section-header">
+  <span class="section-label">Module X3</span>
+  <h2 class="section-title">Trade Policy: Tariffs, Quotas & VERs</h2>
+  <p class="section-subtitle">Governments use trade barriers to protect domestic industries. Compare the welfare effects: Tariffs generate tax revenue, Quotas create rents for license holders, and Voluntary Export Restraints (VERs) transfer rents to foreign exporters.</p>
+  <div><span class="source-tag source-openstax">📗 OpenStax Macro Ch.20 · Globalization and Protectionism</span></div>
+</div>
+
+<div class="grid-3">
+  <div class="card">
+    <div class="card-title">📜 Tariff</div>
+    <p class="small-text">A tax on imported goods. Higher prices for consumers, but the <strong>government collects revenue</strong>.</p>
+    <div class="kpi-card teal"><div class="kpi-label">Domestic Welfare</div><div class="kpi-val" style="font-size:14px;">CS ↓, PS ↑, Gov ↑</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">📦 Import Quota</div>
+    <p class="small-text">A quantitative limit on imports. Prices rise like a tariff, but <strong>quota holders</strong> capture the "rents."</p>
+    <div class="kpi-card gold"><div class="kpi-label">Quota Rents</div><div class="kpi-val" style="font-size:14px;">Captures Area C</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">🛡️ VER</div>
+    <p class="small-text">A "voluntary" limit by exporters. Prices rise, but <strong>foreign exporters</strong> capture the rents.</p>
+    <div class="kpi-card red"><div class="kpi-label">Worst Outcome</div><div class="kpi-val" style="font-size:14px;">Net Loss to Nation</div></div>
+  </div>
+</div>
+
+<div class="chart-card" style="margin-top:16px;">
+  <div class="chart-title">Welfare Impact Comparison: Tariff vs Quota vs VER</div>
+  <div class="chart-subtitle">All three raise prices equally — but who captures the rents differs</div>
+  <div class="chart-wrap h-320"><canvas id="tradePolicyChart"></canvas></div>
+</div>
+</section>
+
+<!-- A1: TAX INCIDENCE -->
+<section id="tax-incidence" class="section">
+  <div class="section-header">
+    <span class="section-label">Module A1</span>
+    <h2 class="section-title">Tax Incidence & Elasticity</h2>
+    <p class="section-subtitle">Tax incidence—who actually pays the tax—is determined by the relative elasticities of supply and demand, not who the tax is legally imposed upon. The more inelastic side of the market bears the majority of the burden.</p>
+    <div><span class="source-tag source-perloff">📘 Perloff Ch.3 · Welfare & Sales Taxes</span></div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">📉 Market Elasticity</div>
+      ${sl('ti-ed', 'Demand Elasticity (Ed)', 0.1, 5, 1, 0.1, 'updateTaxIncidence')}
+      ${sl('ti-es', 'Supply Elasticity (Es)', 0.1, 5, 1, 0.1, 'updateTaxIncidence')}
+      ${sl('ti-tax', 'Tax/Unit', 1, 20, 5, 1, 'updateTaxIncidence', '$')}
+    </div>
+    <div class="card">
+      <div class="card-title">⚖️ Tax Burden</div>
+      <div class="kpi-card teal"><div class="kpi-label">Consumer Share</div><div class="kpi-val" id="ti-cons">50%</div></div>
+      <div class="kpi-card gold"><div class="kpi-label">Producer Share</div><div class="kpi-val" id="ti-prod">50%</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- A2: INTRA-INDUSTRY TRADE -->
+<section id="intra-industry" class="section">
+  <div class="section-header">
+    <span class="section-label">Module A2</span>
+    <h2 class="section-title">Intra-Industry Trade & Varieties</h2>
+    <p class="section-subtitle">Most modern trade involves exchanging similar goods within the same industry (e.g., cars for cars). This arises from economies of scale and consumer demand for variety (Krugman, 1979). Explore the Grubel-Lloyd Index.</p>
+    <div><span class="source-tag source-openstax">📗 OpenStax Macro Ch.15 · International Trade</span></div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">🚢 Trade Flows</div>
+      ${sl('it-exp', 'Exports ($B)', 0, 500, 200, 10, 'updateIntraIndustry', '$')}
+      ${sl('it-imp', 'Imports ($B)', 0, 500, 150, 10, 'updateIntraIndustry', '$')}
+    </div>
+    <div class="card">
+      <div class="card-title">📊 Grubel-Lloyd Index</div>
+      <div class="kpi-card purple"><div class="kpi-label">GL Index</div><div class="kpi-val" id="it-gl">0.85</div></div>
+      <p id="it-insight" class="insight-card" style="margin-top:10px;">High score indicates significant intra-industry trade based on variety.</p>
+    </div>
+  </div>
+  <div class="chart-card" style="margin-top:16px;">
+    <div class="chart-title">Trade Composition: Intra vs Inter-Industry</div>
+    <div class="chart-subtitle">Higher IIT index = more two-way trade in similar goods</div>
+    <div class="chart-wrap h-280"><canvas id="iitChart"></canvas></div>
+  </div>
+</section>
+
+  <!-- I4: FINANCIAL MARKETS -->
+  <section id="financial-markets" class="section">
+    <div class="section-header">
+      <span class="section-label">Module I4</span>
+      <h2 class="section-title">Financial Markets & Loanable Funds</h2>
+      <p class="section-subtitle">Financial markets facilitate the flow of funds from savers to borrowers. Explore how the interest rate serves as the price of credit, equilibrating the supply of loanable funds (savings) and the demand for investment.</p>
+      <div><span class="source-tag source-openstax">📗 OpenStax Macro Ch.14 · Financial Markets</span></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">💰 Credit Markets</div>
+        ${sl('fm-savings', 'Total Savings ($B)', 100, 5000, 1000, 100, 'updateFinancialMarkets', '$')}
+        ${sl('fm-risk', 'Risk Premium (%)', 0, 10, 2, 0.1, 'updateFinancialMarkets', '', '%')}
+      </div>
+      <div class="card">
+        <div class="card-title">📊 Market Interest Rate</div>
+        <div class="result-box">
+          <div class="result-item"><span class="result-label">Equilibrium Rate</span><span class="result-value teal" id="fm-rate">0%</span></div>
+          <div class="result-item"><span class="result-label">Investment Volume</span><span class="result-value gold" id="fm-vol">$0</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- X4: GLOBALIZATION -->
+  <section id="globalization" class="section">
+    <div class="section-header">
+      <span class="section-label">Module X4</span>
+      <h2 class="section-title">Globalization & Integration</h2>
+      <p class="section-subtitle">Globalization measures the increasing economic integration of world economies through trade, financial flows, and labor mobility. It is fundamentally linked to the <strong>S-I Identity</strong>: Trade imbalances must be financed by capital flows.</p>
+      <div><span class="source-tag source-openstax">📗 OpenStax Macro Ch.15 · International Trade</span></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">🌐 Integration Indices</div>
+        ${sl('gl-openness', 'Trade Openness (% GDP)', 0, 100, 40, 5, 'updateGlobalization', '', '%')}
+        ${sl('gl-mobility', 'Capital Mobility', 0, 10, 5, 0.5, 'updateGlobalization')}
+        <div style="margin-top:16px; border-top: 1px solid var(--grid); padding-top:12px;">
+          <div class="card-title" style="font-size:12px;">💰 S-I Identity Drivers</div>
+          ${sl('si-s', 'National Savings (S)', 0, 5, 2.5, 0.1, 'updateGlobalization', '$', 'T')}
+          ${sl('si-i', 'Dom. Investment (I)', 0, 5, 2.2, 0.1, 'updateGlobalization', '$', 'T')}
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">📊 Global Impact</div>
+        <div class="result-box">
+          <div class="result-item"><span class="result-label">Gains from Variety</span><span class="result-value teal" id="gl-gains">Low</span></div>
+          <div class="result-item"><span class="result-label">Foreign Capital Inflow</span><span class="result-value gold" id="gl-inflow">$0</span></div>
+          <div class="result-item"><span class="result-label">Net Exports (X-M)</span><span class="result-value" id="gl-nx">+$0.3T</span></div>
+        </div>
+        <div class="chart-card" style="margin-top:16px; background:transparent; border:none; box-shadow:none;">
+          <div class="chart-title" style="font-size:12px;">Savings-Investment Identity: S − I = X − M</div>
+          <div class="chart-wrap h-200"><canvas id="siIdentityChart"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<!-- X5: MACRO POLICY AROUND THE WORLD -->
+<section id="macro-policy-world" class="section">
+<div class="section-header">
+  <span class="section-label">INTL 05</span>
+  <h2 class="section-title">Macroeconomic Policy Around the World</h2>
+  <p class="section-subtitle">The great debate: Keynesian vs Neoclassical approaches to stabilization policy. Compare prescription responses to economic shocks in different regimes.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Macro 3e · Ch.17</span>
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">🎛️ Economic Scenario</div>
+    ${sl('mp-gap','Output Gap (% POT)',-10,10,-3,0.5,'updateMacroPolicy','%')}
+    ${sl('mp-infl','Inflation Rate (%)',0,20,4,0.5,'updateMacroPolicy','%')}
+    ${sl('mp-unemp','Unemployment (%)',2,20,7,0.5,'updateMacroPolicy','%')}
+    ${sl('mp-debt','Gov Debt/GDP (%)',10,200,80,1,'updateMacroPolicy','%')}
+    ${sl('mp-ca','Current Account (% GDP)',-10,10,-2,0.5,'updateMacroPolicy','%')}
+    <div class="btn-row" style="margin-top:12px;">
+      <button class="btn btn-teal" onclick="setMPPreset('us2009')">🇺🇸 US 09</button>
+      <button class="btn btn-gold" onclick="setMPPreset('greece2012')">🇬🇷 GR 12</button>
+      <button class="btn btn-purple" onclick="setMPPreset('japan2020')">🇯🇵 JP 20</button>
+      <button class="btn btn-red" onclick="setMPPreset('argentina2023')">🇦🇷 AR 23</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Policy Prescriptions</div>
+    <div class="grid-2" style="gap:10px;">
+      <div class="kpi-card teal"><div class="kpi-label">Keynesian Rx</div><div class="kpi-val" id="mp-keynesian" style="font-size:12px;">Fiscal Stimulus</div></div>
+      <div class="kpi-card gold"><div class="kpi-label">Neoclassical Rx</div><div class="kpi-val" id="mp-neoclassical" style="font-size:12px;">Rules-Based</div></div>
+    </div>
+    <div class="result-box" style="margin-top:12px;">
+      <div class="result-item"><span class="result-label">Fiscal Policy</span><span class="result-value" id="mp-fiscal">Expand spending</span></div>
+      <div class="result-item"><span class="result-label">Monetary Policy</span><span class="result-value" id="mp-monetary">Cut rates</span></div>
+      <div class="result-item"><span class="result-label">Risk Assessment</span><span class="result-value" id="mp-risk">Moderate</span></div>
+    </div>
+    <div class="chart-wrap h-240" style="margin-top:12px;"><canvas id="mpChart"></canvas></div>
+  </div>
+</div>
+
+<div class="grid-2" style="margin-top:16px;">
+  <div class="card">
+    <div class="card-title">📘 Keynesian Perspective</div>
+    <div class="insight-card" style="margin-top:0;">
+      <p>Emphasis on <strong>AD-driven output</strong>, fiscal stimulus, and addressing sticky prices during recessions. Believes countercyclical policy is essential to avoid long periods of unemployment.</p>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">📙 Neoclassical Perspective</div>
+    <div class="insight-card gold" style="margin-top:0;">
+      <p>Emphasis on <strong>long-run supply</strong>, rules-based monetary policy, and rational expectations. Believes markets self-correct and stimulus often leads to inflation or debt traps.</p>
+    </div>
+  </div>
+</div>
+
+<div class="insight-card" style="margin-top:16px;">
+  <div class="insight-label">📗 FROM OPENSTAX MACRO 3e Ch.17 — Policy in Developing Countries</div>
+  <p>Developing countries face unique challenges that make standard macro policy harder: weak institutions, dollarization, and high vulnerability to capital flight. Neither pure Keynesian nor Neoclassical prescriptions work in isolation — the answer involves painful structural reform alongside stabilization.</p>
+</div>
+</section>
 
 `;
         }
