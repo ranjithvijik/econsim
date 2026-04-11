@@ -1377,7 +1377,7 @@
         };
 
         async function fetchFredSeries(seriesId, units = 'lin') {
-            if (FRED_API_KEY === '__FRED_API_KEY__' || !FRED_API_KEY) return null;
+            if (!FRED_API_KEY || FRED_API_KEY.startsWith('__FRED')) return null;
             const url = `https://api.stlouisfed.org/fred/series/observations?series_id=${seriesId}&api_key=${FRED_API_KEY}&file_type=json&sort_order=desc&limit=1&units=${units}`;
             const data = await fetchViaProxy(url);
             if (data && data.observations && data.observations.length > 0) {
@@ -1388,7 +1388,7 @@
         }
 
         async function fetchAlphaVantageQuote(symbol) {
-            if (AV_API_KEY === '__AV_API_KEY__' || !AV_API_KEY) return null;
+            if (!AV_API_KEY || AV_API_KEY.startsWith('__AV')) return null;
             const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${AV_API_KEY}`;
             try {
                 // Direct fetch since AlphaVantage provides CORS wrapper
@@ -1405,15 +1405,16 @@
                 const quote = data['Global Quote'];
                 if (quote && quote['05. price']) {
                     const price = parseFloat(quote['05. price']);
+                    const changeStr = quote['10. change percent'] || '0%';
                     return {
                         name: symbol + ' (AlphaVantage)',
                         sector: 'Market Asset',
                         price: price,
-                        change: parseFloat(quote['09. change']),
-                        changePercent: parseFloat(quote['10. change percent'].replace('%','')),
-                        open: parseFloat(quote['02. open']),
-                        high: parseFloat(quote['03. high']),
-                        low: parseFloat(quote['04. low']),
+                        change: parseFloat(quote['09. change'] || '0'),
+                        changePercent: parseFloat(changeStr.replace('%','')),
+                        open: parseFloat(quote['02. open'] || '0'),
+                        high: parseFloat(quote['03. high'] || '0'),
+                        low: parseFloat(quote['04. low'] || '0'),
                         volume: parseInt(quote['06. volume']),
                         pe: 15, marketCap: price * 1e7, dividend: 0, dividendYield: 0, high52: price * 1.2, low52: price * 0.8, beta: 1
                     };
@@ -1506,7 +1507,7 @@
                 });
 
                 // Tier 3: FRED API Direct Connect (If injected)
-                if (FRED_API_KEY !== '__FRED_API_KEY__' && FRED_API_KEY) {
+                if (FRED_API_KEY && !FRED_API_KEY.startsWith('__FRED')) {
                     console.log('📡 Fetching Real-Time Macro Data from FRED...');
                     const fredPromises = Object.keys(FRED_SERIES_MAP).map(async key => {
                         const { id, units } = FRED_SERIES_MAP[key];
