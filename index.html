@@ -1882,6 +1882,7 @@
           const maxCat=food>=shelter&&food>=edu?'Food':shelter>=edu?'Shelter':'Education';
           const minCat=food<=shelter&&food<=edu?'Food':shelter<=edu?'Shelter':'Education';
           document.getElementById('sc-opp-cost').textContent='Highest allocation: '+maxCat+'. Opportunity cost: each additional $1 to '+maxCat+' means $1 less for '+minCat+'. With diminishing returns, reallocating toward '+minCat+' may increase total utility.';
+          renderScarcityCharts(food, shelter, edu, fAmt, sAmt, eAmt, fUtil, sUtil, eUtil);
         }
 
         let ppfChartInstance;
@@ -1936,6 +1937,7 @@
           document.getElementById('oc-econ-profit').textContent='$'+econProfit.toLocaleString();
           document.getElementById('oc-acct-profit').textContent='$'+acctProfit.toLocaleString();
           document.getElementById('oc-econ-profit').className=econProfit>=0?'result-value green':'result-value red';
+          renderOppCostChart(valA, costA, valB);
           document.getElementById('oc-decision').textContent=econProfit>=0?'✓ "'+optA+'" is economically rational. Economic profit of $'+econProfit.toLocaleString()+'.':'⚠️ "'+optA+'" has negative economic profit. Consider "'+optB+'" instead.';
         }
 
@@ -1954,6 +1956,7 @@
           document.getElementById('pc2-gap').textContent=gap===0?'0 (Equilibrium)':(gap>0?'Shortage: '+gap.toFixed(1):'Surplus: '+Math.abs(gap).toFixed(1));
           document.getElementById('pc2-dwl2').textContent='$'+Math.abs(dwl).toFixed(2);
           document.getElementById('pc2-status2').textContent=status;
+          renderPriceControlChart(a,b,c,d,ceil,floor);
         }
 
         function updateLaborMarket() {
@@ -1969,6 +1972,7 @@
           document.getElementById('lm-ls').textContent=ls.toFixed(1)+'M';
           document.getElementById('lm-unemp').textContent=unemp>0?unemp.toFixed(1)+'M':'0';
           document.getElementById('lm-mw-status').textContent=status;
+          renderLaborMarketChart(ldInt,ldS,lsInt,lsS,mw);
         }
 
         function updateCreditMarket() {
@@ -1995,6 +1999,7 @@
           document.getElementById('gdp-i-share').textContent=(i/gdp*100).toFixed(1)+'%';
           document.getElementById('gdp-g-share').textContent=(g/gdp*100).toFixed(1)+'%';
           document.getElementById('gdp-nx-share').textContent=(nx/gdp*100).toFixed(1)+'%';
+          renderGDPCharts(c,i,g,x,m);
         }
 
         function updateRealNominal() {
@@ -2053,6 +2058,7 @@
           document.getElementById('ca-b-spec').textContent=bOcWine<aOcWine?'Wine':'Cloth';
           document.getElementById('ca-abs-wine').textContent=aw>bw?'Country A':'Country B';
           document.getElementById('ca-abs-cloth').textContent=ac>bc?'Country A':'Country B';
+          renderCompAdvChart(aw,ac,bw,bc);
           document.getElementById('ca-gains').textContent=aOcWine!==bOcWine?'✓ Yes — different OCs':'✗ No gains (identical OCs)';
         }
 
@@ -2072,6 +2078,7 @@
           document.getElementById('tar-dwl3').textContent='$'+Math.abs(dwl).toFixed(0);
           document.getElementById('tar-imp-ft').textContent=imports_ft.toFixed(0);
           document.getElementById('tar-imp-t').textContent=imports_t.toFixed(0);
+          renderTariffWelfareChart(csLoss,psGain,govRev,dwl);
         }
 
         function updateUtilityMax() {
@@ -2188,6 +2195,7 @@
           document.getElementById('kc-mps').textContent=(1-mpc).toFixed(2);
           document.getElementById('kc-impact').textContent='+$'+(100*mult).toFixed(0);
           document.getElementById('kc-insight').textContent='Each $1 of government spending creates $'+mult.toFixed(2)+' of total output through successive rounds of spending.';
+          renderKeynesianCrossChart(C0,mpc,I,G);
         }
 
         function updateParadoxThrift() {
@@ -2221,6 +2229,7 @@
             d*=(1-rr);
           }
           var tbody=document.getElementById('fr-tbody'); if(tbody) tbody.innerHTML=rows;
+          renderFractionalReserveChart(deposit,rr);
         }
 
         function updatePurchasingPower() {
@@ -2234,6 +2243,7 @@
           document.getElementById('pp-loss').textContent='$'+loss.toFixed(0);
           document.getElementById('pp-pct-loss').textContent=pctLoss.toFixed(1)+'%';
           document.getElementById('pp-halving').textContent=halving+' years';
+          renderPurchasingPowerChart(amount,rate,years);
         }
 
         function updateBalanceTrade() {
@@ -2247,6 +2257,7 @@
           document.getElementById('bot-status').textContent=tradeBal<0?'Trade Deficit':'Trade Surplus';
           document.getElementById('bot-status').className=tradeBal<0?'result-value red':'result-value green';
           document.getElementById('bot-ratio').textContent=ratio.toFixed(1)+'%';
+          renderBOTChart(exports,imports,capIn,capOut);
         }
 
         function updateDemandShifter() {
@@ -2290,6 +2301,7 @@
           document.getElementById('md-net').textContent='$'+(mbAtQ-mcAtQ).toFixed(2);
           document.getElementById('md-net').className=mbAtQ>=mcAtQ?'result-value green':'result-value red';
           document.getElementById('md-optimal-q').textContent=optQ.toFixed(1);
+          renderMDChart(mb,mc);
           document.getElementById('md-decision').textContent=mbAtQ>mcAtQ+0.5?'✓ Increase Q (MB>MC)':mbAtQ<mcAtQ-0.5?'✗ Decrease Q (MC>MB)':'★ Optimal (MB≈MC)';
         }
 
@@ -2304,6 +2316,7 @@
           document.getElementById('srp-mp').textContent=mp.toFixed(1);
           document.getElementById('srp-ap').textContent=ap.toFixed(1);
           document.getElementById('srp-optimal').textContent=Math.min(optWorkers,15);
+          renderSRPChart(tech);
           document.getElementById('srp-stage').textContent=mp>ap?'Stage I (MP>AP — increasing returns)':mp>0?'Stage II (0<MP<AP — optimal zone)':'Stage III (MP<0 — negative returns)';
         }
 
@@ -2317,6 +2330,7 @@
           document.getElementById('ic-opt-u').textContent=optU.toFixed(2);
           document.getElementById('ic-mrs').textContent=(py/px).toFixed(2);
           document.getElementById('ic-spent').textContent='$'+(px*optX+py*optY).toFixed(0);
+          renderICChart(M,px,py);
         }
 
         function updateMonopolisticComp() {
@@ -2357,6 +2371,7 @@
           document.getElementById('mrp-total-cost').textContent='$'+(wage*optL);
           document.getElementById('mrp-trp').textContent='$'+trp;
           document.getElementById('mrp-surplus').textContent='$'+(trp-wage*optL);
+          renderMRPChart(wage,productPrice,techBase);
         }
 
         function updatePovertyCalc() {
@@ -2405,6 +2420,166 @@
           document.getElementById('pg-capital-intensity').textContent=kPerL.toFixed(2);
           document.getElementById('pg-cap-contrib').textContent='33%';
           document.getElementById('pg-lab-contrib').textContent='67%';
+        }
+
+
+        // ═══ PART A: Chart.js Visualizations for New Modules ═══
+        let scarcityPieInstance, scarcityBarInstance;
+        function renderScarcityCharts(food, shelter, edu, fAmt, sAmt, eAmt, fUtil, sUtil, eUtil) {
+          const col = getChartColors();
+          const pieCtx = document.getElementById('scarcityPieChart');
+          if (pieCtx) {
+            if (scarcityPieInstance) scarcityPieInstance.destroy();
+            scarcityPieInstance = new Chart(pieCtx, { type:'doughnut', data:{ labels:['Food','Shelter','Education'], datasets:[{data:[food,shelter,edu],backgroundColor:[col.teal,col.gold,col.green],borderColor:'rgba(0,0,0,0.3)',borderWidth:2}]}, options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:col.text}}}} });
+          }
+          const barCtx = document.getElementById('scarcityBarChart');
+          if (barCtx) {
+            const upd_f=fAmt>0?(parseInt(fUtil)/fAmt).toFixed(3):0, upd_s=sAmt>0?(parseInt(sUtil)/sAmt).toFixed(3):0, upd_e=eAmt>0?(parseInt(eUtil)/eAmt).toFixed(3):0;
+            if (scarcityBarInstance) scarcityBarInstance.destroy();
+            scarcityBarInstance = new Chart(barCtx, { type:'bar', data:{ labels:['Food','Shelter','Education'], datasets:[{label:'Utility per $',data:[upd_f,upd_s,upd_e],backgroundColor:[col.teal,col.gold,col.green],borderRadius:4}]}, options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:col.text},grid:{color:col.grid}},y:{ticks:{color:col.text},grid:{color:col.grid},beginAtZero:true,title:{display:true,text:'Utility/$',color:col.text}}}} });
+          }
+        }
+
+        let oppCostChartInstance;
+        function renderOppCostChart(valA, costA, valB) {
+          const ctx=document.getElementById('oppCostChart'); if(!ctx) return;
+          const col=getChartColors(), implicit=valB, econProfit=valA-costA-implicit, acctProfit=valA-costA;
+          if(oppCostChartInstance) oppCostChartInstance.destroy();
+          oppCostChartInstance = new Chart(ctx, { type:'bar', data:{ labels:['Value of Choice','Explicit Cost','Implicit Cost\n(Opp. Cost)','Accounting\nProfit','Economic\nProfit'], datasets:[{label:'Amount ($)',data:[valA,costA,implicit,acctProfit,econProfit],backgroundColor:[col.teal,col.red,col.gold,col.green,econProfit>=0?col.green:col.red],borderRadius:4}]}, options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:col.text,font:{size:11}},grid:{color:col.grid}},y:{ticks:{color:col.text,callback:function(v){return '$'+v.toLocaleString();}},grid:{color:col.grid}}}} });
+        }
+
+        let priceControlChartInstance;
+        function renderPriceControlChart(a, b, c, d, ceil, floor) {
+          const ctx=document.getElementById('priceControlChart'); if(!ctx) return;
+          const col=getChartColors(), eqP=(a-c)/(b+d);
+          const demandPts=[], supplyPts=[];
+          for(let q=0;q<=a*1.1;q+=a/25){const pd=(a-q)/b;if(pd>=0)demandPts.push({x:q,y:pd});if(q>=0){const ps=(q)/d;supplyPts.push({x:q,y:(q+c*0)/d});}}
+          // Simpler: Qd = a - bP → P = (a-Q)/b. Qs = -c + dP → P = (Q+c)/d (approx)
+          var dd2=[],ss2=[];
+          for(var q2=0;q2<=a*1.1;q2+=2){dd2.push({x:q2,y:Math.max(0,(a-q2)/b)});var ps2=(q2)/d;if(ps2>=0)ss2.push({x:q2,y:ps2});}
+          var datasets=[
+            {label:'Demand',data:dd2,showLine:true,borderColor:col.red,fill:false,borderWidth:2,pointRadius:0},
+            {label:'Supply',data:ss2,showLine:true,borderColor:col.green,fill:false,borderWidth:2,pointRadius:0},
+            {label:'Equilibrium',data:[{x:a-b*eqP,y:eqP}],borderColor:col.gold,backgroundColor:col.gold,pointRadius:8,pointStyle:'star'}
+          ];
+          if(ceil>0&&ceil<eqP) datasets.push({label:'Price Ceiling',data:[{x:0,y:ceil},{x:a,y:ceil}],showLine:true,borderColor:col.teal,borderDash:[8,4],fill:false,borderWidth:2,pointRadius:0});
+          if(floor>0&&floor>eqP) datasets.push({label:'Price Floor',data:[{x:0,y:floor},{x:a,y:floor}],showLine:true,borderColor:col.gold,borderDash:[8,4],fill:false,borderWidth:2,pointRadius:0});
+          if(priceControlChartInstance) priceControlChartInstance.destroy();
+          priceControlChartInstance = new Chart(ctx,{type:'scatter',data:{datasets:datasets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:col.text}}},scales:{x:{title:{display:true,text:'Quantity',color:col.text},ticks:{color:col.text},grid:{color:col.grid},beginAtZero:true},y:{title:{display:true,text:'Price ($)',color:col.text},ticks:{color:col.text},grid:{color:col.grid},beginAtZero:true}}}});
+        }
+
+        let laborMarketChartInstance;
+        function renderLaborMarketChart(ldInt, ldS, lsInt, lsS, mw) {
+          const ctx=document.getElementById('laborMarketChart'); if(!ctx) return;
+          const col=getChartColors(), eqW=(ldInt-lsInt)/(ldS+lsS), maxW=eqW*2.5;
+          var ld=[],ls=[];
+          for(var w=0;w<=maxW;w+=maxW/30){ld.push({x:Math.max(0,ldInt-ldS*w),y:w});ls.push({x:Math.max(0,lsInt+lsS*w),y:w});}
+          var datasets=[
+            {label:'Labor Demand',data:ld,showLine:true,borderColor:col.red,fill:false,borderWidth:2,pointRadius:0},
+            {label:'Labor Supply',data:ls,showLine:true,borderColor:col.green,fill:false,borderWidth:2,pointRadius:0},
+            {label:'Equilibrium',data:[{x:ldInt-ldS*eqW,y:eqW}],borderColor:col.teal,backgroundColor:col.teal,pointRadius:8,pointStyle:'star'}
+          ];
+          if(mw>0&&mw>eqW) datasets.push({label:'Min Wage',data:[{x:0,y:mw},{x:ldInt,y:mw}],showLine:true,borderColor:col.gold,borderDash:[8,4],fill:false,borderWidth:2,pointRadius:0});
+          if(laborMarketChartInstance) laborMarketChartInstance.destroy();
+          laborMarketChartInstance = new Chart(ctx,{type:'scatter',data:{datasets:datasets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:col.text}}},scales:{x:{title:{display:true,text:'Workers (millions)',color:col.text},ticks:{color:col.text},grid:{color:col.grid},beginAtZero:true},y:{title:{display:true,text:'Wage ($/hr)',color:col.text},ticks:{color:col.text},grid:{color:col.grid},beginAtZero:true}}}});
+        }
+
+        let gdpPieInstance, gdpBarInstance;
+        function renderGDPCharts(c, i, g, x, m) {
+          const col=getChartColors();
+          const pieCtx=document.getElementById('gdpPieChart');
+          if(pieCtx){if(gdpPieInstance)gdpPieInstance.destroy();gdpPieInstance=new Chart(pieCtx,{type:'doughnut',data:{labels:['Consumption','Investment','Government','Net Exports'],datasets:[{data:[c,i,g,x-m],backgroundColor:[col.teal,col.gold,col.green,col.purple],borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:col.text}}}}});}
+          const barCtx=document.getElementById('gdpBarChart');
+          if(barCtx){if(gdpBarInstance)gdpBarInstance.destroy();gdpBarInstance=new Chart(barCtx,{type:'bar',data:{labels:['C','I','G','Exports','Imports'],datasets:[{label:'$T',data:[c,i,g,x,m],backgroundColor:[col.teal,col.gold,col.green,col.purple,col.red],borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:col.text},grid:{color:col.grid}},y:{ticks:{color:col.text,callback:function(v){return '$'+v+'T';}},grid:{color:col.grid},beginAtZero:true}}}});}
+        }
+
+        let keynesianCrossChartInstance;
+        function renderKeynesianCrossChart(C0, mpc, I, G) {
+          const ctx=document.getElementById('keynesianCrossChart'); if(!ctx) return;
+          const col=getChartColors(), AE=C0+I+G, Yeq=AE/(1-mpc), maxY=Yeq*1.5;
+          var line45=[],aeLine=[];
+          for(var y=0;y<=maxY;y+=maxY/30){line45.push({x:y,y:y});aeLine.push({x:y,y:AE+mpc*y});}
+          if(keynesianCrossChartInstance) keynesianCrossChartInstance.destroy();
+          keynesianCrossChartInstance=new Chart(ctx,{type:'scatter',data:{datasets:[{label:'45° Line (Y=AE)',data:line45,showLine:true,borderColor:col.green,borderDash:[5,5],fill:false,borderWidth:2,pointRadius:0},{label:'Planned AE',data:aeLine,showLine:true,borderColor:col.teal,fill:false,borderWidth:2.5,pointRadius:0},{label:'Equilibrium',data:[{x:Yeq,y:Yeq}],borderColor:col.gold,backgroundColor:col.gold,pointRadius:10,pointStyle:'star'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:col.text}}},scales:{x:{title:{display:true,text:'Real GDP (Y)',color:col.text},ticks:{color:col.text},grid:{color:col.grid},beginAtZero:true},y:{title:{display:true,text:'Planned Expenditure (AE)',color:col.text},ticks:{color:col.text},grid:{color:col.grid},beginAtZero:true}}}});
+        }
+
+        let frChartInstance;
+        function renderFractionalReserveChart(deposit, rr) {
+          const ctx=document.getElementById('fractionalReserveChart'); if(!ctx) return;
+          const col=getChartColors(); var labels=[],reserves=[],loans=[],d=deposit;
+          for(var i=1;i<=10&&d>1;i++){labels.push('Round '+i);reserves.push(d*rr);loans.push(d*(1-rr));d*=(1-rr);}
+          if(frChartInstance) frChartInstance.destroy();
+          frChartInstance=new Chart(ctx,{type:'bar',data:{labels:labels,datasets:[{label:'Reserves',data:reserves,backgroundColor:col.gold,borderRadius:2},{label:'Loans',data:loans,backgroundColor:col.teal,borderRadius:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:col.text}}},scales:{x:{stacked:true,ticks:{color:col.text},grid:{color:col.grid}},y:{stacked:true,ticks:{color:col.text,callback:function(v){return '$'+v.toFixed(0);}},grid:{color:col.grid},beginAtZero:true}}}});
+        }
+
+        let ppChartInstance;
+        function renderPurchasingPowerChart(amount, rate, years) {
+          const ctx=document.getElementById('purchasingPowerChart'); if(!ctx) return;
+          const col=getChartColors(); var labels=[],nominal=[],real=[];
+          for(var y=0;y<=years;y++){labels.push('Year '+y);nominal.push(amount);real.push(amount/Math.pow(1+rate/100,y));}
+          if(ppChartInstance) ppChartInstance.destroy();
+          ppChartInstance=new Chart(ctx,{type:'line',data:{labels:labels,datasets:[{label:'Nominal Value',data:nominal,borderColor:col.gold,borderDash:[5,5],fill:false,borderWidth:2,pointRadius:0},{label:'Real Value',data:real,borderColor:col.teal,backgroundColor:'rgba(0,180,216,0.1)',fill:true,borderWidth:2.5,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:col.text}}},scales:{x:{ticks:{color:col.text,maxTicksLimit:10},grid:{color:col.grid}},y:{ticks:{color:col.text,callback:function(v){return '$'+v.toLocaleString();}},grid:{color:col.grid},beginAtZero:true}}}});
+        }
+
+        let botChartInstance;
+        function renderBOTChart(exports, imports, capIn, capOut) {
+          const ctx=document.getElementById('botChart'); if(!ctx) return;
+          const col=getChartColors(), tb=exports-imports, cb=capIn-capOut;
+          if(botChartInstance) botChartInstance.destroy();
+          botChartInstance=new Chart(ctx,{type:'bar',data:{labels:['Exports','Imports','Trade Bal','Cap In','Cap Out','Cap Bal','BOP'],datasets:[{label:'$B',data:[exports,-imports,tb,capIn,-capOut,cb,tb+cb],backgroundColor:[col.green,col.red,tb>=0?col.green:col.red,col.teal,col.red,cb>=0?col.teal:col.red,(tb+cb)>=0?col.green:col.red],borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{color:col.text,callback:function(v){return '$'+Math.abs(v)+'B';}},grid:{color:col.grid}},y:{ticks:{color:col.text},grid:{color:col.grid}}}}});
+        }
+
+        let srpChartInstance;
+        function renderSRPChart(tech) {
+          const ctx=document.getElementById('srpChart'); if(!ctx) return;
+          const col=getChartColors(); var labels=[],tp=[],mp=[],ap=[];
+          for(var L=0;L<=15;L++){labels.push(L);var tpV=Math.max(0,tech*L-0.5*L*L);tp.push(tpV);mp.push(L>0?Math.max(-5,tech-L):tech);ap.push(L>0?tpV/L:0);}
+          if(srpChartInstance) srpChartInstance.destroy();
+          srpChartInstance=new Chart(ctx,{type:'line',data:{labels:labels,datasets:[{label:'Total Product',data:tp,borderColor:col.teal,fill:false,borderWidth:2.5,yAxisID:'y'},{label:'Marginal Product',data:mp,borderColor:col.gold,borderDash:[5,3],fill:false,borderWidth:2,yAxisID:'y1'},{label:'Average Product',data:ap,borderColor:col.green,fill:false,borderWidth:2,yAxisID:'y1'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:col.text}}},scales:{x:{title:{display:true,text:'Workers (L)',color:col.text},ticks:{color:col.text},grid:{color:col.grid}},y:{type:'linear',position:'left',title:{display:true,text:'Total Product',color:col.text},ticks:{color:col.text},grid:{color:col.grid}},y1:{type:'linear',position:'right',title:{display:true,text:'MP / AP',color:col.text},ticks:{color:col.text},grid:{drawOnChartArea:false}}}}});
+        }
+
+        let compAdvChartInstance;
+        function renderCompAdvChart(aw, ac, bw, bc) {
+          const ctx=document.getElementById('compAdvChart'); if(!ctx) return;
+          const col=getChartColors();
+          if(compAdvChartInstance) compAdvChartInstance.destroy();
+          compAdvChartInstance=new Chart(ctx,{type:'scatter',data:{datasets:[{label:'Country A PPF',data:[{x:0,y:aw*10},{x:ac*10,y:0}],showLine:true,borderColor:col.teal,fill:false,borderWidth:2.5,pointRadius:4},{label:'Country B PPF',data:[{x:0,y:bw*10},{x:bc*10,y:0}],showLine:true,borderColor:col.gold,fill:false,borderWidth:2.5,pointRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:col.text}}},scales:{x:{title:{display:true,text:'Cloth (units)',color:col.text},ticks:{color:col.text},grid:{color:col.grid},beginAtZero:true},y:{title:{display:true,text:'Wine (units)',color:col.text},ticks:{color:col.text},grid:{color:col.grid},beginAtZero:true}}}});
+        }
+
+        let tariffWelfareChartInstance;
+        function renderTariffWelfareChart(csLoss, psGain, govRev, dwl) {
+          const ctx=document.getElementById('tariffWelfareChart'); if(!ctx) return;
+          const col=getChartColors();
+          if(tariffWelfareChartInstance) tariffWelfareChartInstance.destroy();
+          tariffWelfareChartInstance=new Chart(ctx,{type:'bar',data:{labels:['CS Loss','PS Gain','Gov Revenue','DWL'],datasets:[{label:'Welfare ($)',data:[-Math.abs(csLoss),psGain,govRev,-Math.abs(dwl)],backgroundColor:[col.red,col.green,col.teal,col.gold],borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:col.text},grid:{color:col.grid}},y:{ticks:{color:col.text,callback:function(v){return '$'+Math.abs(v);}},grid:{color:col.grid}}}}});
+        }
+
+        let mrpChartInstance;
+        function renderMRPChart(wage, productPrice, techBase) {
+          const ctx=document.getElementById('mrpChart'); if(!ctx) return;
+          const col=getChartColors(); var labels=[],mrpData=[],wageData=[];
+          for(var L=1;L<=15;L++){labels.push(L);mrpData.push(Math.max(0,techBase-2*L)*productPrice);wageData.push(wage);}
+          if(mrpChartInstance) mrpChartInstance.destroy();
+          mrpChartInstance=new Chart(ctx,{type:'line',data:{labels:labels,datasets:[{label:'MRP',data:mrpData,borderColor:col.teal,fill:false,borderWidth:2.5,tension:0.3},{label:'Wage',data:wageData,borderColor:col.red,borderDash:[5,5],fill:false,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:col.text}}},scales:{x:{title:{display:true,text:'Workers',color:col.text},ticks:{color:col.text},grid:{color:col.grid}},y:{title:{display:true,text:'$/worker',color:col.text},ticks:{color:col.text,callback:function(v){return '$'+v;}},grid:{color:col.grid},beginAtZero:true}}}});
+        }
+
+        let icChartInstance;
+        function renderICChart(M, px, py) {
+          const ctx=document.getElementById('icChart'); if(!ctx) return;
+          const col=getChartColors(), optX=M/(2*px), optY=M/(2*py), optU=Math.sqrt(optX*optY), maxX=M/px, maxY2=M/py;
+          var budgetLine=[{x:0,y:maxY2},{x:maxX,y:0}], icData=[];
+          for(var x=0.5;x<=maxX*1.5;x+=0.5){var y=(optU*optU)/x;if(y>=0&&y<=maxY2*1.5)icData.push({x:x,y:y});}
+          if(icChartInstance) icChartInstance.destroy();
+          icChartInstance=new Chart(ctx,{type:'scatter',data:{datasets:[{label:'Budget Line',data:budgetLine,showLine:true,borderColor:col.teal,fill:false,borderWidth:2,pointRadius:3},{label:'Indifference Curve',data:icData,showLine:true,borderColor:col.gold,fill:false,borderWidth:2,pointRadius:0,tension:0.4},{label:'Optimal Bundle',data:[{x:optX,y:optY}],borderColor:col.green,backgroundColor:col.green,pointRadius:10,pointStyle:'star'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:col.text}}},scales:{x:{title:{display:true,text:'Good X',color:col.text},ticks:{color:col.text},grid:{color:col.grid},beginAtZero:true,max:maxX*1.3},y:{title:{display:true,text:'Good Y',color:col.text},ticks:{color:col.text},grid:{color:col.grid},beginAtZero:true,max:maxY2*1.3}}}});
+        }
+
+        let mdChartInstance;
+        function renderMDChart(mb, mc) {
+          const ctx=document.getElementById('mdChart'); if(!ctx) return;
+          const col=getChartColors(); var labels=[],mbData=[],mcData=[],netData=[];
+          for(var q=0;q<=20;q++){labels.push(q);var mbQ=mb-2*q,mcQ=mc+1.5*q;mbData.push(mbQ);mcData.push(mcQ);netData.push(mbQ-mcQ);}
+          if(mdChartInstance) mdChartInstance.destroy();
+          mdChartInstance=new Chart(ctx,{type:'line',data:{labels:labels,datasets:[{label:'MB (diminishing)',data:mbData,borderColor:col.teal,fill:false,borderWidth:2.5},{label:'MC (increasing)',data:mcData,borderColor:col.red,fill:false,borderWidth:2.5},{label:'Net Benefit',data:netData,borderColor:col.green,borderDash:[5,3],fill:false,borderWidth:1.5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:col.text}}},scales:{x:{title:{display:true,text:'Quantity',color:col.text},ticks:{color:col.text},grid:{color:col.grid}},y:{title:{display:true,text:'$',color:col.text},ticks:{color:col.text},grid:{color:col.grid}}}}});
         }
 
         function refreshAllCharts() { [updateSupplyDemand, updateCosts, updateMarketStructures, updateRevProfit, updateReactionFunctions, updateElasticity, updateADAS, updateFiscal, updateMonetary, updatePhillips, updateGrowth, updatePPF, updateBudgetConstraint, updateLorenz].forEach(f => { if (typeof f === 'function') try { f(); } catch (e) { } }); if (stockPriceChart) updateStockChart(); }
@@ -4585,6 +4760,11 @@
     <div class="insight-card" style="margin-top:12px;"><div class="insight-label">💡 Opportunity Cost</div><p id="sc-opp-cost">Every dollar spent on food is a dollar NOT spent on shelter or education.</p></div>
   </div>
 </div>
+
+<div class="grid-2" style="margin-top:16px;">
+  <div class="chart-card"><div class="chart-title">Budget Allocation</div><div class="chart-subtitle">Percentage distribution across categories</div><div class="chart-wrap h-280"><canvas id="scarcityPieChart"></canvas></div></div>
+  <div class="chart-card"><div class="chart-title">Utility per Dollar</div><div class="chart-subtitle">Marginal utility per dollar spent — equalize for optimum</div><div class="chart-wrap h-280"><canvas id="scarcityBarChart"></canvas></div></div>
+</div>
 </section>
 
 <!-- F2: PPF -->
@@ -4704,6 +4884,8 @@
     <div class="insight-card" style="margin-top:12px;"><div class="insight-label">💡 Decision</div><p id="oc-decision">Analysis pending...</p></div>
   </div>
 </div>
+
+<div class="chart-card" style="margin-top:16px;"><div class="chart-title">Economic vs Accounting Profit Breakdown</div><div class="chart-subtitle">Explicit costs, implicit costs (opportunity cost), and resulting profits</div><div class="chart-wrap h-280"><canvas id="oppCostChart"></canvas></div></div>
 </section>
 
 <!-- F5: PRICE CONTROLS -->
@@ -4741,6 +4923,8 @@
     </div>
   </div>
 </div>
+
+<div class="chart-card" style="margin-top:16px;"><div class="chart-title">Price Controls Diagram</div><div class="chart-subtitle">Demand (red), Supply (green), Ceiling (blue dashed), Floor (gold dashed)</div><div class="chart-wrap h-320"><canvas id="priceControlChart"></canvas></div></div>
 </section>
 
 <!-- M1: LABOR MARKET -->
@@ -4775,6 +4959,8 @@
     </div>
   </div>
 </div>
+
+<div class="chart-card" style="margin-top:16px;"><div class="chart-title">Labor Market Diagram</div><div class="chart-subtitle">Labor Demand (red), Labor Supply (green), Min Wage (gold dashed)</div><div class="chart-wrap h-320"><canvas id="laborMarketChart"></canvas></div></div>
 </section>
 
 <!-- M2: CREDIT MARKET -->
@@ -4839,6 +5025,11 @@
     </div>
     <div class="formula-block" style="margin-top:12px;"><span class="formula-label">GDP Identity</span>Y = C + I + G + (X − M)</div>
   </div>
+</div>
+
+<div class="grid-2" style="margin-top:16px;">
+  <div class="chart-card"><div class="chart-title">GDP Composition</div><div class="chart-subtitle">Expenditure approach breakdown</div><div class="chart-wrap h-280"><canvas id="gdpPieChart"></canvas></div></div>
+  <div class="chart-card"><div class="chart-title">Component Comparison</div><div class="chart-subtitle">C, I, G, X, M in $Trillions</div><div class="chart-wrap h-280"><canvas id="gdpBarChart"></canvas></div></div>
 </div>
 </section>
 
@@ -5033,6 +5224,8 @@
   This same logic applies to countries: even if the US is more productive than Vietnam in EVERYTHING, both countries benefit from trade because they specialize where their opportunity costs are lowest.</p>
 </div>
 
+
+<div class="chart-card" style="margin-top:16px;"><div class="chart-title">Production Possibilities: Country A vs Country B</div><div class="chart-subtitle">Different slopes = different opportunity costs = gains from trade</div><div class="chart-wrap h-320"><canvas id="compAdvChart"></canvas></div></div>
 </section>
 
 <!-- T3: TARIFF SIMULATOR -->
@@ -5066,6 +5259,8 @@
     </div>
   </div>
 </div>
+
+<div class="chart-card" style="margin-top:16px;"><div class="chart-title">Tariff Welfare Impact</div><div class="chart-subtitle">Consumer loss vs producer gain vs government revenue vs deadweight loss</div><div class="chart-wrap h-280"><canvas id="tariffWelfareChart"></canvas></div></div>
 </section>
 
 <!-- U1: UTILITY MAXIMIZATION -->
@@ -5100,6 +5295,21 @@
     </div>
   </div>
 </div>
+
+<div class="insight-card" style="margin-top:16px;">
+  <div class="insight-label">📗 WORK IT OUT: The Equal Marginal Principle Step-by-Step</div>
+  <p><strong>Step 1:</strong> Calculate MU for each additional unit of X and Y<br>
+  <strong>Step 2:</strong> Calculate MU/P for each good (bang per buck)<br>
+  <strong>Step 3:</strong> Spend the next dollar on whichever has highest MU/P<br>
+  <strong>Step 4:</strong> Repeat until budget is exhausted<br>
+  <strong>Step 5:</strong> At the optimum: MUx/Px = MUy/Py<br><br>
+  <strong>In the simulator:</strong> Adjust Qx and Qy until MUx/Px ≈ MUy/Py AND total spending = budget. When both conditions are met, you've found the optimal bundle!</p>
+</div>
+<div class="case-study" style="margin-top:12px;">
+  <div class="case-study-title">🏠 BRING IT HOME: The Diamond-Water Paradox</div>
+  <p>Water is essential for life but cheap. Diamonds are useless for survival but expensive. Why?<br><br>
+  <strong>Answer:</strong> Price reflects <strong>marginal</strong> utility, not <strong>total</strong> utility. Water has enormous total utility but very low marginal utility (we have so much). Diamonds have low total utility but very high marginal utility (scarce). The utility maximization rule (MU/P equalized) explains this perfectly.</p>
+</div>
 </section>
 
 <!-- U2: PERFECT COMPETITION -->
@@ -5132,6 +5342,20 @@
       <div class="result-item"><span class="result-label">Long-Run</span><span class="result-value gold" id="pcomp-lr">Firms ENTER</span></div>
     </div>
   </div>
+</div>
+
+<div class="insight-card" style="margin-top:16px;">
+  <div class="insight-label">📗 CLEAR IT UP: The Three Short-Run Decisions</div>
+  <p><strong>1. P &gt; ATC:</strong> Firm earns <strong>economic profit</strong>. Produce at Q where P = MC. Long run: new firms enter → price falls.<br><br>
+  <strong>2. AVC &lt; P &lt; ATC:</strong> Firm earns a <strong>loss</strong>, but should still produce! Revenue covers all variable costs plus some fixed costs. Loss from producing &lt; loss from shutting down.<br><br>
+  <strong>3. P &lt; AVC:</strong> Firm should <strong>shut down</strong>. Revenue doesn't even cover variable costs. Every unit makes the loss worse.<br><br>
+  <strong>Try it:</strong> Set Price = $40 (profit). Lower to $15 (loss but produce). Lower to $5 (shutdown). Watch the decision change.</p>
+</div>
+<div class="insight-card gold" style="margin-top:12px;">
+  <div class="insight-label">📗 LONG-RUN EQUILIBRIUM: WHY PROFIT = 0</div>
+  <p><strong>If firms earn profit:</strong> Entry → supply↑ → price↓ → profit↓ → entry stops when π = 0.<br>
+  <strong>If firms earn losses:</strong> Exit → supply↓ → price↑ → losses↓ → exit stops when π = 0.<br><br>
+  In LR equilibrium: <strong>P = MC = min ATC</strong>. Maximum efficiency — lowest possible cost, consumers pay exactly that cost. No DWL. This is why economists love perfect competition.</p>
 </div>
 </section>
 
@@ -5226,6 +5450,14 @@
     <div class="insight-card" style="margin-top:12px;"><div class="insight-label">🧠 Risk Attitudes</div><p><strong>Risk-Averse:</strong> Prefers safe even if EV > safe.<br><strong>Risk-Neutral:</strong> Highest EV.<br><strong>Risk-Loving:</strong> Prefers gamble.</p></div>
   </div>
 </div>
+
+<div class="insight-card" style="margin-top:16px;">
+  <div class="insight-label">📗 CLEAR IT UP: Why Do People Buy Insurance (a Negative EV Bet)?</div>
+  <p>Insurance is a <strong>negative expected value</strong> transaction — on average, you pay more in premiums than you receive in claims.<br><br>
+  So why buy it? Because most people are <strong>risk-averse</strong>. They prefer a certain small loss (premium) over an uncertain large loss (house fire, medical emergency). The <strong>utility</strong> of the certain outcome exceeds the <strong>expected utility</strong> of the gamble, even though the expected <em>value</em> is lower.<br><br>
+  <strong>Mathematically:</strong> U(certain wealth) &gt; E[U(uncertain wealth)] for risk-averse individuals because the utility function is <strong>concave</strong> — diminishing marginal utility of wealth.<br><br>
+  <strong>Try it:</strong> Set Good = $100,000, Bad = $0, Prob = 99%, Safe = $98,000. The EV ($99,000) exceeds safe ($98,000). But most would take the safe $98,000 — that's risk aversion.</p>
+</div>
 </section>
 
 <!-- ═══════════════════════════════════════════════════════════ -->
@@ -5263,6 +5495,29 @@
     <div class="insight-card" style="margin-top:12px;"><div class="insight-label">💡 Multiplier Effect</div><p id="kc-insight">Each $1 of government spending creates $4 of total output through successive rounds of spending.</p></div>
   </div>
 </div>
+
+<div class="chart-card" style="margin-top:16px;"><div class="chart-title">Keynesian Cross Diagram</div><div class="chart-subtitle">45° line (Y=AE) intersects Planned Expenditure at equilibrium</div><div class="chart-wrap h-320"><canvas id="keynesianCrossChart"></canvas></div></div>
+
+<div class="insight-card" style="margin-top:16px;">
+  <div class="insight-label">📗 CLEAR IT UP: Why Does the 45° Line Matter?</div>
+  <p>The 45° line represents all points where <strong>planned expenditure equals actual output</strong> (AE = Y). At any point above the 45° line, planned spending exceeds output → inventories fall → firms increase production. Below the 45° line, output exceeds spending → inventories pile up → firms cut production. The economy naturally gravitates toward the intersection — the equilibrium.<br><br>
+  <strong>Try it:</strong> Increase Government Spending (G) by $100. The AE line shifts up by $100, but the new equilibrium Y increases by $100 × multiplier. With MPC = 0.75, that's $100 × 4 = $400!</p>
+</div>
+<div class="insight-card purple" style="margin-top:12px;">
+  <div class="insight-label">📗 WORK IT OUT: Deriving the Multiplier</div>
+  <p><strong>Step 1:</strong> AE = C₀ + MPC·Y + I + G (planned expenditure)<br>
+  <strong>Step 2:</strong> At equilibrium: Y = AE → Y = C₀ + MPC·Y + I + G<br>
+  <strong>Step 3:</strong> Y - MPC·Y = C₀ + I + G<br>
+  <strong>Step 4:</strong> Y(1 - MPC) = C₀ + I + G<br>
+  <strong>Step 5:</strong> Y* = (C₀ + I + G) / (1 - MPC)<br>
+  <strong>Step 6:</strong> Multiplier = 1/(1 - MPC) = 1/MPS<br><br>
+  With MPC = 0.75: Multiplier = 1/0.25 = 4. Every $1 of autonomous spending creates $4 of equilibrium output.</p>
+</div>
+<div class="case-study" style="margin-top:12px;">
+  <div class="case-study-title">🏠 BRING IT HOME: The CARES Act (2020)</div>
+  <p>The $2.2 trillion CARES Act included $1,200 stimulus checks, enhanced unemployment benefits, and PPP loans. If MPC ≈ 0.7 and ΔG ≈ $1T of direct spending: ΔY = $1T × 1/(1-0.7) = $3.3T. But crowding out, import leakage, and savings behavior reduced the actual multiplier to ≈ 1.5-2.0.<br><br>
+  <strong>Simulate:</strong> Set C₀=200, MPC=0.70, I=150, G=300. Then increase G to 400 (+$100). Watch Y* jump by $333 (multiplier = 3.33).</p>
+</div>
 </section>
 
 <!-- K2: PARADOX OF THRIFT -->
@@ -5291,6 +5546,21 @@
     </div>
     <div class="insight-card" style="margin-top:12px;"><div class="insight-label">🔄 Paradox</div><p id="pt-paradox">✓ Paradox confirmed: saving more → less output</p></div>
   </div>
+</div>
+
+<div class="insight-card" style="margin-top:16px;">
+  <div class="insight-label">📗 CLEAR IT UP: How Can Saving More Make Everyone Poorer?</div>
+  <p>This is the <strong>Paradox of Thrift</strong> — one of Keynes's most counterintuitive insights:<br><br>
+  <strong>Individual level:</strong> Saving more is rational and prudent.<br>
+  <strong>Aggregate level:</strong> If EVERYONE saves more simultaneously, total spending falls → firms cut production → workers lose income → total savings may actually FALL.<br><br>
+  This is a <strong>fallacy of composition</strong> — what's true for one person isn't true for the whole economy. When MPC falls (people save more), the multiplier shrinks: 1/(1-MPC) gets smaller.<br><br>
+  <strong>Try it:</strong> Set MPC = 0.80 (multiplier = 5). Then increase "Savings Increase" to 15%. Watch the multiplier fall and output decline.</p>
+</div>
+<div class="insight-card gold" style="margin-top:12px;">
+  <div class="insight-label">📗 WHEN DOES THE PARADOX APPLY?</div>
+  <p><strong>Applies during recessions:</strong> When the economy is below full employment, increased saving reduces demand without being channeled into productive investment.<br><br>
+  <strong>Does NOT apply at full employment:</strong> When the economy is at potential output, increased saving funds more investment → higher future growth (Solow model). The classical view holds in the long run.<br><br>
+  <strong>Key distinction:</strong> Short-run Keynesian analysis → paradox holds. Long-run neoclassical analysis → saving is beneficial.</p>
 </div>
 </section>
 
@@ -5323,6 +5593,20 @@
     <div style="margin-top:12px;overflow-x:auto;"><table style="width:100%;font-size:13px;color:var(--gray-200);border-collapse:collapse;"><thead><tr style="border-bottom:1px solid var(--gray-600);"><th style="text-align:left;padding:6px;">Round</th><th style="text-align:right;padding:6px;">Deposit</th><th style="text-align:right;padding:6px;">Reserve</th><th style="text-align:right;padding:6px;">Loan</th></tr></thead><tbody id="fr-tbody"></tbody></table></div>
   </div>
 </div>
+
+<div class="chart-card" style="margin-top:16px;"><div class="chart-title">Money Creation Through Banking System</div><div class="chart-subtitle">Each round: deposit → reserve + loan → next deposit</div><div class="chart-wrap h-280"><canvas id="fractionalReserveChart"></canvas></div></div>
+
+<div class="insight-card" style="margin-top:16px;">
+  <div class="insight-label">📗 CLEAR IT UP: Do Banks Really "Create" Money?</div>
+  <p><strong>Yes!</strong> Banks create money through lending. When you deposit $1,000, the bank keeps $100 as reserves (at 10% RR) and lends $900. That $900 gets deposited in another bank, which keeps $90 and lends $810. This process continues until total money created = $1,000 × 1/0.10 = <strong>$10,000</strong>.<br><br>
+  <strong>Important:</strong> Banks don't create wealth — they create <em>liquidity</em>. The total money supply increases, but so do total debts. If borrowers default, the money "disappears" — this is how banking crises happen.<br><br>
+  <strong>Watch the chart:</strong> Each round creates smaller deposits. Lower the Reserve Requirement to see how the multiplier explodes — and why regulators worry about low reserve ratios.</p>
+</div>
+<div class="case-study" style="margin-top:12px;">
+  <div class="case-study-title">🏠 BRING IT HOME: The Fed's 0% Reserve Requirement (2020)</div>
+  <p>In March 2020, the Fed reduced the reserve requirement to <strong>0%</strong>. The theoretical money multiplier became infinite (1/0 = ∞). In practice, banks still hold <strong>voluntary reserves</strong> because: (1) they need cash for daily operations, (2) the Fed pays interest on reserves (IOR), and (3) regulatory capital requirements still constrain lending.<br><br>
+  <strong>Try it:</strong> Set RR to 1% and watch the multiplier hit 100x. Would a bank really lend 99% of every deposit? Risk management says no.</p>
+</div>
 </section>
 
 <!-- K4: PURCHASING POWER -->
@@ -5353,6 +5637,21 @@
     </div>
   </div>
 </div>
+
+<div class="chart-card" style="margin-top:16px;"><div class="chart-title">Purchasing Power Erosion Over Time</div><div class="chart-subtitle">Real value of money declines with inflation</div><div class="chart-wrap h-280"><canvas id="purchasingPowerChart"></canvas></div></div>
+
+<div class="insight-card" style="margin-top:16px;">
+  <div class="insight-label">📗 CLEAR IT UP: Why Does Inflation Hurt Savers?</div>
+  <p>Inflation is a <strong>hidden tax on cash holdings</strong>. If you keep $10,000 under your mattress and inflation is 3%/year, after 10 years your money buys only $7,441 worth of goods — a 25.6% loss.<br><br>
+  <strong>Winners from inflation:</strong> Borrowers (repay with cheaper dollars), owners of real assets (property, stocks), workers with COLA adjustments.<br>
+  <strong>Losers from inflation:</strong> Savers, fixed-income retirees, creditors, anyone on a fixed nominal contract.<br><br>
+  <strong>Rule of 70:</strong> Purchasing power halves in 70/inflation rate years. At 3%: ~23 years. At 7% (like 2022): just 10 years!</p>
+</div>
+<div class="insight-card gold" style="margin-top:12px;">
+  <div class="insight-label">📗 REAL vs NOMINAL INTEREST RATES</div>
+  <p><strong>Fisher Equation:</strong> Real Rate ≈ Nominal Rate − Inflation Rate<br><br>
+  If your savings account pays 4% but inflation is 3%, your <strong>real return is only 1%</strong>. If inflation exceeds the nominal rate, you're <em>losing</em> purchasing power despite earning "interest." This is why the Fed's interest rate decisions matter so much.</p>
+</div>
 </section>
 
 <!-- K5: BALANCE OF TRADE -->
@@ -5381,6 +5680,16 @@
       <div class="result-item"><span class="result-label">Trade-to-GDP Ratio</span><span class="result-value" id="bot-ratio">16.8%</span></div>
     </div>
   </div>
+</div>
+
+<div class="chart-card" style="margin-top:16px;"><div class="chart-title">Balance of Payments Components</div><div class="chart-subtitle">Trade balance and capital account flows</div><div class="chart-wrap h-280"><canvas id="botChart"></canvas></div></div>
+
+<div class="insight-card" style="margin-top:16px;">
+  <div class="insight-label">📗 CLEAR IT UP: Is a Trade Deficit Bad?</div>
+  <p>Not necessarily! A trade deficit means a country <strong>imports more than it exports</strong> — but this is balanced by a <strong>capital account surplus</strong>.<br><br>
+  <strong>The US has run trade deficits since the 1970s</strong> — yet it remains the world's largest economy. The dollar's reserve currency status means foreigners want to hold US assets.<br><br>
+  <strong>Identity:</strong> Current Account + Capital Account ≈ 0. A trade deficit MUST be offset by capital inflows. If Americans buy more foreign goods, foreigners use those dollars to buy American assets.<br><br>
+  <strong>When deficits ARE concerning:</strong> If funded by unsustainable borrowing, reflecting declining competitiveness, or creating dangerous dependence on foreign capital.</p>
 </div>
 </section>
 
@@ -5414,6 +5723,22 @@
       <div class="result-item"><span class="result-label">Buyer Effect</span><span class="result-value" id="ds-buy-eff">+2.0</span></div>
     </div>
   </div>
+</div>
+
+<div class="insight-card" style="margin-top:16px;">
+  <div class="insight-label">📗 CLEAR IT UP: Movement Along vs Shift Of the Demand Curve</div>
+  <p>This is the <strong>#1 most common mistake</strong> in introductory economics:<br><br>
+  <strong>Change in PRICE of the good itself:</strong> Movement <em>along</em> the demand curve. The curve doesn't move.<br>
+  <strong>Change in ANYTHING ELSE:</strong> The entire curve <em>shifts</em>. Income, tastes, prices of related goods, expectations, number of buyers — all shift the curve.<br><br>
+  The simulator above isolates each shifter's effect. Notice how income has the largest impact (×0.5 weight) while substitute prices have a smaller effect (×0.3).</p>
+</div>
+<div class="case-study" style="margin-top:12px;">
+  <div class="case-study-title">🏠 BRING IT HOME: COVID-19 Demand Shifts</div>
+  <p>The pandemic caused dramatic demand shifts:<br><br>
+  <strong>Zoom/video conferencing:</strong> Tastes shifted massively right (set Taste = +10)<br>
+  <strong>Restaurant dining:</strong> Tastes shifted left AND buyers decreased (Taste = -8, Buyers = -15)<br>
+  <strong>Home fitness equipment:</strong> Substitute (gym) became unavailable → demand surged (Substitute Price = +40)<br>
+  <strong>Luxury goods:</strong> Income fell for many → demand shifted left (Income = -30)</p>
 </div>
 </section>
 
@@ -5472,6 +5797,19 @@
     <div class="insight-card" style="margin-top:12px;"><div class="insight-label">💡 Guide</div><p>Cross > 0 = Substitutes · Cross < 0 = Complements<br>Income > 1 = Luxury · 0-1 = Normal · < 0 = Inferior</p></div>
   </div>
 </div>
+
+<div class="insight-card" style="margin-top:16px;">
+  <div class="insight-label">📗 CLEAR IT UP: What Do the Signs Tell Us?</div>
+  <p><strong>Cross-Price Elasticity (Exy):</strong><br>
+  • Exy &gt; 0 → <strong>Substitutes</strong> (Coke &amp; Pepsi: price of Pepsi↑ → demand for Coke↑)<br>
+  • Exy &lt; 0 → <strong>Complements</strong> (Hot dogs &amp; buns: price of buns↑ → demand for hot dogs↓)<br>
+  • Exy ≈ 0 → <strong>Unrelated</strong> (Pencils &amp; milk: no relationship)<br><br>
+  <strong>Income Elasticity (Ei):</strong><br>
+  • Ei &gt; 1 → <strong>Luxury/Superior good</strong> (Vacations, designer clothes)<br>
+  • 0 &lt; Ei &lt; 1 → <strong>Normal good/Necessity</strong> (Food, clothing)<br>
+  • Ei &lt; 0 → <strong>Inferior good</strong> (Ramen noodles, bus rides)<br><br>
+  <strong>Business application:</strong> Stock more inferior goods during recessions and more luxury goods during booms.</p>
+</div>
 </section>
 
 <!-- P1: MARGINAL DECISIONS -->
@@ -5501,6 +5839,8 @@
     </div>
   </div>
 </div>
+
+<div class="chart-card" style="margin-top:16px;"><div class="chart-title">Marginal Benefit vs Marginal Cost</div><div class="chart-subtitle">Optimal quantity where MB = MC</div><div class="chart-wrap h-280"><canvas id="mdChart"></canvas></div></div>
 </section>
 
 <!-- P2: SHORT-RUN PRODUCTION -->
@@ -5528,6 +5868,25 @@
       <div class="result-item"><span class="result-label">Optimal Workers</span><span class="result-value purple" id="srp-optimal">10</span></div>
     </div>
   </div>
+</div>
+
+<div class="chart-card" style="margin-top:16px;"><div class="chart-title">Production Curves: TP, MP, AP</div><div class="chart-subtitle">Total Product (teal), Marginal Product (gold), Average Product (green)</div><div class="chart-wrap h-320"><canvas id="srpChart"></canvas></div></div>
+
+<div class="insight-card" style="margin-top:16px;">
+  <div class="insight-label">📗 CLEAR IT UP: The Three Stages of Production</div>
+  <p><strong>Stage I (MP &gt; AP):</strong> Adding workers increases efficiency. AP is still rising. Hire more.<br><br>
+  <strong>Stage II (0 &lt; MP &lt; AP):</strong> The <strong>rational zone</strong>. MP is positive but declining. Hire as long as value of MP exceeds the wage.<br><br>
+  <strong>Stage III (MP &lt; 0):</strong> Adding workers <em>reduces</em> total output. Workers are getting in each other's way. No rational firm operates here.<br><br>
+  <strong>In the chart:</strong> Watch how TP flattens and MP crosses AP at AP's maximum — the Stage I/II boundary.</p>
+</div>
+<div class="case-study" style="margin-top:12px;">
+  <div class="case-study-title">🏠 BRING IT HOME: The Kitchen Analogy</div>
+  <p>Imagine a restaurant kitchen with fixed equipment:<br><br>
+  <strong>1 chef:</strong> Does everything alone — slow but functional (Stage I)<br>
+  <strong>2-3 chefs:</strong> Specialization kicks in — one preps, one cooks, one plates (Stage I → II)<br>
+  <strong>4-6 chefs:</strong> Still productive but bumping into each other. Each additional chef adds less (Stage II)<br>
+  <strong>10+ chefs:</strong> Kitchen overcrowded. Chefs block each other. Total output may fall (Stage III)<br><br>
+  The solution isn't firing workers — it's <strong>expanding the kitchen</strong> (increasing fixed capital). But that's a long-run decision.</p>
 </div>
 </section>
 
@@ -5558,6 +5917,8 @@
     </div>
   </div>
 </div>
+
+<div class="chart-card" style="margin-top:16px;"><div class="chart-title">Indifference Curve & Budget Line</div><div class="chart-subtitle">Optimal bundle at tangency point</div><div class="chart-wrap h-320"><canvas id="icChart"></canvas></div></div>
 </section>
 
 <!-- P4: MONOPOLISTIC COMPETITION -->
@@ -5641,6 +6002,8 @@
     </div>
   </div>
 </div>
+
+<div class="chart-card" style="margin-top:16px;"><div class="chart-title">Marginal Revenue Product vs Wage</div><div class="chart-subtitle">Hire workers until MRP = Wage</div><div class="chart-wrap h-280"><canvas id="mrpChart"></canvas></div></div>
 </section>
 
 <!-- W1: POVERTY CALCULATOR -->
@@ -5667,6 +6030,19 @@
       <div class="result-item"><span class="result-label">Poverty Depth</span><span class="result-value" id="pov-depth">5.7%</span></div>
     </div>
   </div>
+</div>
+
+<div class="insight-card" style="margin-top:16px;">
+  <div class="insight-label">📗 CLEAR IT UP: How Is the Poverty Line Calculated?</div>
+  <p>The US poverty threshold was developed by Mollie Orshansky in 1963: cost of a minimum food diet × 3. Updated annually for inflation but the <strong>methodology hasn't changed</strong> in 60 years.<br><br>
+  <strong>Criticisms:</strong> Doesn't account for regional cost differences, non-cash benefits (SNAP, Medicaid), taxes/credits (EITC), or that food is now only ~13% of spending (not 33%).<br><br>
+  The <strong>Supplemental Poverty Measure (SPM)</strong> addresses these by including government benefits and subtracting taxes, medical expenses, and work expenses.</p>
+</div>
+<div class="insight-card gold" style="margin-top:12px;">
+  <div class="insight-label">📗 POVERTY DEPTH vs POVERTY RATE</div>
+  <p>The <strong>poverty rate</strong> tells you what percentage are below the line — but not <em>how far</em> below.<br><br>
+  <strong>Poverty depth</strong> measures the average shortfall. A family at $25,000 against $26,500 has depth of 5.7%. A family at $10,000 has depth of 62.3%.<br><br>
+  Policy implication: A program lifting many from $25K to $27K reduces the <em>rate</em> dramatically but doesn't help deep poverty. Targeting the poorest reduces <em>depth</em> but may not change the rate. Both metrics matter.</p>
 </div>
 </section>
 
