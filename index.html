@@ -1796,7 +1796,7 @@
                 }
             });
         }
-        function calculatePresentValue() { const r = parseFloat(document.getElementById('pv-rate').value) / 100; const y = parseInt(document.getElementById('pv-years').value); const g = parseFloat(document.getElementById('pv-growth').value) / 100; document.getElementById('pv-rate-val').textContent = (r * 100).toFixed(1) + '%'; document.getElementById('pv-years-val').textContent = y; document.getElementById('pv-growth-val').textContent = (g * 100).toFixed(1) + '%'; const div = currentStockData ? currentStockData.dividend : 0.96; let pv = 0; for (let t = 1; t <= y; t++)pv += div * Math.pow(1 + g, t) / Math.pow(1 + r, t); const gordon = r > g ? (div * (1 + g)) / (r - g) : 0; document.getElementById('pv-dividend').textContent = `$${div.toFixed(2)}`; document.getElementById('pv-stream').textContent = `$${pv.toFixed(2)}`; document.getElementById('pv-gordon').textContent = r > g ? `$${gordon.toFixed(2)}` : 'N/A (g≥r)'; }
+        function calculatePresentValue() { const r = parseFloat(document.getElementById('pv-rate').value) / 100; const y = parseInt(document.getElementById('pv-years').value); const g = parseFloat(document.getElementById('pv-growth').value) / 100; document.getElementById('pv-rate-val').textContent = (r * 100).toFixed(1) + '%'; document.getElementById('pv-years-val').textContent = y; document.getElementById('pv-growth-val').textContent = (g * 100).toFixed(1) + '%'; const div = currentStockData ? currentStockData.dividend : 0.96; let pv = 0; for (let t = 1; t <= y; t++)pv += div * Math.pow(1 + g, t) / Math.pow(1 + r, t); const gordon = r > g ? (div * (1 + g)) / (r - g) : 0; document.getElementById('pv-dividend').textContent = `$${div.toFixed(2)}`; document.getElementById('pv-stream').textContent = `$${pv.toFixed(2)}`; document.getElementById('pv-gordon').textContent = r > g ? `$${gordon.toFixed(2)}` : 'N/A (g≥r)'; renderGordonSensChart(); }
         function loadSectorData(sec) { const syms = sectorData[sec] || sectorData.tech; const tb = document.getElementById('sectorTableBody'); let h = '', tot = 0; const mc = []; syms.forEach(s => { const st = demoStockData[s] || generateRandomStock(s); tot += st.marketCap; mc.push({ symbol: s, marketCap: st.marketCap, stock: st }); }); mc.forEach(i => { const sh = i.marketCap / tot * 100; const cc = i.stock.change >= 0 ? 'pos' : 'neg'; const cs = i.stock.change >= 0 ? '+' : ''; h += `<tr><td>${i.stock.name}</td><td>${i.symbol}</td><td>$${i.stock.price.toFixed(2)}</td><td class="${cc}">${cs}${i.stock.changePercent.toFixed(2)}%</td><td>${formatMarketCap(i.stock.marketCap)}</td><td>${sh.toFixed(1)}%</td><td>${i.stock.pe.toFixed(1)}</td></tr>`; }); tb.innerHTML = h; const shares = mc.map(i => i.marketCap / tot * 100); const hhi = shares.reduce((s, v) => s + v * v, 0); const cr4 = [...shares].sort((a, b) => b - a).slice(0, 4).reduce((s, v) => s + v, 0); document.getElementById('sectorHHI').textContent = hhi.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ','); document.getElementById('sectorCR4').textContent = cr4.toFixed(1); let str = 'Perfect Competition'; if (hhi > 2500) str = 'Highly Concentrated'; else if (hhi > 1500) str = 'Oligopoly'; else if (hhi > 1000) str = 'Moderately Competitive'; document.getElementById('sectorStructure').textContent = str; }
         function updateSupplyDemand() { const a = parseFloat(document.getElementById('sd-a').value), b = parseFloat(document.getElementById('sd-b').value), c = parseFloat(document.getElementById('sd-c').value), d = parseFloat(document.getElementById('sd-d').value); document.getElementById('sd-a-val').textContent = a; document.getElementById('sd-b-val').textContent = b.toFixed(1); document.getElementById('sd-c-val').textContent = c; document.getElementById('sd-d-val').textContent = d.toFixed(1); const p = (a - c) / (b + d), q = a - b * p; document.getElementById('sd-demand-eq').textContent = `${a} - ${b}P`; document.getElementById('sd-supply-eq').textContent = `${c} + ${d}P`; document.getElementById('sd-price').textContent = `$${p.toFixed(2)}`; document.getElementById('sd-quantity').textContent = q.toFixed(2); document.getElementById('sd-cs').textContent = `$${(0.5 * (a / b - p) * q).toFixed(2)}`; document.getElementById('sd-ps').textContent = `$${(0.5 * p * q).toFixed(2)}`; const ctx = document.getElementById('sdChart'); if (!ctx) return; const col = getChartColors(), mx = a / b * 1.1, lb = [], dd = [], sd = []; for (let i = 0; i <= mx; i += mx / 20) { lb.push(i.toFixed(0)); dd.push((a - i) / b); sd.push(i >= c ? (i - c) / d : null); } if (sdChart) sdChart.destroy(); sdChart = new Chart(ctx, { type: 'line', data: { labels: lb, datasets: [{ label: 'Demand', data: dd, borderColor: col.red, fill: false, borderWidth: 2 }, { label: 'Supply', data: sd, borderColor: col.green, fill: false, borderWidth: 2 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: col.text } } }, scales: { x: { ticks: { color: col.text }, grid: { color: col.grid } }, y: { ticks: { color: col.text }, grid: { color: col.grid } } } } }); }
         function updateCosts() { const fc = parseFloat(document.getElementById('pc-fc').value), vc = parseFloat(document.getElementById('pc-vc').value), qc = parseFloat(document.getElementById('pc-qc').value), q = parseFloat(document.getElementById('pc-q').value); document.getElementById('pc-fc-val').textContent = `$${fc}`; document.getElementById('pc-vc-val').textContent = `$${vc}`; document.getElementById('pc-qc-val').textContent = qc.toFixed(2); document.getElementById('pc-q-val').textContent = q; const tc = fc + vc * q + qc * q * q; document.getElementById('pc-tc').textContent = `$${tc.toFixed(2)}`; document.getElementById('pc-atc').textContent = `$${(tc / q).toFixed(2)}`; document.getElementById('pc-avc').textContent = `$${(vc + qc * q).toFixed(2)}`; document.getElementById('pc-afc').textContent = `$${(fc / q).toFixed(2)}`; document.getElementById('pc-mc').textContent = `$${(vc + 2 * qc * q).toFixed(2)}`; document.getElementById('pc-efficient').textContent = qc > 0 ? `Q = ${Math.sqrt(fc / qc).toFixed(2)}` : 'N/A'; const ctx = document.getElementById('costChart'); if (!ctx) return; const col = getChartColors(), lb = [], at = [], av = [], mc = []; for (let i = 1; i <= 50; i++) { lb.push(i); at.push((fc + vc * i + qc * i * i) / i); av.push(vc + qc * i); mc.push(vc + 2 * qc * i); } if (costChart) costChart.destroy(); costChart = new Chart(ctx, { type: 'line', data: { labels: lb, datasets: [{ label: 'ATC', data: at, borderColor: col.teal, fill: false, borderWidth: 2 }, { label: 'AVC', data: av, borderColor: col.green, fill: false, borderWidth: 2 }, { label: 'MC', data: mc, borderColor: col.gold, fill: false, borderWidth: 2 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: col.text } } }, scales: { x: { ticks: { color: col.text }, grid: { color: col.grid } }, y: { ticks: { color: col.text }, grid: { color: col.grid }, beginAtZero: true } } } }); }
@@ -1819,8 +1819,8 @@
             analyzeGame();
         }
 
-        function analyzeGame() { const v = id => parseFloat(document.getElementById(id).value); const ul1 = v('gt-ul-1'), ul2 = v('gt-ul-2'), ur1 = v('gt-ur-1'), ur2 = v('gt-ur-2'), dl1 = v('gt-dl-1'), dl2 = v('gt-dl-2'), dr1 = v('gt-dr-1'), dr2 = v('gt-dr-2'); let p1 = 'None'; if (ul1 > dl1 && ur1 > dr1) p1 = 'Up'; else if (dl1 > ul1 && dr1 > ur1) p1 = 'Down'; let p2 = 'None'; if (ul2 > ur2 && dl2 > dr2) p2 = 'Left'; else if (ur2 > ul2 && dr2 > dl2) p2 = 'Right'; const nash = []; if (ul1 >= dl1 && ul2 >= ur2) nash.push('(Up,Left)'); if (ur1 >= dr1 && ur2 >= ul2) nash.push('(Up,Right)'); if (dl1 >= ul1 && dl2 >= dr2) nash.push('(Down,Left)'); if (dr1 >= ur1 && dr2 >= dl2) nash.push('(Down,Right)'); const oc = [{ n: '(Up,Left)', s: ul1 + ul2 }, { n: '(Up,Right)', s: ur1 + ur2 }, { n: '(Down,Left)', s: dl1 + dl2 }, { n: '(Down,Right)', s: dr1 + dr2 }].sort((a, b) => b.s - a.s); let gt = 'Custom'; if (p1 === 'Down' && p2 === 'Right' && nash.includes('(Down,Right)') && ul1 > dr1) gt = "Prisoner's Dilemma"; else if (nash.length === 2) gt = 'Coordination'; else if (nash.length === 0) gt = 'No Pure Nash'; document.getElementById('gt-p1-dom').textContent = p1; document.getElementById('gt-p2-dom').textContent = p2; document.getElementById('gt-nash').textContent = nash.length ? nash.join(', ') : 'None'; document.getElementById('gt-pareto').textContent = oc[0].n; document.getElementById('gt-type').textContent = gt; }
-        function updateICC() { const c = parseFloat(document.getElementById('dg-coop').value), d = parseFloat(document.getElementById('dg-defect').value), p = parseFloat(document.getElementById('dg-punish').value), dl = parseFloat(document.getElementById('dg-delta').value); document.getElementById('dg-coop-val').textContent = c.toFixed(1); document.getElementById('dg-defect-val').textContent = d.toFixed(1); document.getElementById('dg-punish-val').textContent = p.toFixed(1); document.getElementById('dg-delta-val').textContent = dl.toFixed(2); const ds = (d - c) / (d - p), pvc = c / (1 - dl), pvd = d + (dl * p) / (1 - dl), m = pvc - pvd; document.getElementById('dg-delta-star').textContent = ds.toFixed(3); document.getElementById('dg-pv-coop').textContent = `$${pvc.toFixed(2)}`; document.getElementById('dg-pv-defect').textContent = `$${pvd.toFixed(2)}`; document.getElementById('dg-margin').textContent = `${m >= 0 ? '+' : ''}$${m.toFixed(2)}`; document.getElementById('dg-interest').textContent = `${(dl > 0 ? (1 - dl) / dl * 100 : Infinity).toFixed(2)}%`; const v = document.getElementById('dg-verdict'); v.className = dl >= ds ? 'insight-card green' : 'insight-card red'; v.innerHTML = `<div class="insight-label">Verdict</div><p>${dl >= ds ? '✓ Cooperation sustainable (δ > δ*)' : '✗ Cooperation NOT sustainable (δ < δ*)'}</p>`; }
+        function analyzeGame() { const v = id => parseFloat(document.getElementById(id).value); const ul1 = v('gt-ul-1'), ul2 = v('gt-ul-2'), ur1 = v('gt-ur-1'), ur2 = v('gt-ur-2'), dl1 = v('gt-dl-1'), dl2 = v('gt-dl-2'), dr1 = v('gt-dr-1'), dr2 = v('gt-dr-2'); let p1 = 'None'; if (ul1 > dl1 && ur1 > dr1) p1 = 'Up'; else if (dl1 > ul1 && dr1 > ur1) p1 = 'Down'; let p2 = 'None'; if (ul2 > ur2 && dl2 > dr2) p2 = 'Left'; else if (ur2 > ul2 && dr2 > dl2) p2 = 'Right'; const nash = []; if (ul1 >= dl1 && ul2 >= ur2) nash.push('(Up,Left)'); if (ur1 >= dr1 && ur2 >= ul2) nash.push('(Up,Right)'); if (dl1 >= ul1 && dl2 >= dr2) nash.push('(Down,Left)'); if (dr1 >= ur1 && dr2 >= dl2) nash.push('(Down,Right)'); const oc = [{ n: '(Up,Left)', s: ul1 + ul2 }, { n: '(Up,Right)', s: ur1 + ur2 }, { n: '(Down,Left)', s: dl1 + dl2 }, { n: '(Down,Right)', s: dr1 + dr2 }].sort((a, b) => b.s - a.s); let gt = 'Custom'; if (p1 === 'Down' && p2 === 'Right' && nash.includes('(Down,Right)') && ul1 > dr1) gt = "Prisoner's Dilemma"; else if (nash.length === 2) gt = 'Coordination'; else if (nash.length === 0) gt = 'No Pure Nash'; document.getElementById('gt-p1-dom').textContent = p1; document.getElementById('gt-p2-dom').textContent = p2; document.getElementById('gt-nash').textContent = nash.length ? nash.join(', ') : 'None'; document.getElementById('gt-pareto').textContent = oc[0].n; document.getElementById('gt-type').textContent = gt; renderGameTheoryCharts(); }
+        function updateICC() { const c = parseFloat(document.getElementById('dg-coop').value), d = parseFloat(document.getElementById('dg-defect').value), p = parseFloat(document.getElementById('dg-punish').value), dl = parseFloat(document.getElementById('dg-delta').value); document.getElementById('dg-coop-val').textContent = c.toFixed(1); document.getElementById('dg-defect-val').textContent = d.toFixed(1); document.getElementById('dg-punish-val').textContent = p.toFixed(1); document.getElementById('dg-delta-val').textContent = dl.toFixed(2); const ds = (d - c) / (d - p), pvc = c / (1 - dl), pvd = d + (dl * p) / (1 - dl), m = pvc - pvd; document.getElementById('dg-delta-star').textContent = ds.toFixed(3); document.getElementById('dg-pv-coop').textContent = `$${pvc.toFixed(2)}`; document.getElementById('dg-pv-defect').textContent = `$${pvd.toFixed(2)}`; document.getElementById('dg-margin').textContent = `${m >= 0 ? '+' : ''}$${m.toFixed(2)}`; document.getElementById('dg-interest').textContent = `${(dl > 0 ? (1 - dl) / dl * 100 : Infinity).toFixed(2)}%`; renderICCChart(c, d, p); const v = document.getElementById('dg-verdict'); v.className = dl >= ds ? 'insight-card green' : 'insight-card red'; v.innerHTML = `<div class="insight-label">Verdict</div><p>${dl >= ds ? '✓ Cooperation sustainable (δ > δ*)' : '✗ Cooperation NOT sustainable (δ < δ*)'}</p>`; }
 
         function loadMixedGame(g) {
             const p = {
@@ -1836,11 +1836,11 @@
             solveMixedStrategy();
         }
 
-        function solveMixedStrategy() { const v = id => parseFloat(document.getElementById(id).value); const ul1 = v('mx-ul-1'), ul2 = v('mx-ul-2'), ur1 = v('mx-ur-1'), ur2 = v('mx-ur-2'), dl1 = v('mx-dl-1'), dl2 = v('mx-dl-2'), dr1 = v('mx-dr-1'), dr2 = v('mx-dr-2'); const pn = []; if (ul1 >= dl1 && ul2 >= ur2) pn.push('(U,L)'); if (ur1 >= dr1 && ur2 >= ul2) pn.push('(U,R)'); if (dl1 >= ul1 && dl2 >= dr2) pn.push('(D,L)'); if (dr1 >= ur1 && dr2 >= dl2) pn.push('(D,R)'); const pd = ul2 - ur2 - dl2 + dr2, p = pd !== 0 ? (dr2 - dl2) / pd : 0.5; const qd = ul1 - ur1 - dl1 + dr1, q = qd !== 0 ? (dr1 - ur1) / qd : 0.5; const pC = Math.max(0, Math.min(1, p)), qC = Math.max(0, Math.min(1, q)); document.getElementById('mx-pure-nash').textContent = pn.length ? pn.join(', ') : 'None'; document.getElementById('mx-p1-prob').textContent = pC.toFixed(3); document.getElementById('mx-p2-prob').textContent = qC.toFixed(3); document.getElementById('mx-p1-exp').textContent = (pC * (qC * ul1 + (1 - qC) * ur1) + (1 - pC) * (qC * dl1 + (1 - qC) * dr1)).toFixed(3); document.getElementById('mx-p2-exp').textContent = (pC * (qC * ul2 + (1 - qC) * ur2) + (1 - pC) * (qC * dl2 + (1 - qC) * dr2)).toFixed(3); }
+        function solveMixedStrategy() { const v = id => parseFloat(document.getElementById(id).value); const ul1 = v('mx-ul-1'), ul2 = v('mx-ul-2'), ur1 = v('mx-ur-1'), ur2 = v('mx-ur-2'), dl1 = v('mx-dl-1'), dl2 = v('mx-dl-2'), dr1 = v('mx-dr-1'), dr2 = v('mx-dr-2'); const pn = []; if (ul1 >= dl1 && ul2 >= ur2) pn.push('(U,L)'); if (ur1 >= dr1 && ur2 >= ul2) pn.push('(U,R)'); if (dl1 >= ul1 && dl2 >= dr2) pn.push('(D,L)'); if (dr1 >= ur1 && dr2 >= dl2) pn.push('(D,R)'); const pd = ul2 - ur2 - dl2 + dr2, p = pd !== 0 ? (dr2 - dl2) / pd : 0.5; const qd = ul1 - ur1 - dl1 + dr1, q = qd !== 0 ? (dr1 - ur1) / qd : 0.5; const pC = Math.max(0, Math.min(1, p)), qC = Math.max(0, Math.min(1, q)); document.getElementById('mx-pure-nash').textContent = pn.length ? pn.join(', ') : 'None'; document.getElementById('mx-p1-prob').textContent = pC.toFixed(3); document.getElementById('mx-p2-prob').textContent = qC.toFixed(3); document.getElementById('mx-p1-exp').textContent = (pC * (qC * ul1 + (1 - qC) * ur1) + (1 - pC) * (qC * dl1 + (1 - qC) * dr1)).toFixed(3); document.getElementById('mx-p2-exp').textContent = (pC * (qC * ul2 + (1 - qC) * ur2) + (1 - pC) * (qC * dl2 + (1 - qC) * dr2)).toFixed(3); renderMixedStratChart(); }
         function updateReactionFunctions() { const a = parseFloat(document.getElementById('rf-a').value), c = parseFloat(document.getElementById('rf-c').value), b = 1; document.getElementById('rf-a-val').textContent = a; document.getElementById('rf-c-val').textContent = `$${c}`; const cQ = (a - c) / (3 * b), cP = a - b * 2 * cQ, sQ1 = (a - c) / (2 * b), sQ2 = (a - c) / (4 * b), sP = a - b * (sQ1 + sQ2); document.getElementById('rf-cournot-q1').textContent = cQ.toFixed(2); document.getElementById('rf-cournot-q2').textContent = cQ.toFixed(2); document.getElementById('rf-cournot-P').textContent = `$${cP.toFixed(2)}`; document.getElementById('rf-cournot-pi1').textContent = `$${((cP - c) * cQ).toFixed(0)}`; document.getElementById('rf-stack-q1').textContent = sQ1.toFixed(2); document.getElementById('rf-stack-q2').textContent = sQ2.toFixed(2); document.getElementById('rf-stack-P').textContent = `$${sP.toFixed(2)}`; document.getElementById('rf-stack-pi1').textContent = `$${((sP - c) * sQ1).toFixed(0)}`; const ctx = document.getElementById('reactionChart'); if (!ctx) return; const col = getChartColors(), qM = (a - c) / b, br1 = [], br2 = []; for (let q2 = 0; q2 <= qM; q2 += qM / 20)br1.push({ x: Math.max(0, (a - c) / (2 * b) - q2 / 2), y: q2 }); for (let q1 = 0; q1 <= qM; q1 += qM / 20)br2.push({ x: q1, y: Math.max(0, (a - c) / (2 * b) - q1 / 2) }); if (reactionChart) reactionChart.destroy(); reactionChart = new Chart(ctx, { type: 'scatter', data: { datasets: [{ label: 'Firm 1 BR', data: br1, borderColor: col.teal, showLine: true, fill: false, borderWidth: 2 }, { label: 'Firm 2 BR', data: br2, borderColor: col.green, showLine: true, fill: false, borderWidth: 2 }, { label: 'Cournot', data: [{ x: cQ, y: cQ }], borderColor: col.gold, backgroundColor: col.gold, pointRadius: 8 }, { label: 'Stackelberg', data: [{ x: sQ1, y: sQ2 }], borderColor: col.red, backgroundColor: col.red, pointRadius: 8, pointStyle: 'triangle' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: col.text } } }, scales: { x: { title: { display: true, text: 'q₁', color: col.text }, ticks: { color: col.text }, grid: { color: col.grid }, beginAtZero: true }, y: { title: { display: true, text: 'q₂', color: col.text }, ticks: { color: col.text }, grid: { color: col.grid }, beginAtZero: true } } } }); }
         function updateBertrand() { const c = parseFloat(document.getElementById('bert-c').value); document.getElementById('bert-c-val').textContent = `$${c}`; document.getElementById('bert-price').textContent = `P = MC = $${c}`; }
-        function updateEntryDeterrence() { const fc = parseFloat(document.getElementById('entry-fc').value), cap = parseFloat(document.getElementById('entry-cap').value); document.getElementById('entry-fc-val').textContent = `$${fc}`; document.getElementById('entry-cap-val').textContent = cap; const pr = 1000 - cap * 10 - fc; document.getElementById('entry-profit').textContent = `$${pr.toFixed(0)}`; document.getElementById('entry-decision').textContent = pr > 0 ? 'ENTER' : 'STAY OUT'; document.getElementById('entry-decision').className = pr > 0 ? 'result-value green' : 'result-value red'; }
-        function updateCollusion() { const ca = parseFloat(document.getElementById('col-cartel').value), de = parseFloat(document.getElementById('col-defect').value), na = parseFloat(document.getElementById('col-nash').value), dl = parseFloat(document.getElementById('col-delta').value); document.getElementById('col-cartel-val').textContent = `$${ca}`; document.getElementById('col-defect-val').textContent = `$${de}`; document.getElementById('col-nash-val').textContent = `$${na}`; document.getElementById('col-delta-val').textContent = dl.toFixed(2); const ds = (de - ca) / (de - na), m = ca / (1 - dl) - (de + (dl * na) / (1 - dl)); document.getElementById('col-delta-star').textContent = ds.toFixed(3); document.getElementById('col-margin').textContent = `${m >= 0 ? '+' : ''}$${m.toFixed(0)}`; const v = document.getElementById('col-verdict'); v.className = dl >= ds ? 'insight-card green' : 'insight-card red'; v.innerHTML = `<div class="insight-label">Verdict</div><p>${dl >= ds ? '✓ Cartel STABLE (δ > δ*)' : '✗ Cartel UNSTABLE (δ < δ*)'}</p>`; }
+        function updateEntryDeterrence() { const fc = parseFloat(document.getElementById('entry-fc').value), cap = parseFloat(document.getElementById('entry-cap').value); document.getElementById('entry-fc-val').textContent = `$${fc}`; document.getElementById('entry-cap-val').textContent = cap; const pr = 1000 - cap * 10 - fc; document.getElementById('entry-profit').textContent = `$${pr.toFixed(0)}`; document.getElementById('entry-decision').textContent = pr > 0 ? 'ENTER' : 'STAY OUT'; document.getElementById('entry-decision').className = pr > 0 ? 'result-value green' : 'result-value red'; renderEntryDeterrenceChart(fc); }
+        function updateCollusion() { const ca = parseFloat(document.getElementById('col-cartel').value), de = parseFloat(document.getElementById('col-defect').value), na = parseFloat(document.getElementById('col-nash').value), dl = parseFloat(document.getElementById('col-delta').value); document.getElementById('col-cartel-val').textContent = `$${ca}`; document.getElementById('col-defect-val').textContent = `$${de}`; document.getElementById('col-nash-val').textContent = `$${na}`; document.getElementById('col-delta-val').textContent = dl.toFixed(2); const ds = (de - ca) / (de - na), m = ca / (1 - dl) - (de + (dl * na) / (1 - dl)); document.getElementById('col-delta-star').textContent = ds.toFixed(3); document.getElementById('col-margin').textContent = `${m >= 0 ? '+' : ''}$${m.toFixed(0)}`; renderCollusionPhaseChart(ca, de, na); const v = document.getElementById('col-verdict'); v.className = dl >= ds ? 'insight-card green' : 'insight-card red'; v.innerHTML = `<div class="insight-label">Verdict</div><p>${dl >= ds ? '✓ Cartel STABLE (δ > δ*)' : '✗ Cartel UNSTABLE (δ < δ*)'}</p>`; }
         function calculateHHI() { const sh = []; for (let i = 1; i <= 6; i++) { const s = parseFloat(document.getElementById(`hhi-s${i}`).value) || 0; if (s > 0) sh.push(s); } const hhi = sh.reduce((s, v) => s + v * v, 0), cr4 = [...sh].sort((a, b) => b - a).slice(0, 4).reduce((s, v) => s + v, 0), eq = hhi > 0 ? 10000 / hhi : 0; let cl = 'Unconcentrated'; if (hhi >= 2500) cl = 'Highly Concentrated'; else if (hhi >= 1500) cl = 'Moderately Concentrated'; document.getElementById('hhi-score').textContent = hhi.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ','); document.getElementById('hhi-cr4').textContent = `${cr4.toFixed(0)}%`; document.getElementById('hhi-equiv').textContent = eq.toFixed(2); document.getElementById('hhi-class').textContent = cl; }
         function updateExternality() { const pmc = parseFloat(document.getElementById('ext-pmc').value), ec = parseFloat(document.getElementById('ext-ec').value); document.getElementById('ext-pmc-val').textContent = `$${pmc}`; document.getElementById('ext-ec-val').textContent = `$${ec}`; const smc = pmc + ec, qm = 100 - pmc, qe = 100 - smc; document.getElementById('ext-smc').textContent = smc; document.getElementById('ext-tax').textContent = ec; document.getElementById('ext-qm').textContent = qm.toFixed(0); document.getElementById('ext-qe').textContent = qe.toFixed(0); document.getElementById('ext-dwl').textContent = `$${(0.5 * (qm - qe) * ec).toFixed(2)}`; document.getElementById('ext-pigtax').textContent = `$${ec}/unit`; }
         function calculateBid() { const v = parseFloat(document.getElementById('auction-v').value), n = parseInt(document.getElementById('auction-n').value); document.getElementById('auction-v-val').textContent = `$${v}`; document.getElementById('auction-n-val').textContent = n; const bid = v * (n - 1) / n; document.getElementById('auction-bid').textContent = `$${bid.toFixed(2)}`; document.getElementById('auction-surplus').textContent = `$${(v - bid).toFixed(2)}`; document.getElementById('auction-shading').textContent = `${((v - bid) / v * 100).toFixed(0)}%`; }
@@ -2059,7 +2059,7 @@
           document.getElementById('ca-abs-wine').textContent=aw>bw?'Country A':'Country B';
           document.getElementById('ca-abs-cloth').textContent=ac>bc?'Country A':'Country B';
           renderCompAdvChart(aw,ac,bw,bc);
-          document.getElementById('ca-gains').textContent=aOcWine!==bOcWine?'✓ Yes — different OCs':'✗ No gains (identical OCs)';
+          renderTradeGainsChart(aw,ac,bw,bc); document.getElementById('ca-gains').textContent=aOcWine!==bOcWine?'✓ Yes — different OCs':'✗ No gains (identical OCs)';
         }
 
         function updateTariff() {
@@ -2077,7 +2077,7 @@
           document.getElementById('tar-gov-rev').textContent='$'+govRev.toFixed(0);
           document.getElementById('tar-dwl3').textContent='$'+Math.abs(dwl).toFixed(0);
           document.getElementById('tar-imp-ft').textContent=imports_ft.toFixed(0);
-          document.getElementById('tar-imp-t').textContent=imports_t.toFixed(0);
+          document.getElementById('tar-imp-t').textContent=imports_t.toFixed(0); renderTariffSDChart(domP, wp, tariff, dSlope, sSlope);
           renderTariffWelfareChart(csLoss,psGain,govRev,dwl);
         }
 
@@ -2582,7 +2582,156 @@
           mdChartInstance=new Chart(ctx,{type:'line',data:{labels:labels,datasets:[{label:'MB (diminishing)',data:mbData,borderColor:col.teal,fill:false,borderWidth:2.5},{label:'MC (increasing)',data:mcData,borderColor:col.red,fill:false,borderWidth:2.5},{label:'Net Benefit',data:netData,borderColor:col.green,borderDash:[5,3],fill:false,borderWidth:1.5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:col.text}}},scales:{x:{title:{display:true,text:'Quantity',color:col.text},ticks:{color:col.text},grid:{color:col.grid}},y:{title:{display:true,text:'$',color:col.text},ticks:{color:col.text},grid:{color:col.grid}}}}});
         }
 
-        function refreshAllCharts() { [updateSupplyDemand, updateCosts, updateMarketStructures, updateRevProfit, updateReactionFunctions, updateElasticity, updateADAS, updateFiscal, updateMonetary, updatePhillips, updateGrowth, updatePPF, updateBudgetConstraint, updateLorenz].forEach(f => { if (typeof f === 'function') try { f(); } catch (e) { } }); if (stockPriceChart) updateStockChart(); }
+        
+        // --- ADANCED VISUALIZATIONS ---
+        let gtPayoffChartInstance, gtWelfareChartInstance;
+        function renderGameTheoryCharts() {
+            const v = id => parseFloat(document.getElementById(id).value);
+            const ul1=v('gt-ul-1'),ul2=v('gt-ul-2'),ur1=v('gt-ur-1'),ur2=v('gt-ur-2');
+            const dl1=v('gt-dl-1'),dl2=v('gt-dl-2'),dr1=v('gt-dr-1'),dr2=v('gt-dr-2');
+            const col = getChartColors();
+            const pCtx = document.getElementById('gtPayoffChart');
+            if (pCtx) {
+                if (gtPayoffChartInstance) gtPayoffChartInstance.destroy();
+                gtPayoffChartInstance = new Chart(pCtx, {
+                    type: 'bar', data: { labels: ['(U,L)', '(U,R)', '(D,L)', '(D,R)'], datasets: [
+                        { label: 'P1', data: [ul1, ur1, dl1, dr1], backgroundColor: col.teal, borderRadius: 4 },
+                        { label: 'P2', data: [ul2, ur2, dl2, dr2], backgroundColor: col.gold, borderRadius: 4 }
+                    ]}, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: col.text } } }, scales: { x: { ticks: { color: col.text }, grid: { color: col.grid } }, y: { ticks: { color: col.text }, grid: { color: col.grid } } } }
+                });
+            }
+            const wCtx = document.getElementById('gtWelfareChart');
+            if (wCtx) {
+                const totals = [ul1+ul2, ur1+ur2, dl1+dl2, dr1+dr2];
+                if (gtWelfareChartInstance) gtWelfareChartInstance.destroy();
+                gtWelfareChartInstance = new Chart(wCtx, {
+                    type: 'bar', data: { labels: ['(U,L)', '(U,R)', '(D,L)', '(D,R)'], datasets: [{ label: 'Welfare', data: totals, backgroundColor: col.purple, borderRadius: 4 }]}, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: col.text }, grid: { color: col.grid } }, y: { ticks: { color: col.text }, grid: { color: col.grid }, beginAtZero: true } } }
+                });
+            }
+        }
+
+        let iccChartInstance;
+        function renderICCChart(coop, defect, punish) {
+            const ctx = document.getElementById('iccChart'); if (!ctx) return;
+            const col = getChartColors(); const ds = (defect - coop) / (defect - punish);
+            const labels = [], pvC = [], pvD = [];
+            for (let d = 0.05; d <= 0.99; d += 0.02) { labels.push(d.toFixed(2)); pvC.push(coop / (1 - d)); pvD.push(defect + (d * punish) / (1 - d)); }
+            if (iccChartInstance) iccChartInstance.destroy();
+            iccChartInstance = new Chart(ctx, {
+                type: 'line', data: { labels, datasets: [
+                    { label: 'PV(Coop)', data: pvC, borderColor: col.teal, fill: true, borderWidth: 2.5, pointRadius: 0 },
+                    { label: 'PV(Defect)', data: pvD, borderColor: col.red, fill: true, borderWidth: 2.5, pointRadius: 0 }
+                ]}, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: col.text } } }, scales: { x: { ticks: { color: col.text, maxTicksLimit: 10 }, grid: { color: col.grid } }, y: { ticks: { color: col.text }, grid: { color: col.grid } } } }
+            });
+        }
+
+        let mixedStratChartInstance;
+        function renderMixedStratChart() {
+            const ctx = document.getElementById('mixedStratChart'); if (!ctx) return;
+            const v = id => parseFloat(document.getElementById(id).value); const col = getChartColors();
+            const ul1=v('mx-ul-1'),ur1=v('mx-ur-1'),dl1=v('mx-dl-1'),dr1=v('mx-dr-1');
+            const labels = [], upL = [], downL = [];
+            for (let q = 0; q <= 1; q += 0.02) { labels.push(q.toFixed(2)); upL.push(q * ul1 + (1 - q) * ur1); downL.push(q * dl1 + (1 - q) * dr1); }
+            if (mixedStratChartInstance) mixedStratChartInstance.destroy();
+            mixedStratChartInstance = new Chart(ctx, {
+                type: 'line', data: { labels, datasets: [
+                    { label: 'Up', data: upL, borderColor: col.teal, fill: false, borderWidth: 2.5, pointRadius: 0 },
+                    { label: 'Down', data: downL, borderColor: col.gold, fill: false, borderWidth: 2.5, pointRadius: 0 }
+                ]}, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: col.text } } }, scales: { x: { ticks: { color: col.text }, grid: { color: col.grid } }, y: { ticks: { color: col.text }, grid: { color: col.grid } } } }
+            });
+        }
+
+        let collusionPhaseChartInstance;
+        function renderCollusionPhaseChart(cartel, defect, nash) {
+            const ctx = document.getElementById('collusionPhaseChart'); if (!ctx) return;
+            const col = getChartColors(); const labels = [], margin = [];
+            for (let d = 0.1; d <= 0.99; d += 0.02) { labels.push(d.toFixed(2)); margin.push(cartel / (1 - d) - (defect + (d * nash) / (1 - d))); }
+            if (collusionPhaseChartInstance) collusionPhaseChartInstance.destroy();
+            collusionPhaseChartInstance = new Chart(ctx, {
+                type: 'line', data: { labels, datasets: [{ label: 'Margin', data: margin, borderColor: col.teal, segment: { borderColor: c => margin[c.p0DataIndex] >= 0 ? col.green : col.red }, fill: true, borderWidth: 2.5, pointRadius: 0 }]}, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: col.text, maxTicksLimit: 10 }, grid: { color: col.grid } }, y: { ticks: { color: col.text }, grid: { color: col.grid } } } }
+            });
+        }
+
+        let entryDeterrenceChartInstance;
+        function renderEntryDeterrenceChart(fc) {
+            const ctx = document.getElementById('entryDeterrenceChart'); if (!ctx) return;
+            const col = getChartColors(); const labels = [], p = [];
+            for (let c = 0; c <= 80; c += 2) { labels.push(c); p.push(1000 - c * 10 - fc); }
+            if (entryDeterrenceChartInstance) entryDeterrenceChartInstance.destroy();
+            entryDeterrenceChartInstance = new Chart(ctx, {
+                type: 'line', data: { labels, datasets: [{ label: 'Profit', data: p, borderColor: col.teal, fill: true, borderWidth: 2.5, pointRadius: 0 }]}, options: { responsive: true, maintainAspectRatio: false, scales: { x: { ticks: { color: col.text }, grid: { color: col.grid } }, y: { ticks: { color: col.text }, grid: { color: col.grid } } } }
+            });
+        }
+
+        let kLevelChartInstance;
+        function renderKLevelChart() {
+            const ctx = document.getElementById('kLevelChart'); if (!ctx) return;
+            const col = getChartColors();
+            if (kLevelChartInstance) kLevelChartInstance.destroy();
+            kLevelChartInstance = new Chart(ctx, {
+                type: 'bar', data: { labels: ['L0', 'L1', 'L2', 'L3', 'L4+', 'Nash'], datasets: [{ label: '%', data: [15, 35, 25, 12, 8, 5], backgroundColor: [col.red, col.teal, col.gold, col.green, col.purple, 'rgba(255,255,255,0.3)'], borderRadius: 4 }]}, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: col.text }, grid: { color: col.grid } }, y: { ticks: { color: col.text }, grid: { color: col.grid }, beginAtZero: true } } }
+            });
+        }
+
+        let tradeGainsChartInstance;
+        function renderTradeGainsChart(aw, ac, bw, bc) {
+            const ctx = document.getElementById('tradeGainsChart'); if (!ctx) return;
+            const col = getChartColors();
+            const awB = aw*5, acB = ac*5, bwB = bw*5, bcB = bc*5;
+            const aOw = ac/aw, bOw = bc/bw;
+            let awA, acA, bwA, bcA;
+            if (aOw < bOw) { awA = aw*10; acA = 0; bwA = 0; bcA = bc*10; } else { awA = 0; acA = ac*10; bwA = bw*10; bcA = 0; }
+            if (tradeGainsChartInstance) tradeGainsChartInstance.destroy();
+            tradeGainsChartInstance = new Chart(ctx, {
+                type: 'bar', data: { labels: ['Wine(B)', 'Wine(A)', 'Cloth(B)', 'Cloth(A)'], datasets: [
+                    { label: 'A', data: [awB, awA, acB, acA], backgroundColor: col.teal, borderRadius: 4 },
+                    { label: 'B', data: [bwB, bwA, bcB, bcA], backgroundColor: col.gold, borderRadius: 4 }
+                ]}, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: col.text } } }, scales: { x: { stacked: true, ticks: { color: col.text }, grid: { color: col.grid } }, y: { stacked: true, ticks: { color: col.text }, grid: { color: col.grid } } } }
+            });
+        }
+
+        let tariffSDChartInstance;
+        function renderTariffSDChart(domP, wp, tariff, dS, sS) {
+            const ctx = document.getElementById('tariffSDChart'); if (!ctx) return;
+            const col = getChartColors(); const a = domP * (dS + sS); const tp = wp + tariff;
+            const dPts = [], sPts = [];
+            for (let q = 0; q <= a * 1.2; q += a / 30) { dPts.push({ x: q, y: (a - q) / dS }); sPts.push({ x: q, y: q / sS }); }
+            if (tariffSDChartInstance) tariffSDChartInstance.destroy();
+            tariffSDChartInstance = new Chart(ctx, {
+                type: 'scatter', data: { datasets: [
+                    { label: 'Demand', data: dPts.filter(p => p.y >= 0), showLine: true, borderColor: col.red, fill: false, borderWidth: 2, pointRadius: 0 },
+                    { label: 'Supply', data: sPts.filter(p => p.y >= 0), showLine: true, borderColor: col.green, fill: false, borderWidth: 2, pointRadius: 0 },
+                    { label: 'WP', data: [{ x: 0, y: wp }, { x: a*1.2, y: wp }], showLine: true, borderColor: col.teal, borderDash: [8, 4], fill: false, borderWidth: 2, pointRadius: 0 },
+                    { label: 'TP', data: [{ x: 0, y: tp }, { x: a*1.2, y: tp }], showLine: true, borderColor: col.gold, borderDash: [4, 4], fill: false, borderWidth: 2, pointRadius: 0 }
+                ]}, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: col.text } } }, scales: { x: { ticks: { color: col.text }, grid: { color: col.grid } }, y: { ticks: { color: col.text }, grid: { color: col.grid }, beginAtZero: true } } }
+            });
+        }
+
+        let gordonSensChartInstance;
+        function renderGordonSensChart() {
+            const ctx = document.getElementById('gordonSensChart'); if (!ctx) return;
+            const col = getChartColors(); const div = currentStockData ? currentStockData.dividend : 0.96;
+            const g = parseFloat(document.getElementById('pv-growth').value) / 100;
+            const labels = [], v = [];
+            for (let r = 0; r <= 0.15; r += 0.005) { labels.push((r * 100).toFixed(1) + '%'); v.push(r > g ? (div * (1 + g)) / (r - g) : null); }
+            if (gordonSensChartInstance) gordonSensChartInstance.destroy();
+            gordonSensChartInstance = new Chart(ctx, {
+                type: 'line', data: { labels, datasets: [{ label: 'GGM Value', data: v, borderColor: col.teal, fill: true, borderWidth: 2.5, pointRadius: 0 }]}, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: col.text } } }, scales: { x: { ticks: { color: col.text, maxTicksLimit: 10 }, grid: { color: col.grid } }, y: { ticks: { color: col.text }, grid: { color: col.grid }, min: 0 } } }
+            });
+        }
+
+        let riskReturnChartInstance;
+        function renderRiskReturnChart() {
+            const ctx = document.getElementById('riskReturnChart'); if (!ctx) return;
+            const col = getChartColors(); const pts = [];
+            Object.keys(demoStockData).forEach(sym => { const s = demoStockData[sym]; pts.push({ x: s.beta, y: s.changePercent, label: sym }); });
+            if (riskReturnChartInstance) riskReturnChartInstance.destroy();
+            riskReturnChartInstance = new Chart(ctx, {
+                type: 'scatter', data: { datasets: [{ label: 'Stocks', data: pts, backgroundColor: pts.map(p => p.y >= 0 ? col.green : col.red), pointRadius: 8 }]}, options: { responsive: true, maintainAspectRatio: false, plugins: { tooltip: { callbacks: { label: c => c.raw.label + ': β=' + c.raw.x.toFixed(2) + ', R=' + c.raw.y.toFixed(2) + '%' } } }, scales: { x: { title: { display: true, text: 'Beta' }, ticks: { color: col.text }, grid: { color: col.grid } }, y: { title: { display: true, text: 'Return' }, ticks: { color: col.text }, grid: { color: col.grid } } } }
+            });
+        }
+
+        function refreshAllCharts() { [updateSupplyDemand, updateCosts, updateMarketStructures, updateRevProfit, updateReactionFunctions, updateElasticity, updateADAS, updateFiscal, updateMonetary, updatePhillips, updateGrowth, updatePPF, updateBudgetConstraint, updateLorenz].forEach(f => { if (typeof f === 'function') try { f(); } catch (e) { } }); if (stockPriceChart) updateStockChart(); [renderGameTheoryCharts, renderMixedStratChart, renderKLevelChart, renderRiskReturnChart].forEach(f => { try { f(); } catch(e){} }); }
 
         document.addEventListener('DOMContentLoaded', function () {
             const container = document.getElementById('sectionContainer');
@@ -2846,7 +2995,29 @@
   <p>OpenStax Macro 3e illustrates how price ceilings affect financial markets using a demand-supply diagram for credit card lending. When the government imposes an interest rate ceiling below equilibrium, it creates <strong>excess demand (shortage)</strong> — more people want to borrow than banks are willing to lend. This connects to the monetary policy module: the Fed's rate decisions ripple through credit markets, affecting consumer spending and business investment. The FRED indicators above capture these dynamics in real time.</p>
 </div>
 
-</section>
+
+<div class="chart-card" style="margin-top:16px;">
+  <div class="chart-title">Gordon Growth Model: Sensitivity to Discount Rate</div>
+  <div class="chart-subtitle">Value drops sharply as rates rise — explains why rate hikes crush growth stocks</div>
+  <div class="chart-wrap h-320"><canvas id="gordonSensChart"></canvas></div>
+</div>
+<div class="chart-card" style="margin-top:16px;">
+  <div class="chart-title">Risk-Return Profile: All Tracked Stocks</div>
+  <div class="chart-subtitle">Beta (risk) vs Daily Return (%) — higher beta = more volatile</div>
+  <div class="chart-wrap h-320"><canvas id="riskReturnChart"></canvas></div>
+</div>
+<div class="insight-card" style="margin-top:16px;">
+  <div class="insight-label">📘 FROM PERLOFF & BRANDER Ch.7 — Why the Gordon Model Matters</div>
+  <p>PV = D₀(1+g)/(r-g). Growth stocks collapse when rates rise because the denominator shrinks rapidly.</p>
+</div>
+<div class="insight-card gold" style="margin-top:12px;">
+  <div class="insight-label">📘 RISK-RETURN TRADEOFF: CAPM & Beta</div>
+  <p>E[R] = Rf + β(Rm - Rf). Beta measures sensitivity. Rotating to low-beta defensive stocks in recessions is a key strategy.</p>
+</div>
+<div class="case-study" style="margin-top:12px;">
+  <div class="case-study-title">🏠 BRING IT HOME: The 2022 Tech Crash</div>
+  <p>Fed hikes crushed NVDA (-50%) while JNJ stayed resilient. The high growth/beta combo made tech hypersensitive to rate hikes in 2022.</p>
+</div></section>
 
 <!-- MODULE 01: SUPPLY & DEMAND (Source-Enhanced) -->
 <section id="supply-demand" class="section active">
@@ -3428,7 +3599,12 @@
   <div class="case-study-title">🛢️ OPEC Cartel Dynamics</div>
   <p>OPEC illustrates cartel instability perfectly. Members agree to production quotas, but individual countries (especially those with large populations and budget needs) have strong incentives to cheat by overproducing. Saudi Arabia acts as the "swing producer" — absorbing cuts to maintain prices. When cheating becomes widespread (as in 2014-2016), the cartel collapses and prices crash. The δ* framework explains why: when members' discount factors fall (short-term budget pressures), cooperation becomes unsustainable.</p>
 </div>
-</section>
+
+<div class="chart-card" style="margin-top:16px;">
+  <div class="chart-title">Cartel Stability Phase Diagram</div>
+  <div class="chart-subtitle">Green zone = stable cartel; Red zone = cartel collapses</div>
+  <div class="chart-wrap h-280"><canvas id="collusionPhaseChart"></canvas></div>
+</div></section>
 
 <!-- MODULE 09: ENTRY DETERRENCE (Source-Enhanced with Perloff Ch.13) -->
 <section id="entry-deterrence" class="section">
@@ -3484,7 +3660,12 @@
   <div class="case-study-title">🛢️ ExxonMobil & Venezuela (Perloff Ch.13)</div>
   <p>Using backward induction: Venezuela will nationalize (payoff 32 > 20). Given this, ExxonMobil should invest in another country (payoff 10 > 8). The threat of nationalization is <strong>credible</strong> because Venezuela's government gains more from nationalization than from honoring contracts. This illustrates why firms demand political risk insurance or joint ventures when investing in countries with weak property rights.</p>
 </div>
-</section>
+
+<div class="chart-card" style="margin-top:16px;">
+  <div class="chart-title">Entrant Profit vs Incumbent Capacity</div>
+  <div class="chart-subtitle">Entry is deterred when profit falls below zero</div>
+  <div class="chart-wrap h-280"><canvas id="entryDeterrenceChart"></canvas></div>
+</div></section>
 
 <!-- MODULE 10: MERGER ANALYSIS & HHI (Source-Enhanced with Perloff Ch.7) -->
 <section id="merger" class="section">
@@ -3636,7 +3817,37 @@
   Click "Oligopoly (OpenStax)" above to load this exact game. Notice: the dominant strategy is to defect (increase output), even though mutual cooperation ($500 each) beats mutual defection ($400 each). This explains why cartels are inherently unstable — and why OPEC members constantly cheat on production quotas.</p>
 </div>
 
-</section>
+
+<div class="grid-2" style="margin-top:16px;">
+  <div class="chart-card">
+    <div class="chart-title">Payoff Comparison by Outcome</div>
+    <div class="chart-subtitle">Player 1 (teal) vs Player 2 (gold) payoffs for each cell</div>
+    <div class="chart-wrap h-280"><canvas id="gtPayoffChart"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">Social Welfare (Total Payoff)</div>
+    <div class="chart-subtitle">Sum of both players' payoffs — Pareto efficiency comparison</div>
+    <div class="chart-wrap h-280"><canvas id="gtWelfareChart"></canvas></div>
+  </div>
+</div>
+<div class="insight-card" style="margin-top:16px;">
+  <div class="insight-label">📗 FROM OPENSTAX MICRO 3e TABLE 10.3 — The Oligopoly Prisoner's Dilemma</div>
+  <p>OpenStax presents the classic oligopoly game: Firm A and Firm B each choose to "Hold Down Output" (cooperate) or "Increase Output" (defect).<br><br>
+  <strong>Payoff Matrix:</strong><br>
+  Both cooperate: ($500, $500)<br>
+  Both defect: ($400, $400) — Nash equilibrium<br>
+  A defects, B cooperates: ($550, $200)<br>
+  A cooperates, B defects: ($200, $550)<br><br>
+  <strong>Analysis:</strong> Individual rationality leads to collective irrationality.</p>
+</div>
+<div class="insight-card purple" style="margin-top:12px;">
+  <div class="insight-label">📗 FROM OPENSTAX TABLE 10.7 — Jane & Bill's Prisoner's Dilemma</div>
+  <p>Jane and Bill robbery scenario: Dominant strategy is to confess. Both confess (30 years) even though staying silent (20 years) is better for both. The inability to cooperate is the dilemma.</p>
+</div>
+<div class="insight-card" style="margin-top:12px;">
+  <div class="insight-label">🎓 FROM MIT OCW & CALTECH — Finding Nash Equilibria Systematically</div>
+  <p>Method 1: Best Response (underlining). Method 2: Elimination of Dominated Strategies. Method 3: Maximin (identifying worst outcomes).</p>
+</div></section>
 
 <!-- MODULE 12: SEQUENTIAL GAMES (Source-Enhanced with Perloff Ch.13) -->
 <section id="sequential-games" class="section">
@@ -3751,7 +3962,20 @@
   <div class="case-study-title">🖥️ Intel & AMD's Advertising (Perloff Ch.13)</div>
   <p><strong>"Intel and AMD dominate the CPU market, making over 99% of total sales."</strong> Why has Intel chosen to advertise aggressively while AMD engages in relatively little advertising? This is a dynamic game where the advertising decision depends on market position, cost structures, and the credibility of competitive threats. Intel's dominant market share means its advertising has higher returns (larger customer base to retain), while AMD's smaller share makes aggressive advertising less cost-effective. The repeated nature of their interaction sustains an asymmetric equilibrium.</p>
 </div>
-</section>
+
+<div class="chart-card" style="margin-top:16px;">
+  <div class="chart-title">Cooperation Sustainability: PV(Coop) vs PV(Defect)</div>
+  <div class="chart-subtitle">Cooperation is sustainable when the teal line exceeds the red line (δ ≥ δ*)</div>
+  <div class="chart-wrap h-320"><canvas id="iccChart"></canvas></div>
+</div>
+<div class="insight-card" style="margin-top:16px;">
+  <div class="insight-label">🎓 FROM CALTECH LECTURES — Folk Theorems & Infinite Repetition</div>
+  <p>Folk Theorem: Any payoff vector that gives each player at least their minmax payoff can be sustained as a Nash equilibrium in infinitely repeated games if δ is high enough.</p>
+</div>
+<div class="insight-card gold" style="margin-top:12px;">
+  <div class="insight-label">📗 FROM OPENSTAX — Why Finite Repetition Unravels Cooperation</div>
+  <p>Finite games unravel through backward induction: no reason to cooperate in the last period, so no reason in the second-to-last, etc.</p>
+</div></section>
 
 <!-- MODULE 14: MIXED STRATEGY (Source-Enhanced with Perloff Ch.12) -->
 <section id="mixed-strategy" class="section">
@@ -3801,7 +4025,20 @@
   <div class="case-study-title">📗 OpenStax Micro 3e — Table 10.7: Jane & Bill's Bank Robbery</div>
   <p>From OpenStax: <em>"Jane and Bill are apprehended for a bank robbery. They are taken into separate rooms."</em> If both confess: 30 years each. If neither confesses: 20 years each. If one confesses and the other stays silent: confessor gets 15 years, silent gets 35 years. <strong>Dominant strategy: Confess</strong> (regardless of what the other does). This is the classic Prisoner's Dilemma — individual rationality leads to a collectively worse outcome (30,30) vs the cooperative outcome (20,20). Click "Jane & Bill" above to load this game with negative payoffs (years of prison).</p>
 </div>
-</section>
+
+<div class="chart-card" style="margin-top:16px;">
+  <div class="chart-title">Expected Payoff Landscape</div>
+  <div class="chart-subtitle">P1's expected payoff as P2 varies probability of Left (q)</div>
+  <div class="chart-wrap h-320"><canvas id="mixedStratChart"></canvas></div>
+</div>
+<div class="insight-card" style="margin-top:16px;">
+  <div class="insight-label">🎓 FROM MIT OCW — Why Mixed Strategies Exist</div>
+  <p>Nash's Theorem: Every finite game has at least one NE. Randomization makes the opponent indifferent between their pure strategies.</p>
+</div>
+<div class="case-study" style="margin-top:12px;">
+  <div class="case-study-title">⚽ BRING IT HOME: Penalty Kicks in Soccer</div>
+  <p>Empirical data on shooters and keepers matches mixed strategy NE predictions. Scoring rates are approximately equal across direction choices.</p>
+</div></section>
 
 <!-- MODULE 15: COORDINATION GAMES (Source-Enhanced with Perloff Ch.12) -->
 <section id="coordination" class="section">
@@ -3913,7 +4150,12 @@
   <div class="insight-label">📘 From Perloff & Brander Ch.13 — Why Behavioral Matters for Managers</div>
   <p>If your competitors are Level-1 thinkers, the optimal response is Level-2 — <strong>not</strong> Nash. Playing the Nash strategy against bounded-rational opponents can be suboptimal. Smart managers calibrate their strategy to the <em>actual</em> sophistication level of their competitors, not the theoretical ideal. This is why experimental economics and market research matter — they reveal how real decision-makers behave, not how textbook agents would.</p>
 </div>
-</section>
+
+<div class="chart-card" style="margin-top:16px;">
+  <div class="chart-title">K-Level Thinking Distribution (Beauty Contest)</div>
+  <div class="chart-subtitle">Empirical distribution of reasoning depth in experimental games</div>
+  <div class="chart-wrap h-280"><canvas id="kLevelChart"></canvas></div>
+</div></section>
 
 <!-- MODULE 17: EXTERNALITIES (Source-Enhanced with OpenStax Micro 3e Ch.12-13) -->
 <section id="externalities" class="section">
@@ -5226,7 +5468,20 @@
 
 
 <div class="chart-card" style="margin-top:16px;"><div class="chart-title">Production Possibilities: Country A vs Country B</div><div class="chart-subtitle">Different slopes = different opportunity costs = gains from trade</div><div class="chart-wrap h-320"><canvas id="compAdvChart"></canvas></div></div>
-</section>
+
+<div class="chart-card" style="margin-top:16px;">
+  <div class="chart-title">Production Before & After Trade</div>
+  <div class="chart-subtitle">Specialization increases total world output</div>
+  <div class="chart-wrap h-280"><canvas id="tradeGainsChart"></canvas></div>
+</div>
+<div class="insight-card" style="margin-top:16px;">
+  <div class="insight-label">📗 FROM OPENSTAX MACRO 3e Ch.19-21 — Trade & Protectionism</div>
+  <p>Trade increases total output. Quotas and protectionism raise prices and create deadweight loss.</p>
+</div>
+<div class="insight-card purple" style="margin-top:12px;">
+  <div class="insight-label">📗 WORK IT OUT: Calculating Gains from Trade</div>
+  <p>Calculate OCs, identify comparative advantage, compare total world output before and after specialization.</p>
+</div></section>
 
 <!-- T3: TARIFF SIMULATOR -->
 <section id="tariff-sim" class="section">
@@ -5261,7 +5516,20 @@
 </div>
 
 <div class="chart-card" style="margin-top:16px;"><div class="chart-title">Tariff Welfare Impact</div><div class="chart-subtitle">Consumer loss vs producer gain vs government revenue vs deadweight loss</div><div class="chart-wrap h-280"><canvas id="tariffWelfareChart"></canvas></div></div>
-</section>
+
+<div class="chart-card" style="margin-top:16px;">
+  <div class="chart-title">Tariff Impact on Domestic Market</div>
+  <div class="chart-subtitle">World price (green), tariff price (gold), domestic S&D curves</div>
+  <div class="chart-wrap h-320"><canvas id="tariffSDChart"></canvas></div>
+</div>
+<div class="insight-card" style="margin-top:16px;">
+  <div class="insight-label">📗 FROM OPENSTAX — The Four Welfare Areas of a Tariff</div>
+  <p>A (PS gain), B (inefficiency DWL), C (Gov revenue), D (consumption DWL). Net effect = B + D loss.</p>
+</div>
+<div class="case-study" style="margin-top:12px;">
+  <div class="case-study-title">🏠 BRING IT HOME: US Steel Tariffs (2018-2025)</div>
+  <p>2018 steel tariffs resulted in producer gains but much larger consumer losses and an estimated DWL of $1.7B.</p>
+</div></section>
 
 <!-- U1: UTILITY MAXIMIZATION -->
 <section id="utility-max" class="section">
