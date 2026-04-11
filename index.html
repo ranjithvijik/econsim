@@ -629,6 +629,7 @@
             background: var(--navy-600);
             outline: none;
             -webkit-appearance: none;
+            appearance: none;
             cursor: pointer;
         }
 
@@ -3182,6 +3183,7 @@
             return `<div class="slider-group"><div class="slider-label"><span class="slider-label-text">${label}</span><span class="slider-value" id="${id}-val">${prefix}${val}${suffix}</span></div><input type="range" id="${id}" min="${min}" max="${max}" step="${step || 1}" value="${val}" oninput="${fn}()"></div>`;
         }
 
+        function buildAllSections() {
             return `
 <!-- LIVE MARKETS MODULE (Source-Enhanced) -->
 <section id="live-markets" class="section">
