@@ -228,7 +228,7 @@ function generateReport(moduleResults, totalMs) {
     '│',
     '└── unit/',
     '    ├── test_html_structure.js         # General DOM structure, CDNs, scripts',
-    '    ├── test_modules.js                # All 26 functional economics modules',
+    '    ├── test_modules.js                # All 78 functional economics modules',
     '    └── test_components.js             # Interactive sliders, KPIs, Canvas elements',
     '                                       # CORS proxies, static fallback',
     '```',

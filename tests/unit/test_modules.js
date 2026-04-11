@@ -4,18 +4,18 @@ const { countOccurrences, contains, assert, assertEqual, assertAtLeast } = requi
 
 module.exports = {
   name: 'Simulator Modules & Sections',
-  description: 'Validates all 63 economic modules plus live markets.',
+  description: 'Validates all 78 economic modules.',
   tests: [
     {
-      name: 'Nav items present (63+ modules)',
+      name: 'Nav items present (78 modules)',
       fn: () => {
-        assertAtLeast(countOccurrences('class="nav-item"'), 55, 'Should have 55+ nav items');
+        assertAtLeast(countOccurrences('class="nav-item"'), 70, 'Should have 70+ nav items');
       }
     },
     {
-      name: 'All section titles exist (63 total)',
+      name: 'All section titles exist (78 total)',
       fn: () => {
-        assertAtLeast(countOccurrences('<h2 class="section-title">'), 61, 'Should have at least 61 section titles');
+        assertAtLeast(countOccurrences('<h2 class="section-title">'), 75, 'Should have at least 75 section titles');
       }
     },
     {
@@ -62,7 +62,7 @@ module.exports = {
     {
       name: 'Section subtitles present',
       fn: () => {
-        assertAtLeast(countOccurrences('class="section-subtitle"'), 55, 'Missing section subtitles');
+        assertAtLeast(countOccurrences('class="section-subtitle"'), 70, 'Missing section subtitles');
       }
     },
     {

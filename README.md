@@ -2,7 +2,7 @@
 
 [![QA Status](https://github.com/ranjithvijik/econsim/actions/workflows/qa.yml/badge.svg)](https://github.com/ranjithvijik/econsim/actions)
 
-**Economics Simulator Pro** is a comprehensive, interactive, and serverless web simulator designed to deeply explore both microeconomic and macroeconomic principles. Featuring 26 distinct educational modules, the platform seamlessly connects robust theoretical models with dynamic visualizations and live market data.
+**Economics Simulator Pro** is a comprehensive, interactive, and serverless web simulator designed to deeply explore both microeconomic and macroeconomic principles. Featuring 78 distinct educational modules, the platform seamlessly connects robust theoretical models with dynamic visualizations and live market data.
 
 Built entirely using Vanilla HTML, CSS, and JavaScript, it acts as a premier teaching tool, allowing users to empirically manipulate exogenous variables and instantly observe shifts in equilibrium states, elasticity, and macroeconomic policy impacts.
 
@@ -10,7 +10,7 @@ Built entirely using Vanilla HTML, CSS, and JavaScript, it acts as a premier tea
 
 ## 🌟 Core Features
 
-- **26 Interactive Modules**: Comprehensive coverage ranging from foundational Supply & Demand and Elasticity to advanced Game Theory, Externalities, and the Solow Growth Model.
+- **78 Interactive Modules**: Comprehensive coverage ranging from foundational Supply & Demand and Elasticity to advanced Game Theory, Externalities, and the Solow Growth Model, encompassing 100% curriculum coverage across Micro and Macro.
 - **Real-Time Live Markets Integration**: Fetch live intraday market data (via Yahoo Finance API and CORS proxies) directly into the simulator to test theories against real-world equities and indices without a backend server.
 - **Dynamic Visualizations**: Deep integration with `Chart.js` provides immediate, smooth rerendering of complex curves (e.g., AD-AS models, Cost Curves, Cournot Reaction Functions) in response to slider manipulations.
 - **Zero-Dependency Architecture**: The frontend is 100% vanilla and serverless, requiring zero build steps to deploy or run locally. Simply open `index.html` in your browser.
@@ -34,6 +34,10 @@ The platform is systematically segmented into comprehensive tracks:
 
 ### Macroeconomics
 - **Aggregate Economy**: AD-AS Model, Fiscal Policy & Multipliers, Monetary Policy Mechanisms, The Phillips Curve, Solow Growth Model.
+- **International Economics**: Exchange Rates, National Debt, Trade Policy, Globalization, Macro Policy Debate.
+
+### Advanced Topics
+- **Advanced Micro**: Tax Incidence, Intra-Industry Trade.
 
 ---
 
@@ -43,7 +47,7 @@ To ensure the unwavering stability of all educational components, this repositor
 
 ### QA Checks Implemented:
 - **`test_html_structure.js`**: Validates base HTML skeleton structure, dependencies, and globals.
-- **`test_modules.js`**: Validates the mathematical presence of all 26 modules, sub-titles, and academic source tags.
+- **`test_modules.js`**: Validates the presence of all 78 modules, sub-titles, and academic source tags.
 - **`test_components.js`**: Asserts that all functional UI items (such as `<input type="range">` sliders, KPI cards, and `<canvas>` graph targets) are strictly maintained.
 
 ### Running QA Locally
