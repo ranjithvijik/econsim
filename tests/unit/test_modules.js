@@ -9,13 +9,13 @@ module.exports = {
     {
       name: 'Nav items present (78 modules)',
       fn: () => {
-        assertAtLeast(countOccurrences('class="nav-item"'), 70, 'Should have 70+ nav items');
+        assertAtLeast(countOccurrences('class="nav-item"'), 78, 'Should have 78 nav items');
       }
     },
     {
       name: 'All section titles exist (78 total)',
       fn: () => {
-        assertAtLeast(countOccurrences('<h2 class="section-title">'), 75, 'Should have at least 75 section titles');
+        assertAtLeast(countOccurrences('<h2 class="section-title">'), 78, 'Should have at least 78 section titles');
       }
     },
     {
@@ -60,9 +60,18 @@ module.exports = {
       }
     },
     {
+      name: 'Wave 3 Advanced & International modules present',
+      fn: () => {
+        ['asymmetric-info','moral-hazard','financial-markets','public-choice',
+         'exchange-rates','national-debt','trade-policy','globalization','tax-incidence','intra-industry','macro-policy-world'].forEach(id => {
+          assert(contains('id="'+id+'"'), 'Missing Wave 3 module: '+id);
+        });
+      }
+    },
+    {
       name: 'Section subtitles present',
       fn: () => {
-        assertAtLeast(countOccurrences('class="section-subtitle"'), 70, 'Missing section subtitles');
+        assertAtLeast(countOccurrences('class="section-subtitle"'), 78, 'Missing section subtitles');
       }
     },
     {

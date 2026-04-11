@@ -24,20 +24,46 @@ Built entirely using Vanilla HTML, CSS, and JavaScript, it acts as a premier tea
 The platform is systematically segmented into comprehensive tracks:
 
 ### Microeconomics & Firm Strategy
-- **Basics**: Supply & Demand Equilibrium, Elasticity & Optimal Pricing, Production & Cost Curves, Revenue vs Profit.
-- **Market Structures**: Perfect Competition, Monopolies, Merger Analysis (HHI).
-- **Oligopoly Competition**: Cournot vs Stackelberg, Bertrand Price Competition, Collusion & Cartels, Entry Deterrence.
+- **Fundamentals**: Scarcity & Choice, PPF Simulator, Budget Constraint, Opportunity Cost, Utility Maximization, Marginal Decision, Indifference Curves.
+- **Market Dynamics**: Supply & Demand Equilibrium, Elasticity (Price, Supply, Cross/Income), Price Controls, Demand Shifter.
+- **Production & Costs**: Short-Run Production, Production & Cost Curves, Revenue vs Profit.
+- **Market Structures**: Perfect Competition, Monopolies, Monopolistic Competition, Oligopoly (Kinked Demand, Cournot vs Stackelberg, Bertrand Price Competition).
+- **Firm Strategy**: Collusion & Cartels, Entry Deterrence, Merger Analysis (HHI), Firm Organization (Make-or-Buy), Corporate Social Responsibility (CSR) & Business Ethics.
+- **Labor & Welfare**: Labor Market, MRP Labor, Poverty Calculator, Lorenz Curve, Tax Incidence.
 
 ### Game Theory & Information Economics
-- **Game Theory Paradigms**: Static & Nash Equilibrium, Sequential Games & Backward Induction, Repeated Games, Mixed Strategy, Coordination, Behavioral Game Theory.
-- **Advanced Micro**: Externalities & Market Failure, Auctions & Bargaining, Firm Organization (Make-or-Buy), CSR & Business Ethics.
+- **Game Theory Paradigms**: Static & Nash Equilibrium, Sequential Games & Backward Induction, Repeated Games, Mixed Strategy, Coordination Games, Behavioral Game Theory.
+- **Information & Risk**: Expected Value, Asymmetric Information, Moral Hazard, Auctions & Bargaining.
+- **Market Failure**: Externalities & Market Failure, Public Choice.
 
 ### Macroeconomics
-- **Aggregate Economy**: AD-AS Model, Fiscal Policy & Multipliers, Monetary Policy Mechanisms, The Phillips Curve, Solow Growth Model.
-- **International Economics**: Exchange Rates, National Debt, Trade Policy, Globalization, Macro Policy Debate.
+- **National Accounting & Indicators**: GDP Calculator, Real vs Nominal GDP, Economic Growth Rate, Unemployment Calculator, Types of Unemployment, CPI Calculator, Purchasing Power.
+- **Aggregate Economy**: AD-AS Model, Keynesian Cross, Paradox of Thrift.
+- **Fiscal & Monetary Policy**: Fiscal Policy & Multipliers, Monetary Policy Mechanisms, The Phillips Curve, Fractional Reserve Banking, Financial Markets, National Debt.
+- **Long-Run Growth**: Solow Growth Model, Productivity Growth.
 
-### Advanced Topics
-- **Advanced Micro**: Tax Incidence, Intra-Industry Trade.
+### International Economics & Globalization
+- **Trade**: Comparative Advantage, Balance of Trade, Tariff Simulation, Trade Policy, Intra-Industry Trade.
+- **Global Systems**: Exchange Rates, Globalization, Macro Policy Around the World.
+
+---
+
+## 🔌 External APIs & Data Sources
+
+EconSim Pro integrates direct connections to real-world data providers to dynamically adjust curriculum constants, shifting models out of theoretical bounds and into live economic reflection.
+
+### API Keys (GitHub Secrets)
+The following keys should be configured as **Environment Variables** or **GitHub Repository Secrets** for automated deployments:
+- `FRED_API`: Required for fetching macroeconomic indicators.
+- `AV_API_KEY`: Required for fetching Alpha Vantage stock configurations.
+
+### Data Tiers
+1. **Tier 1 (Local Servers)**: If a python/flask backend (`http://127.0.0.1:5000/`) is detected on the network, it fetches unfiltered live financial data locally.
+2. **Tier 2 (CORS Proxies)**: Securely proxies serverless requests to Yahoo Finance for immediate real-time equity queries without exposing tokens.
+3. **Tier 3 (Direct APIs)**: 
+   - **Federal Reserve Economic Data (FRED)**: Directly queried mapping 11 global indexes (FEDFUNDS, CPI, UNRATE, 10-Yr Yields, GDP Growth, etc.) via the St. Louis Fed.
+   - **Alpha Vantage**: Queried securely to fetch fallback `GLOBAL_QUOTE` financial analytics to fuel microeconomic models (like Dividend Gordon Growth equations and Beta calculations).
+4. **Tier 4 (Static Fallback)**: If rate-limits are hit or users run completely offline, the system safely triggers an initialized synthetic fallback simulation dataset dynamically generated in JS to ensure the UI visually succeeds in classroom environments.
 
 ---
 
