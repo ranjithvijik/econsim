@@ -1358,6 +1358,33 @@
             return null;
         }
 
+        // --- FRED Direct API Configuration ---
+        const FRED_API_KEY = '__FRED_API_KEY__';
+        const FRED_SERIES_MAP = {
+            'FEDFUNDS': { id: 'FEDFUNDS', units: 'lin' },
+            'CPIAUCSL': { id: 'CPIAUCSL', units: 'pc1' }, // Percent Change from Year Ago
+            'UNRATE': { id: 'UNRATE', units: 'lin' },
+            'GDP': { id: 'GDPC1', units: 'pca' }, // Real GDP, Percent Change Annual Rate
+            'CPILFESL': { id: 'CPILFESL', units: 'pc1' }, // Core CPI
+            'PCEPI': { id: 'PCEPI', units: 'pc1' },
+            'DGS2': { id: 'DGS2', units: 'lin' },
+            'DGS10': { id: 'DGS10', units: 'lin' },
+            'ICSA': { id: 'ICSA', units: 'lin' }, // Initial Claims
+            'INDPRO': { id: 'INDPRO', units: 'pc1' }, // Industrial Production
+            'UMCSENT': { id: 'UMCSENT', units: 'lin' }
+        };
+
+        async function fetchFredSeries(seriesId, units = 'lin') {
+            if (FRED_API_KEY === '__FRED_API_KEY__' || !FRED_API_KEY) return null;
+            const url = `https://api.stlouisfed.org/fred/series/observations?series_id=${seriesId}&api_key=${FRED_API_KEY}&file_type=json&sort_order=desc&limit=1&units=${units}`;
+            const data = await fetchViaProxy(url);
+            if (data && data.observations && data.observations.length > 0) {
+                const val = parseFloat(data.observations[0].value);
+                return isNaN(val) ? null : val;
+            }
+            return null;
+        }
+
         async function fetchYahooQuote(symbol) {
             const url = `${LIVE_CONFIG.yahooBase}/${symbol}?interval=1d&range=1d`;
             const data = await fetchViaProxy(url);
@@ -1438,6 +1465,19 @@
                     '10Y Yield': economicState.DGS10,
                     '2Y Yield (proxy)': economicState.DGS2
                 });
+
+                // Tier 3: FRED API Direct Connect (If injected)
+                if (FRED_API_KEY !== '__FRED_API_KEY__' && FRED_API_KEY) {
+                    console.log('📡 Fetching Real-Time Macro Data from FRED...');
+                    const fredPromises = Object.keys(FRED_SERIES_MAP).map(async key => {
+                        const { id, units } = FRED_SERIES_MAP[key];
+                        const val = await fetchFredSeries(id, units);
+                        if (val !== null) economicState[key] = val;
+                    });
+                    
+                    await Promise.allSettled(fredPromises);
+                    console.log('📊 Complete FRED-linked Macro State:', economicState);
+                }
 
                 refreshMacroLinkedExperience();
             } catch (err) {
