@@ -1153,7 +1153,7 @@
                 <div class="sidebar-logo-icon">📊</div>
                 <div>
                     <div class="sidebar-logo-text">EconSim Pro</div>
-                    <div class="sidebar-logo-sub">46 MODULES INCLUDED</div>
+                    <div class="sidebar-logo-sub">63 MODULES INCLUDED</div>
                 </div>
             </div>
 
@@ -1251,6 +1251,31 @@
             <div class="nav-item" onclick="showSection('price-disc')"><span class="nav-icon">💲</span><span>Price Discrimination</span><span class="nav-number">U3</span></div>
             <div class="nav-item" onclick="showSection('lorenz')"><span class="nav-icon">📊</span><span>Lorenz Curve</span><span class="nav-number">U4</span></div>
             <div class="nav-item" onclick="showSection('expected-value')"><span class="nav-icon">🎲</span><span>Expected Value</span><span class="nav-number">U5</span></div>
+
+            <div class="nav-section-title">Macro: Keynesian & Banking</div>
+            <div class="nav-item" onclick="showSection('keynesian-cross')"><span class="nav-icon">📐</span><span>Keynesian Cross</span><span class="nav-number">K1</span></div>
+            <div class="nav-item" onclick="showSection('paradox-thrift')"><span class="nav-icon">💰</span><span>Paradox of Thrift</span><span class="nav-number">K2</span></div>
+            <div class="nav-item" onclick="showSection('fractional-reserve')"><span class="nav-icon">🏦</span><span>Fractional Reserve</span><span class="nav-number">K3</span></div>
+            <div class="nav-item" onclick="showSection('purchasing-power')"><span class="nav-icon">💸</span><span>Purchasing Power</span><span class="nav-number">K4</span></div>
+            <div class="nav-item" onclick="showSection('balance-trade')"><span class="nav-icon">🚢</span><span>Balance of Trade</span><span class="nav-number">K5</span></div>
+
+            <div class="nav-section-title">Micro: Elasticity & Shifts</div>
+            <div class="nav-item" onclick="showSection('demand-shifter')"><span class="nav-icon">➡️</span><span>Demand Shifters</span><span class="nav-number">E1</span></div>
+            <div class="nav-item" onclick="showSection('supply-elasticity')"><span class="nav-icon">📏</span><span>Supply Elasticity</span><span class="nav-number">E2</span></div>
+            <div class="nav-item" onclick="showSection('cross-income-elast')"><span class="nav-icon">🔗</span><span>Cross/Income Elast.</span><span class="nav-number">E3</span></div>
+
+            <div class="nav-section-title">Micro: Production & Markets</div>
+            <div class="nav-item" onclick="showSection('marginal-decision')"><span class="nav-icon">⚖️</span><span>Marginal Decisions</span><span class="nav-number">P1</span></div>
+            <div class="nav-item" onclick="showSection('short-run-prod')"><span class="nav-icon">🏭</span><span>Short-Run Production</span><span class="nav-number">P2</span></div>
+            <div class="nav-item" onclick="showSection('indifference-curves')"><span class="nav-icon">🎯</span><span>Indifference Curves</span><span class="nav-number">P3</span></div>
+            <div class="nav-item" onclick="showSection('monopolistic-comp')"><span class="nav-icon">🏪</span><span>Monopolistic Comp.</span><span class="nav-number">P4</span></div>
+            <div class="nav-item" onclick="showSection('kinked-demand')"><span class="nav-icon">📉</span><span>Kinked Demand</span><span class="nav-number">P5</span></div>
+            <div class="nav-item" onclick="showSection('mrp-labor')"><span class="nav-icon">👷</span><span>MRP & Labor Demand</span><span class="nav-number">P6</span></div>
+
+            <div class="nav-section-title">Welfare & Poverty</div>
+            <div class="nav-item" onclick="showSection('poverty-calc')"><span class="nav-icon">📊</span><span>Poverty Calculator</span><span class="nav-number">W1</span></div>
+            <div class="nav-item" onclick="showSection('unemp-types')"><span class="nav-icon">📋</span><span>Unemployment Types</span><span class="nav-number">W2</span></div>
+            <div class="nav-item" onclick="showSection('productivity-growth')"><span class="nav-icon">⚡</span><span>Productivity</span><span class="nav-number">W3</span></div>
             <div class="sidebar-footer">
                 <div style="color:var(--teal);font-weight:600;margin-bottom:4px;">Economics Simulator Pro v6.0</div>
                 <div>Built with RJBot on BoodleBox</div>
@@ -1263,7 +1288,7 @@
             </div>
             <header class="top-bar">
                 <div class="top-bar-left"><button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button><span
-                        class="ticker-badge">ECONSIM PRO v6</span><span style="font-size:14px;color:var(--gray-200);">46
+                        class="ticker-badge">ECONSIM PRO v6</span><span style="font-size:14px;color:var(--gray-200);">63
                         Modules</span></div>
                 <div class="top-bar-right">
                     <div class="theme-toggle"><button class="theme-toggle-btn active" id="darkBtn"
@@ -2152,6 +2177,236 @@
           else{choiceEl.textContent='Indifferent (EV = Safe)';choiceEl.className='result-value teal';}
         }
 
+
+        function updateKeynesianCross() {
+          const C0=pf('kc-c0'),mpc=pf('kc-mpc'),I=pf('kc-invest'),G=pf('kc-gov');
+          ['kc-c0','kc-mpc','kc-invest','kc-gov'].forEach(function(id){document.getElementById(id+'-val').textContent=document.getElementById(id).value;});
+          const AE=C0+I+G; const Yeq=AE/(1-mpc); const mult=1/(1-mpc);
+          document.getElementById('kc-ae').textContent='$'+AE.toFixed(0);
+          document.getElementById('kc-yeq').textContent='$'+Yeq.toFixed(0);
+          document.getElementById('kc-mult').textContent=mult.toFixed(2);
+          document.getElementById('kc-mps').textContent=(1-mpc).toFixed(2);
+          document.getElementById('kc-impact').textContent='+$'+(100*mult).toFixed(0);
+          document.getElementById('kc-insight').textContent='Each $1 of government spending creates $'+mult.toFixed(2)+' of total output through successive rounds of spending.';
+        }
+
+        function updateParadoxThrift() {
+          const mpc=pf('pt-mpc'),dsav=pf('pt-ds'),income=pf('pt-income');
+          ['pt-mpc','pt-ds','pt-income'].forEach(function(id){document.getElementById(id+'-val').textContent=document.getElementById(id).value;});
+          const mps=1-mpc; const newMPS=Math.min(0.99,mps+dsav/100);
+          const multOld=1/mps, multNew=1/newMPS;
+          const yChange=((multNew-multOld)/multOld)*100;
+          const origSav=income*mps; const newIncome=income*(multNew/multOld); const newSav=newIncome*newMPS;
+          document.getElementById('pt-old-mult').textContent=multOld.toFixed(2);
+          document.getElementById('pt-new-mult').textContent=multNew.toFixed(2);
+          document.getElementById('pt-y-change').textContent=yChange.toFixed(1)+'%';
+          document.getElementById('pt-orig-sav').textContent='$'+origSav.toFixed(0);
+          document.getElementById('pt-new-sav').textContent='$'+newSav.toFixed(0);
+          document.getElementById('pt-paradox').textContent=yChange<0?'✓ Paradox confirmed: saving more → less output. Multiplier falls from '+multOld.toFixed(2)+' to '+multNew.toFixed(2):'No paradox at these levels';
+        }
+
+        function updateFractionalReserve() {
+          const deposit=pf('fr-deposit'),rr=pf('fr-rr')/100;
+          ['fr-deposit','fr-rr'].forEach(function(id){document.getElementById(id+'-val').textContent=document.getElementById(id).value;});
+          const mult=1/rr; const totalCreated=deposit*mult;
+          document.getElementById('fr-mult').textContent=mult.toFixed(1)+'x';
+          document.getElementById('fr-total').textContent='$'+totalCreated.toLocaleString();
+          document.getElementById('fr-reserves').textContent='$'+deposit.toLocaleString();
+          document.getElementById('fr-loans').textContent='$'+(totalCreated-deposit).toLocaleString();
+          document.getElementById('fr-excess').textContent='$0';
+          var rows=''; var d=deposit;
+          for(var i=1;i<=8&&d>1;i++){
+            var res=(d*rr).toFixed(0), loan=(d*(1-rr)).toFixed(0);
+            rows+='<tr style="border-bottom:1px solid var(--gray-700);"><td style="padding:6px;">'+(i===1?'Initial':'Bank '+i)+'</td><td style="text-align:right;padding:6px;">$'+d.toFixed(0)+'</td><td style="text-align:right;padding:6px;">$'+res+'</td><td style="text-align:right;padding:6px;">$'+loan+'</td></tr>';
+            d*=(1-rr);
+          }
+          var tbody=document.getElementById('fr-tbody'); if(tbody) tbody.innerHTML=rows;
+        }
+
+        function updatePurchasingPower() {
+          const amount=pf('pp-amount'),rate=pf('pp-inflation'),years=pf('pp-years');
+          ['pp-amount','pp-inflation','pp-years'].forEach(function(id){document.getElementById(id+'-val').textContent=document.getElementById(id).value;});
+          const futureNominal=amount; const realValue=amount/Math.pow(1+rate/100,years);
+          const loss=amount-realValue; const pctLoss=(loss/amount)*100;
+          const halving=rate>0?(70/rate).toFixed(1):'∞';
+          document.getElementById('pp-nominal').textContent='$'+futureNominal.toLocaleString();
+          document.getElementById('pp-real').textContent='$'+realValue.toFixed(0);
+          document.getElementById('pp-loss').textContent='$'+loss.toFixed(0);
+          document.getElementById('pp-pct-loss').textContent=pctLoss.toFixed(1)+'%';
+          document.getElementById('pp-halving').textContent=halving+' years';
+        }
+
+        function updateBalanceTrade() {
+          const exports=pf('bot-exports'),imports=pf('bot-imports'),capIn=pf('bot-cap-in'),capOut=pf('bot-cap-out');
+          ['bot-exports','bot-imports','bot-cap-in','bot-cap-out'].forEach(function(id){document.getElementById(id+'-val').textContent=document.getElementById(id).value;});
+          const tradeBal=exports-imports; const capBal=capIn-capOut; const bop=tradeBal+capBal;
+          const gdpEst=(exports+imports)/2*5; const ratio=Math.abs(tradeBal)/gdpEst*100;
+          document.getElementById('bot-trade').textContent=(tradeBal>=0?'+':'')+' $'+Math.abs(tradeBal)+'B';
+          document.getElementById('bot-capital').textContent=(capBal>=0?'+':'-')+'$'+Math.abs(capBal)+'B';
+          document.getElementById('bot-bop').textContent=(bop>=0?'+':'-')+'$'+Math.abs(bop)+'B';
+          document.getElementById('bot-status').textContent=tradeBal<0?'Trade Deficit':'Trade Surplus';
+          document.getElementById('bot-status').className=tradeBal<0?'result-value red':'result-value green';
+          document.getElementById('bot-ratio').textContent=ratio.toFixed(1)+'%';
+        }
+
+        function updateDemandShifter() {
+          const income=pf('ds-income'),tastes=pf('ds-tastes'),sub=pf('ds-sub'),comp=pf('ds-comp'),buyers=pf('ds-buyers');
+          ['ds-income','ds-tastes','ds-sub','ds-comp','ds-buyers'].forEach(function(id){document.getElementById(id+'-val').textContent=document.getElementById(id).value;});
+          const incEff=income*0.5, tasteEff=tastes*2, subEff=-sub*0.3+comp*0.2, buyEff=buyers*0.4;
+          const shift=incEff+tasteEff+subEff+buyEff;
+          document.getElementById('ds-shift').textContent=(shift>=0?'+':'')+shift.toFixed(1);
+          document.getElementById('ds-direction').textContent=shift>0?'→ Demand shifts RIGHT':'← Demand shifts LEFT';
+          document.getElementById('ds-inc-eff').textContent=(incEff>=0?'+':'')+incEff.toFixed(1);
+          document.getElementById('ds-taste-eff').textContent=(tasteEff>=0?'+':'')+tasteEff.toFixed(1);
+          document.getElementById('ds-sub-eff').textContent=(subEff>=0?'+':'')+subEff.toFixed(1);
+          document.getElementById('ds-buy-eff').textContent=(buyEff>=0?'+':'')+buyEff.toFixed(1);
+        }
+
+        function updateSupplyElasticity() {
+          const dqs=pf('se-dqs'),dp=pf('se-dp');
+          ['se-dqs','se-dp'].forEach(function(id){document.getElementById(id+'-val').textContent=document.getElementById(id).value;});
+          const es=dp!==0?dqs/dp:0;
+          document.getElementById('se-elasticity').textContent=es.toFixed(2);
+          document.getElementById('se-type').textContent=Math.abs(es)>1?'Elastic':Math.abs(es)<1?'Inelastic':'Unit Elastic';
+        }
+
+        function updateCrossIncomeElasticity() {
+          const dqx=pf('cie-dqx'),dpy=pf('cie-dpy'),di=pf('cie-di');
+          ['cie-dqx','cie-dpy','cie-di'].forEach(function(id){document.getElementById(id+'-val').textContent=document.getElementById(id).value;});
+          const crossE=dpy!==0?dqx/dpy:0; const incomeE=di!==0?dqx/di:0;
+          document.getElementById('cie-cross').textContent=crossE.toFixed(2);
+          document.getElementById('cie-cross-type').textContent=crossE>0?'Substitutes':crossE<0?'Complements':'Independent';
+          document.getElementById('cie-income').textContent=incomeE.toFixed(2);
+          document.getElementById('cie-income-type').textContent=incomeE>0?(incomeE>1?'Luxury/Superior':'Normal Good'):'Inferior Good';
+        }
+
+        function updateMarginalDecision() {
+          const mb=pf('md-mb'),mc=pf('md-mc'),q=pf('md-q');
+          ['md-mb','md-mc','md-q'].forEach(function(id){document.getElementById(id+'-val').textContent=document.getElementById(id).value;});
+          const mbAtQ=mb-2*q, mcAtQ=mc+1.5*q;
+          const optQ=(mb-mc)/3.5;
+          document.getElementById('md-mb-at-q').textContent='$'+mbAtQ.toFixed(2);
+          document.getElementById('md-mc-at-q').textContent='$'+mcAtQ.toFixed(2);
+          document.getElementById('md-net').textContent='$'+(mbAtQ-mcAtQ).toFixed(2);
+          document.getElementById('md-net').className=mbAtQ>=mcAtQ?'result-value green':'result-value red';
+          document.getElementById('md-optimal-q').textContent=optQ.toFixed(1);
+          document.getElementById('md-decision').textContent=mbAtQ>mcAtQ+0.5?'✓ Increase Q (MB>MC)':mbAtQ<mcAtQ-0.5?'✗ Decrease Q (MC>MB)':'★ Optimal (MB≈MC)';
+        }
+
+        function updateShortRunProduction() {
+          const workers=pf('srp-workers'),tech=pf('srp-tech2');
+          ['srp-workers','srp-tech2'].forEach(function(id){document.getElementById(id+'-val').textContent=document.getElementById(id).value;});
+          const tp=Math.max(0,tech*workers-0.5*workers*workers);
+          const mp=workers>0?Math.max(0,tech-workers):0;
+          const ap=workers>0?tp/workers:0;
+          const optWorkers=tech; // where MP=0
+          document.getElementById('srp-tp').textContent=tp.toFixed(1);
+          document.getElementById('srp-mp').textContent=mp.toFixed(1);
+          document.getElementById('srp-ap').textContent=ap.toFixed(1);
+          document.getElementById('srp-optimal').textContent=Math.min(optWorkers,15);
+          document.getElementById('srp-stage').textContent=mp>ap?'Stage I (MP>AP — increasing returns)':mp>0?'Stage II (0<MP<AP — optimal zone)':'Stage III (MP<0 — negative returns)';
+        }
+
+        function updateIndifferenceCurve() {
+          const M=pf('ic-income'),px=pf('ic-px'),py=pf('ic-py');
+          ['ic-income','ic-px','ic-py'].forEach(function(id){document.getElementById(id+'-val').textContent=document.getElementById(id).value;});
+          const optX=M/(2*px), optY=M/(2*py);
+          const optU=Math.sqrt(optX*optY);
+          document.getElementById('ic-opt-x').textContent=optX.toFixed(1);
+          document.getElementById('ic-opt-y').textContent=optY.toFixed(1);
+          document.getElementById('ic-opt-u').textContent=optU.toFixed(2);
+          document.getElementById('ic-mrs').textContent=(py/px).toFixed(2);
+          document.getElementById('ic-spent').textContent='$'+(px*optX+py*optY).toFixed(0);
+        }
+
+        function updateMonopolisticComp() {
+          const a=pf('mc2-a'),mc=pf('mc2-mc'),n=pf('mc2-firms');
+          ['mc2-a','mc2-mc','mc2-firms'].forEach(function(id){document.getElementById(id+'-val').textContent=document.getElementById(id).value;});
+          const firmDemand=a/n;
+          const q=(firmDemand-mc)/2, p=(firmDemand+mc)/2;
+          const profit=(p-mc)*q;
+          document.getElementById('mc2-sr-p').textContent='$'+p.toFixed(2);
+          document.getElementById('mc2-sr-q').textContent=q.toFixed(1);
+          document.getElementById('mc2-sr-pi').textContent='$'+profit.toFixed(0);
+          document.getElementById('mc2-lr-pi').textContent='$0 (free entry)';
+          document.getElementById('mc2-excess-cap').textContent='Yes — P > min ATC';
+        }
+
+        function updateKinkedDemand() {
+          const p=pf('kd-price'),mc=pf('kd-mc');
+          ['kd-price','kd-mc'].forEach(function(id){document.getElementById(id+'-val').textContent=document.getElementById(id).value;});
+          const upperElast=3, lowerElast=1.2;
+          const mrAbove=p*(1-1/upperElast), mrBelow=p*(1-1/lowerElast);
+          document.getElementById('kd-mr-above').textContent='$'+mrAbove.toFixed(2);
+          document.getElementById('kd-mr-below').textContent='$'+mrBelow.toFixed(2);
+          document.getElementById('kd-gap').textContent='$'+(mrAbove-mrBelow).toFixed(2);
+          document.getElementById('kd-sticky').textContent=mc>=mrBelow&&mc<=mrAbove?'✓ Price is STICKY (MC in gap)':'Price may change';
+        }
+
+        function updateMRP() {
+          const wage=pf('mrp-wage'),productPrice=pf('mrp-price'),techBase=pf('mrp-tech2');
+          ['mrp-wage','mrp-price','mrp-tech2'].forEach(function(id){document.getElementById(id+'-val').textContent=document.getElementById(id).value;});
+          var optL=0, trp=0;
+          for(var L=1;L<=20;L++){
+            var mp=Math.max(0,techBase-2*L);
+            var mrp=mp*productPrice;
+            if(mrp>=wage){optL=L;trp+=mrp;} else break;
+          }
+          document.getElementById('mrp-optimal-l').textContent=optL;
+          document.getElementById('mrp-at-opt').textContent='$'+(Math.max(0,techBase-2*optL)*productPrice).toFixed(0);
+          document.getElementById('mrp-total-cost').textContent='$'+(wage*optL);
+          document.getElementById('mrp-trp').textContent='$'+trp;
+          document.getElementById('mrp-surplus').textContent='$'+(trp-wage*optL);
+        }
+
+        function updatePovertyCalc() {
+          const income=pf('pov-income'),familySize=pf('pov-family');
+          ['pov-income','pov-family'].forEach(function(id){document.getElementById(id+'-val').textContent=document.getElementById(id).value;});
+          const threshold=13000+4500*(familySize-1);
+          const ratio=income/threshold;
+          const gap=Math.max(0,threshold-income);
+          const depth=gap/threshold*100;
+          document.getElementById('pov-threshold').textContent='$'+threshold.toLocaleString();
+          document.getElementById('pov-ratio').textContent=ratio.toFixed(2);
+          var statusEl=document.getElementById('pov-status');
+          if(income<threshold){statusEl.textContent='Below Poverty Line';statusEl.className='result-value red';}
+          else{statusEl.textContent='Above Poverty Line';statusEl.className='result-value green';}
+          document.getElementById('pov-gap').textContent=gap>0?'$'+gap.toLocaleString():'$0';
+          document.getElementById('pov-depth').textContent=depth.toFixed(1)+'%';
+        }
+
+        var unempScenariosData = [
+          {text:'Recent grad searching for first job',type:'Frictional',icon:'🔄'},
+          {text:'Coal miner replaced by automation',type:'Structural',icon:'🏗️'},
+          {text:'Worker laid off during recession',type:'Cyclical',icon:'📉'},
+          {text:'Ski instructor in summer',type:'Seasonal',icon:'🌊'},
+          {text:'Quit to relocate to new city',type:'Frictional',icon:'🔄'},
+          {text:'Factory worker whose skills are outdated',type:'Structural',icon:'🏗️'},
+          {text:'Construction worker in winter',type:'Seasonal',icon:'🌊'},
+          {text:'Accountant between jobs by choice',type:'Frictional',icon:'🔄'},
+          {text:'Retail worker fired in downturn',type:'Cyclical',icon:'📉'},
+          {text:'Typesetter replaced by desktop publishing',type:'Structural',icon:'🏗️'}
+        ];
+        function randomizeUnempScenarios() {
+          var shuffled=unempScenariosData.sort(function(){return 0.5-Math.random();}).slice(0,5);
+          var container=document.getElementById('unemp-scenarios'); if(!container) return;
+          container.innerHTML=shuffled.map(function(s,i){
+            return '<div style="background:var(--gray-800);padding:10px;border-radius:8px;"><p style="color:var(--gray-200);font-size:14px;margin:0 0 6px;">'+s.text+'</p><span style="background:var(--teal);color:#000;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:600;">'+s.icon+' '+s.type+'</span></div>';
+          }).join('');
+        }
+
+        function updateProductivityGrowth() {
+          const K=pf('pg-capital'),L=pf('pg-labor'),A=pf('pg-tech');
+          ['pg-capital','pg-labor','pg-tech'].forEach(function(id){document.getElementById(id+'-val').textContent=document.getElementById(id).value;});
+          const Y=A*Math.pow(K,0.33)*Math.pow(L,0.67);
+          const yPerL=Y/L, kPerL=K/L;
+          document.getElementById('pg-output').textContent=Y.toFixed(1);
+          document.getElementById('pg-productivity').textContent=yPerL.toFixed(2);
+          document.getElementById('pg-capital-intensity').textContent=kPerL.toFixed(2);
+          document.getElementById('pg-cap-contrib').textContent='33%';
+          document.getElementById('pg-lab-contrib').textContent='67%';
+        }
+
         function refreshAllCharts() { [updateSupplyDemand, updateCosts, updateMarketStructures, updateRevProfit, updateReactionFunctions, updateElasticity, updateADAS, updateFiscal, updateMonetary, updatePhillips, updateGrowth, updatePPF, updateBudgetConstraint, updateLorenz].forEach(f => { if (typeof f === 'function') try { f(); } catch (e) { } }); if (stockPriceChart) updateStockChart(); }
 
         document.addEventListener('DOMContentLoaded', function () {
@@ -2170,6 +2425,12 @@
             updateUnempRate(); updateCPICalc(); updateCompAdvantage();
             updateUtilityMax(); updatePerfComp(); updatePriceDisc();
             updateLorenz(); updateExpectedValue(); updateTariff();
+            updateKeynesianCross(); updateParadoxThrift(); updateFractionalReserve();
+            updatePurchasingPower(); updateBalanceTrade();
+            updateDemandShifter(); updateSupplyElasticity(); updateCrossIncomeElasticity();
+            updateMarginalDecision(); updateShortRunProduction(); updateIndifferenceCurve();
+            updateMonopolisticComp(); updateKinkedDemand(); updateMRP();
+            updatePovertyCalc(); randomizeUnempScenarios(); updateProductivityGrowth();
             currentStockData = demoStockData['AAPL'];
             displayStockData(currentStockData);
             updateStockChart('AAPL', '1mo');
@@ -2187,7 +2448,7 @@
                 });
                 updateTicker();
             }, 5000);
-            console.log('EconSim Pro v7.0 — All 46 modules loaded with updated subtitles!');
+            console.log('EconSim Pro v7.0 — All 63 modules loaded with updated subtitles!');
         });
 
         function buildAllSections() {
@@ -4476,6 +4737,505 @@
   </div>
 </div>
 </section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- WAVE 2: REMAINING SIMULATORS                              -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+
+<!-- K1: KEYNESIAN CROSS -->
+<section id="keynesian-cross" class="section">
+<div class="section-header">
+  <span class="section-label">KEYNESIAN 01</span>
+  <h2 class="section-title">Keynesian Cross & Spending Multiplier</h2>
+  <p class="section-subtitle">Determine equilibrium output where planned expenditure equals actual output. The spending multiplier amplifies changes in autonomous spending.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Macro 3e · Ch.12</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">📐 Aggregate Expenditure</div>
+    ${sl('kc-c0','Autonomous Consumption (C₀)',50,500,200,10,'updateKeynesianCross')}
+    ${sl('kc-mpc','MPC',0.1,0.95,0.75,0.01,'updateKeynesianCross')}
+    ${sl('kc-invest','Investment (I)',50,500,150,10,'updateKeynesianCross')}
+    ${sl('kc-gov','Government (G)',50,500,200,10,'updateKeynesianCross')}
+    <div class="formula-block"><span class="formula-label">Keynesian Cross</span>AE = C₀ + MPC·Y + I + G<br>Y* = AE / (1 - MPC)<br>Multiplier = 1 / (1 - MPC)</div>
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Equilibrium Results</div>
+    <div class="grid-2" style="gap:10px;">
+      <div class="kpi-card"><div class="kpi-label">Equilibrium Y*</div><div class="kpi-val teal" id="kc-yeq">$2,200</div></div>
+      <div class="kpi-card gold"><div class="kpi-label">Multiplier</div><div class="kpi-val" id="kc-mult">4.00</div></div>
+    </div>
+    <div class="result-box" style="margin-top:12px;">
+      <div class="result-item"><span class="result-label">Autonomous Expenditure</span><span class="result-value" id="kc-ae">$550</span></div>
+      <div class="result-item"><span class="result-label">MPS (1-MPC)</span><span class="result-value" id="kc-mps">0.25</span></div>
+      <div class="result-item"><span class="result-label">ΔG = +$100 → ΔY</span><span class="result-value green" id="kc-impact">+$400</span></div>
+    </div>
+    <div class="insight-card" style="margin-top:12px;"><div class="insight-label">💡 Multiplier Effect</div><p id="kc-insight">Each $1 of government spending creates $4 of total output through successive rounds of spending.</p></div>
+  </div>
+</div>
+</section>
+
+<!-- K2: PARADOX OF THRIFT -->
+<section id="paradox-thrift" class="section">
+<div class="section-header">
+  <span class="section-label">KEYNESIAN 02</span>
+  <h2 class="section-title">Paradox of Thrift</h2>
+  <p class="section-subtitle">When everyone saves more, total output falls — potentially reducing total savings. A key Keynesian insight.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Macro 3e · Ch.12</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">💰 Savings Parameters</div>
+    ${sl('pt-mpc','Original MPC',0.5,0.95,0.80,0.01,'updateParadoxThrift')}
+    ${sl('pt-ds','Savings Increase (%)',0,30,10,1,'updateParadoxThrift','','')}
+    ${sl('pt-income','Initial Income ($)',1000,5000,2000,100,'updateParadoxThrift','$')}
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Paradox Results</div>
+    <div class="result-box">
+      <div class="result-item"><span class="result-label">Old Multiplier</span><span class="result-value teal" id="pt-old-mult">5.00</span></div>
+      <div class="result-item"><span class="result-label">New Multiplier</span><span class="result-value gold" id="pt-new-mult">3.33</span></div>
+      <div class="result-item"><span class="result-label">Output Change</span><span class="result-value red" id="pt-y-change">−33.3%</span></div>
+      <div class="result-item"><span class="result-label">Original Savings</span><span class="result-value" id="pt-orig-sav">$400</span></div>
+      <div class="result-item"><span class="result-label">New Savings</span><span class="result-value" id="pt-new-sav">$400</span></div>
+    </div>
+    <div class="insight-card" style="margin-top:12px;"><div class="insight-label">🔄 Paradox</div><p id="pt-paradox">✓ Paradox confirmed: saving more → less output</p></div>
+  </div>
+</div>
+</section>
+
+<!-- K3: FRACTIONAL RESERVE BANKING -->
+<section id="fractional-reserve" class="section">
+<div class="section-header">
+  <span class="section-label">KEYNESIAN 03</span>
+  <h2 class="section-title">Fractional Reserve Banking & Money Creation</h2>
+  <p class="section-subtitle">See how a single deposit creates multiples of money through the banking system via the money multiplier.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Macro 3e · Ch.14</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">🏦 Banking Parameters</div>
+    ${sl('fr-deposit','Initial Deposit ($)',100,10000,1000,100,'updateFractionalReserve','$')}
+    ${sl('fr-rr','Reserve Requirement (%)',1,50,10,1,'updateFractionalReserve','','')}
+    <div class="formula-block"><span class="formula-label">Money Multiplier</span>m = 1 / rr<br>Total Money Created = Deposit × m</div>
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Money Creation</div>
+    <div class="grid-2" style="gap:10px;">
+      <div class="kpi-card"><div class="kpi-label">Money Multiplier</div><div class="kpi-val teal" id="fr-mult">10.0x</div></div>
+      <div class="kpi-card gold"><div class="kpi-label">Total Money Created</div><div class="kpi-val" id="fr-total">$10,000</div></div>
+    </div>
+    <div class="result-box" style="margin-top:12px;">
+      <div class="result-item"><span class="result-label">Total Reserves</span><span class="result-value" id="fr-reserves">$1,000</span></div>
+      <div class="result-item"><span class="result-label">Total Loans</span><span class="result-value green" id="fr-loans">$9,000</span></div>
+      <div class="result-item"><span class="result-label">Excess Reserves</span><span class="result-value" id="fr-excess">$0</span></div>
+    </div>
+    <div style="margin-top:12px;overflow-x:auto;"><table style="width:100%;font-size:13px;color:var(--gray-200);border-collapse:collapse;"><thead><tr style="border-bottom:1px solid var(--gray-600);"><th style="text-align:left;padding:6px;">Round</th><th style="text-align:right;padding:6px;">Deposit</th><th style="text-align:right;padding:6px;">Reserve</th><th style="text-align:right;padding:6px;">Loan</th></tr></thead><tbody id="fr-tbody"></tbody></table></div>
+  </div>
+</div>
+</section>
+
+<!-- K4: PURCHASING POWER -->
+<section id="purchasing-power" class="section">
+<div class="section-header">
+  <span class="section-label">KEYNESIAN 04</span>
+  <h2 class="section-title">Purchasing Power & Inflation Erosion</h2>
+  <p class="section-subtitle">See how inflation erodes the real value of money over time.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Macro 3e · Ch.9</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">💸 Parameters</div>
+    ${sl('pp-amount','Starting Amount ($)',100,100000,10000,100,'updatePurchasingPower','$')}
+    ${sl('pp-inflation','Annual Inflation (%)',0,20,3,0.5,'updatePurchasingPower','','')}
+    ${sl('pp-years','Years',1,50,10,1,'updatePurchasingPower')}
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Erosion Results</div>
+    <div class="grid-2" style="gap:10px;">
+      <div class="kpi-card"><div class="kpi-label">Nominal Value</div><div class="kpi-val gold" id="pp-nominal">$10,000</div></div>
+      <div class="kpi-card green"><div class="kpi-label">Real Value</div><div class="kpi-val" id="pp-real">$7,441</div></div>
+    </div>
+    <div class="result-box" style="margin-top:12px;">
+      <div class="result-item"><span class="result-label">Purchasing Power Lost</span><span class="result-value red" id="pp-loss">$2,559</span></div>
+      <div class="result-item"><span class="result-label">% Erosion</span><span class="result-value" id="pp-pct-loss">25.6%</span></div>
+      <div class="result-item"><span class="result-label">Rule of 70 (halving)</span><span class="result-value" id="pp-halving">23.3 years</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- K5: BALANCE OF TRADE -->
+<section id="balance-trade" class="section">
+<div class="section-header">
+  <span class="section-label">KEYNESIAN 05</span>
+  <h2 class="section-title">Balance of Trade & Payments</h2>
+  <p class="section-subtitle">Compute trade balance, capital account, and overall balance of payments.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Macro 3e · Ch.10</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">🌍 Trade Flows ($Billions)</div>
+    ${sl('bot-exports','Exports',100,3000,1800,50,'updateBalanceTrade')}
+    ${sl('bot-imports','Imports',100,3000,2400,50,'updateBalanceTrade')}
+    ${sl('bot-cap-in','Capital Inflows',50,1500,700,50,'updateBalanceTrade')}
+    ${sl('bot-cap-out','Capital Outflows',50,1500,500,50,'updateBalanceTrade')}
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Balance of Payments</div>
+    <div class="result-box">
+      <div class="result-item"><span class="result-label">Trade Balance</span><span class="result-value teal" id="bot-trade">−$600B</span></div>
+      <div class="result-item"><span class="result-label">Capital Account</span><span class="result-value gold" id="bot-capital">+$200B</span></div>
+      <div class="result-item"><span class="result-label">Balance of Payments</span><span class="result-value" id="bot-bop">−$400B</span></div>
+      <div class="result-item"><span class="result-label">Trade Status</span><span class="result-value red" id="bot-status">Trade Deficit</span></div>
+      <div class="result-item"><span class="result-label">Trade-to-GDP Ratio</span><span class="result-value" id="bot-ratio">16.8%</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- E1: DEMAND SHIFTERS -->
+<section id="demand-shifter" class="section">
+<div class="section-header">
+  <span class="section-label">ELASTICITY 01</span>
+  <h2 class="section-title">Demand Shifter Simulator</h2>
+  <p class="section-subtitle">Explore the determinants of demand: income, tastes, substitute/complement prices, and number of buyers.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Micro 3e · Ch.3</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">➡️ Shift Determinants</div>
+    ${sl('ds-income','Income Change (%)','-50',50,10,5,'updateDemandShifter','','')}
+    ${sl('ds-tastes','Taste/Preference Index','-10',10,2,1,'updateDemandShifter')}
+    ${sl('ds-sub','Substitute Price Change (%)','-50',50,0,5,'updateDemandShifter','','')}
+    ${sl('ds-comp','Complement Price Change (%)','-50',50,0,5,'updateDemandShifter','','')}
+    ${sl('ds-buyers','Buyer Growth (%)','-20',20,5,1,'updateDemandShifter','','')}
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Shift Analysis</div>
+    <div class="grid-2" style="gap:10px;">
+      <div class="kpi-card"><div class="kpi-label">Net Shift Index</div><div class="kpi-val teal" id="ds-shift">+11.0</div></div>
+      <div class="kpi-card gold"><div class="kpi-label">Direction</div><div class="kpi-val" id="ds-direction">→ RIGHT</div></div>
+    </div>
+    <div class="result-box" style="margin-top:12px;">
+      <div class="result-item"><span class="result-label">Income Effect</span><span class="result-value" id="ds-inc-eff">+5.0</span></div>
+      <div class="result-item"><span class="result-label">Taste Effect</span><span class="result-value" id="ds-taste-eff">+4.0</span></div>
+      <div class="result-item"><span class="result-label">Sub/Comp Effect</span><span class="result-value" id="ds-sub-eff">0.0</span></div>
+      <div class="result-item"><span class="result-label">Buyer Effect</span><span class="result-value" id="ds-buy-eff">+2.0</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- E2: SUPPLY ELASTICITY -->
+<section id="supply-elasticity" class="section">
+<div class="section-header">
+  <span class="section-label">ELASTICITY 02</span>
+  <h2 class="section-title">Price Elasticity of Supply</h2>
+  <p class="section-subtitle">Measure how responsive quantity supplied is to price changes.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Micro 3e · Ch.5</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">📏 Elasticity Inputs</div>
+    ${sl('se-dqs','% Change in Qty Supplied','-50',50,15,1,'updateSupplyElasticity','','')}
+    ${sl('se-dp','% Change in Price','-50',50,10,1,'updateSupplyElasticity','','')}
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Results</div>
+    <div class="grid-2" style="gap:10px;">
+      <div class="kpi-card"><div class="kpi-label">Elasticity of Supply</div><div class="kpi-val teal" id="se-elasticity">1.50</div></div>
+      <div class="kpi-card gold"><div class="kpi-label">Classification</div><div class="kpi-val" id="se-type">Elastic</div></div>
+    </div>
+    <div class="result-box" style="margin-top:12px;">
+      <div class="result-item"><span class="result-label">|Es| > 1</span><span class="result-value">Elastic — responsive</span></div>
+      <div class="result-item"><span class="result-label">|Es| = 1</span><span class="result-value">Unit Elastic</span></div>
+      <div class="result-item"><span class="result-label">|Es| < 1</span><span class="result-value">Inelastic — unresponsive</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- E3: CROSS & INCOME ELASTICITY -->
+<section id="cross-income-elast" class="section">
+<div class="section-header">
+  <span class="section-label">ELASTICITY 03</span>
+  <h2 class="section-title">Cross-Price & Income Elasticity</h2>
+  <p class="section-subtitle">Classify goods as substitutes/complements and normal/inferior using elasticity measures.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Micro 3e · Ch.5</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">🔗 Elasticity Inputs</div>
+    ${sl('cie-dqx','% Change in Qty of X','-50',50,12,1,'updateCrossIncomeElasticity','','')}
+    ${sl('cie-dpy','% Change in Price of Y','-50',50,8,1,'updateCrossIncomeElasticity','','')}
+    ${sl('cie-di','% Change in Income','-50',50,10,1,'updateCrossIncomeElasticity','','')}
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Classification</div>
+    <div class="result-box">
+      <div class="result-item"><span class="result-label">Cross-Price Elasticity</span><span class="result-value teal" id="cie-cross">1.50</span></div>
+      <div class="result-item"><span class="result-label">Relationship</span><span class="result-value gold" id="cie-cross-type">Substitutes</span></div>
+      <div class="result-item"><span class="result-label">Income Elasticity</span><span class="result-value green" id="cie-income">1.20</span></div>
+      <div class="result-item"><span class="result-label">Good Type</span><span class="result-value" id="cie-income-type">Luxury/Superior</span></div>
+    </div>
+    <div class="insight-card" style="margin-top:12px;"><div class="insight-label">💡 Guide</div><p>Cross > 0 = Substitutes · Cross < 0 = Complements<br>Income > 1 = Luxury · 0-1 = Normal · < 0 = Inferior</p></div>
+  </div>
+</div>
+</section>
+
+<!-- P1: MARGINAL DECISIONS -->
+<section id="marginal-decision" class="section">
+<div class="section-header">
+  <span class="section-label">PRODUCTION 01</span>
+  <h2 class="section-title">Marginal Decision-Making</h2>
+  <p class="section-subtitle">The rational decision rule: continue any activity as long as MB ≥ MC.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Micro 3e · Ch.2</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">⚖️ Marginal Analysis</div>
+    ${sl('md-mb','Marginal Benefit (base)',10,100,50,1,'updateMarginalDecision','$')}
+    ${sl('md-mc','Marginal Cost (base)',5,60,15,1,'updateMarginalDecision','$')}
+    ${sl('md-q','Quantity',0,20,5,1,'updateMarginalDecision')}
+    <div class="formula-block"><span class="formula-label">Optimal Rule</span>MB(Q) = 50 - 2Q (diminishing)<br>MC(Q) = 15 + 1.5Q (increasing)<br>Optimal: MB = MC</div>
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Decision</div>
+    <div class="result-box">
+      <div class="result-item"><span class="result-label">MB at Q</span><span class="result-value teal" id="md-mb-at-q">$40.00</span></div>
+      <div class="result-item"><span class="result-label">MC at Q</span><span class="result-value gold" id="md-mc-at-q">$22.50</span></div>
+      <div class="result-item"><span class="result-label">Net Benefit</span><span class="result-value green" id="md-net">$17.50</span></div>
+      <div class="result-item"><span class="result-label">Optimal Q*</span><span class="result-value purple" id="md-optimal-q">10.0</span></div>
+      <div class="result-item"><span class="result-label">Decision</span><span class="result-value" id="md-decision">✓ Increase Q (MB>MC)</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- P2: SHORT-RUN PRODUCTION -->
+<section id="short-run-prod" class="section">
+<div class="section-header">
+  <span class="section-label">PRODUCTION 02</span>
+  <h2 class="section-title">Short-Run Production (TP/MP/AP)</h2>
+  <p class="section-subtitle">Observe total, marginal, and average product as labor increases — demonstrating the law of diminishing returns.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Micro 3e · Ch.7</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">🏭 Production Function</div>
+    ${sl('srp-workers','Number of Workers',0,15,5,1,'updateShortRunProduction')}
+    ${sl('srp-tech','Technology Factor',5,20,10,1,'updateShortRunProduction')}
+    <div class="formula-block"><span class="formula-label">Production Function</span>TP = A·L - 0.5·L²<br>MP = A - L (diminishing)<br>AP = TP / L</div>
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Production Output</div>
+    <div class="result-box">
+      <div class="result-item"><span class="result-label">Total Product (TP)</span><span class="result-value teal" id="srp-tp">37.5</span></div>
+      <div class="result-item"><span class="result-label">Marginal Product (MP)</span><span class="result-value gold" id="srp-mp">5.0</span></div>
+      <div class="result-item"><span class="result-label">Average Product (AP)</span><span class="result-value green" id="srp-ap">7.5</span></div>
+      <div class="result-item"><span class="result-label">Stage of Production</span><span class="result-value" id="srp-stage">Stage II (0<MP<AP)</span></div>
+      <div class="result-item"><span class="result-label">Optimal Workers</span><span class="result-value purple" id="srp-optimal">10</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- P3: INDIFFERENCE CURVES -->
+<section id="indifference-curves" class="section">
+<div class="section-header">
+  <span class="section-label">PRODUCTION 03</span>
+  <h2 class="section-title">Indifference Curves & Optimal Bundle</h2>
+  <p class="section-subtitle">Find the consumer's optimal consumption bundle at the tangency of the budget line and indifference curve.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Micro 3e · Ch.6</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">🎯 Consumer Choice</div>
+    ${sl('ic-income','Income (M)',50,500,200,10,'updateIndifferenceCurve','$')}
+    ${sl('ic-px','Price of X',1,50,10,1,'updateIndifferenceCurve','$')}
+    ${sl('ic-py','Price of Y',1,50,20,1,'updateIndifferenceCurve','$')}
+    <div class="formula-block"><span class="formula-label">Cobb-Douglas Utility</span>U = X⁰·⁵ · Y⁰·⁵<br>Optimal: X* = M/(2Px), Y* = M/(2Py)<br>MRS = MUx/MUy = Y/X = Px/Py</div>
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Optimal Bundle</div>
+    <div class="result-box">
+      <div class="result-item"><span class="result-label">Optimal X*</span><span class="result-value teal" id="ic-opt-x">10.0</span></div>
+      <div class="result-item"><span class="result-label">Optimal Y*</span><span class="result-value gold" id="ic-opt-y">5.0</span></div>
+      <div class="result-item"><span class="result-label">Max Utility</span><span class="result-value green" id="ic-opt-u">7.07</span></div>
+      <div class="result-item"><span class="result-label">MRS at Optimum</span><span class="result-value" id="ic-mrs">0.50</span></div>
+      <div class="result-item"><span class="result-label">Income Spent</span><span class="result-value" id="ic-spent">$200</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- P4: MONOPOLISTIC COMPETITION -->
+<section id="monopolistic-comp" class="section">
+<div class="section-header">
+  <span class="section-label">PRODUCTION 04</span>
+  <h2 class="section-title">Monopolistic Competition</h2>
+  <p class="section-subtitle">Short-run profits attract entry until economic profit = 0 in the long run. Excess capacity persists.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Micro 3e · Ch.10</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">🏪 Market Parameters</div>
+    ${sl('mc2-a','Market Demand Intercept',100,500,300,10,'updateMonopolisticComp')}
+    ${sl('mc2-mc','Marginal Cost',5,50,20,1,'updateMonopolisticComp','$')}
+    ${sl('mc2-firms','Number of Firms',2,50,10,1,'updateMonopolisticComp')}
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Market Outcomes</div>
+    <div class="result-box">
+      <div class="result-item"><span class="result-label">SR Price</span><span class="result-value teal" id="mc2-sr-p">$25.00</span></div>
+      <div class="result-item"><span class="result-label">SR Quantity</span><span class="result-value" id="mc2-sr-q">5.0</span></div>
+      <div class="result-item"><span class="result-label">SR Profit per Firm</span><span class="result-value green" id="mc2-sr-pi">$25</span></div>
+      <div class="result-item"><span class="result-label">LR Profit</span><span class="result-value gold" id="mc2-lr-pi">$0 (free entry)</span></div>
+      <div class="result-item"><span class="result-label">Excess Capacity?</span><span class="result-value" id="mc2-excess-cap">Yes — P > min ATC</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- P5: KINKED DEMAND -->
+<section id="kinked-demand" class="section">
+<div class="section-header">
+  <span class="section-label">PRODUCTION 05</span>
+  <h2 class="section-title">Kinked Demand Curve (Oligopoly)</h2>
+  <p class="section-subtitle">Rivals match price cuts but not increases, creating a kink that explains price rigidity.</p>
+  <span class="source-tag source-perloff">📘 Perloff & Brander 3e · Ch.13</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">📉 Kinked Demand Parameters</div>
+    ${sl('kd-price','Current Price',20,100,50,1,'updateKinkedDemand','$')}
+    ${sl('kd-mc','Marginal Cost',5,80,30,1,'updateKinkedDemand','$')}
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Kink Analysis</div>
+    <div class="result-box">
+      <div class="result-item"><span class="result-label">MR (above kink)</span><span class="result-value teal" id="kd-mr-above">$33.33</span></div>
+      <div class="result-item"><span class="result-label">MR (below kink)</span><span class="result-value gold" id="kd-mr-below">$8.33</span></div>
+      <div class="result-item"><span class="result-label">MR Gap</span><span class="result-value" id="kd-gap">$25.00</span></div>
+      <div class="result-item"><span class="result-label">Price Sticky?</span><span class="result-value green" id="kd-sticky">✓ Price is STICKY</span></div>
+    </div>
+    <div class="insight-card" style="margin-top:12px;"><div class="insight-label">💡 Explanation</div><p>If MC falls within the MR gap, the firm has no incentive to change price. This explains oligopolistic price rigidity.</p></div>
+  </div>
+</div>
+</section>
+
+<!-- P6: MRP & LABOR DEMAND -->
+<section id="mrp-labor" class="section">
+<div class="section-header">
+  <span class="section-label">PRODUCTION 06</span>
+  <h2 class="section-title">MRP & Labor Demand</h2>
+  <p class="section-subtitle">Firms hire workers until MRP = Wage. MRP = MP × Product Price.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Micro 3e · Ch.14</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">👷 Labor Inputs</div>
+    ${sl('mrp-wage','Wage ($/hr)',5,50,15,1,'updateMRP','$')}
+    ${sl('mrp-price','Product Price ($)',5,100,20,1,'updateMRP','$')}
+    ${sl('mrp-tech2','MP Base (Technology)',10,30,20,1,'updateMRP')}
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Hiring Decision</div>
+    <div class="result-box">
+      <div class="result-item"><span class="result-label">Optimal Workers</span><span class="result-value teal" id="mrp-optimal-l">5</span></div>
+      <div class="result-item"><span class="result-label">MRP at Optimal L</span><span class="result-value gold" id="mrp-at-opt">$200</span></div>
+      <div class="result-item"><span class="result-label">Total Labor Cost</span><span class="result-value" id="mrp-total-cost">$75</span></div>
+      <div class="result-item"><span class="result-label">Total Revenue Product</span><span class="result-value green" id="mrp-trp">$1,500</span></div>
+      <div class="result-item"><span class="result-label">Surplus from Labor</span><span class="result-value" id="mrp-surplus">$1,425</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- W1: POVERTY CALCULATOR -->
+<section id="poverty-calc" class="section">
+<div class="section-header">
+  <span class="section-label">WELFARE 01</span>
+  <h2 class="section-title">Poverty Rate & Threshold Calculator</h2>
+  <p class="section-subtitle">Calculate poverty status based on income and family size using federal poverty guidelines.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Micro 3e · Ch.14-15</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">👨‍👩‍👧‍👦 Household Parameters</div>
+    ${sl('pov-income','Annual Income ($)',0,100000,25000,1000,'updatePovertyCalc','$')}
+    ${sl('pov-family','Family Size',1,10,4,1,'updatePovertyCalc')}
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Poverty Analysis</div>
+    <div class="result-box">
+      <div class="result-item"><span class="result-label">Poverty Threshold</span><span class="result-value teal" id="pov-threshold">$26,500</span></div>
+      <div class="result-item"><span class="result-label">Income/Threshold Ratio</span><span class="result-value gold" id="pov-ratio">0.94</span></div>
+      <div class="result-item"><span class="result-label">Poverty Status</span><span class="result-value red" id="pov-status">Below Poverty Line</span></div>
+      <div class="result-item"><span class="result-label">Income Gap</span><span class="result-value" id="pov-gap">$1,500</span></div>
+      <div class="result-item"><span class="result-label">Poverty Depth</span><span class="result-value" id="pov-depth">5.7%</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- W2: UNEMPLOYMENT TYPES SORTER -->
+<section id="unemp-types" class="section">
+<div class="section-header">
+  <span class="section-label">WELFARE 02</span>
+  <h2 class="section-title">Types of Unemployment Classifier</h2>
+  <p class="section-subtitle">Classify unemployment scenarios into frictional, structural, cyclical, and seasonal categories.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Macro 3e · Ch.8</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">📋 Classify These Scenarios</div>
+    <div id="unemp-scenarios" style="display:flex;flex-direction:column;gap:10px;"></div>
+    <button class="btn btn-teal" onclick="randomizeUnempScenarios()" style="margin-top:12px;">🔄 New Scenarios</button>
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Classification Key</div>
+    <div class="result-box">
+      <div class="result-item"><span class="result-label">🔄 Frictional</span><span class="result-value">Voluntary job transitions</span></div>
+      <div class="result-item"><span class="result-label">🏗️ Structural</span><span class="result-value">Skills mismatch / tech change</span></div>
+      <div class="result-item"><span class="result-label">📉 Cyclical</span><span class="result-value">Due to economic downturn</span></div>
+      <div class="result-item"><span class="result-label">🌊 Seasonal</span><span class="result-value">Time-of-year patterns</span></div>
+    </div>
+    <div class="insight-card" style="margin-top:12px;"><div class="insight-label">📖 Natural Rate</div><p>Natural Rate of Unemployment = Frictional + Structural. Cyclical unemployment = 0 at full employment.</p></div>
+  </div>
+</div>
+</section>
+
+<!-- W3: PRODUCTIVITY & GROWTH -->
+<section id="productivity-growth" class="section">
+<div class="section-header">
+  <span class="section-label">WELFARE 03</span>
+  <h2 class="section-title">Productivity & Growth Accounting</h2>
+  <p class="section-subtitle">Use the Cobb-Douglas production function to decompose growth into capital, labor, and technology contributions.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Macro 3e · Ch.7</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">⚡ Production Inputs</div>
+    ${sl('pg-capital','Capital (K)',100,5000,1000,100,'updateProductivityGrowth')}
+    ${sl('pg-labor','Labor (L)',50,1000,500,50,'updateProductivityGrowth')}
+    ${sl('pg-tech','Technology (A)',0.5,3,1,0.1,'updateProductivityGrowth')}
+    <div class="formula-block"><span class="formula-label">Cobb-Douglas</span>Y = A · K^α · L^(1-α), α = 0.33</div>
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Growth Accounting</div>
+    <div class="result-box">
+      <div class="result-item"><span class="result-label">Total Output (Y)</span><span class="result-value teal" id="pg-output">500.0</span></div>
+      <div class="result-item"><span class="result-label">Output per Worker (Y/L)</span><span class="result-value gold" id="pg-productivity">1.00</span></div>
+      <div class="result-item"><span class="result-label">Capital Intensity (K/L)</span><span class="result-value" id="pg-capital-intensity">2.00</span></div>
+      <div class="result-item"><span class="result-label">Capital Contribution</span><span class="result-value" id="pg-cap-contrib">33%</span></div>
+      <div class="result-item"><span class="result-label">Labor Contribution</span><span class="result-value" id="pg-lab-contrib">67%</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
 
 `;
         }

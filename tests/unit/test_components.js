@@ -4,48 +4,63 @@ const { countOccurrences, contains, assert, assertEqual, assertAtLeast } = requi
 
 module.exports = {
   name: 'Interactive Components & KPIs',
-  description: 'Validates that sliders, KPI readouts, formulas, and chart canvas hooks are present.',
+  description: 'Validates sliders, KPI readouts, formulas, charts, and JS functions for all 63 modules.',
   tests: [
     {
-      name: 'Interactive Sliders Exist',
+      name: 'Interactive Sliders (50+)',
       fn: () => {
-        assertAtLeast(countOccurrences('sl('), 30, 'Should have 30+ slider constructor calls across all modules');
+        assertAtLeast(countOccurrences('sl('), 50, 'Should have 50+ slider constructor calls');
       }
     },
     {
-      name: 'Chart Canvas Elements Present',
+      name: 'Chart Canvas Elements (12+)',
       fn: () => {
-        assertAtLeast(countOccurrences('<canvas'), 12, 'Should have 12+ canvas elements for Chart.js renders');
+        assertAtLeast(countOccurrences('<canvas'), 12, 'Should have 12+ canvas elements');
       }
     },
     {
-      name: 'KPI Result Cards Exist',
+      name: 'KPI Cards (40+)',
       fn: () => {
-        assertAtLeast(countOccurrences('class="kpi-card"'), 30, 'Missing KPI blocks');
-        assertAtLeast(countOccurrences('class="kpi-val"'), 30, 'Missing KPI value outputs');
+        assertAtLeast(countOccurrences('class="kpi-card"'), 40, 'Missing KPI blocks');
+        assertAtLeast(countOccurrences('class="kpi-val"'), 40, 'Missing KPI value outputs');
       }
     },
     {
-      name: 'Formula Blocks for Education',
+      name: 'Formula Blocks (20+)',
       fn: () => {
-        assertAtLeast(countOccurrences('class="formula-block"'), 15, 'Expected 15+ mathematical formula blocks');
+        assertAtLeast(countOccurrences('class="formula-block"'), 20, 'Expected 20+ formula blocks');
+      }
+    },
+    {
+      name: 'Result Boxes (25+)',
+      fn: () => {
+        assertAtLeast(countOccurrences('class="result-box"'), 25, 'Expected 25+ result boxes');
+      }
+    },
+    {
+      name: 'Core JS Functions (Wave 1)',
+      fn: () => {
+        ['updateScarcity','updatePPF','updateBudgetConstraint','updateGDPCalc',
+         'updateLorenz','updateExpectedValue','updateCompAdvantage','updateTariff'].forEach(fn => {
+          assert(contains('function '+fn), 'Missing JS function: '+fn);
+        });
+      }
+    },
+    {
+      name: 'Core JS Functions (Wave 2)',
+      fn: () => {
+        ['updateKeynesianCross','updateParadoxThrift','updateFractionalReserve',
+         'updatePurchasingPower','updateBalanceTrade','updateDemandShifter',
+         'updateMarginalDecision','updateShortRunProduction','updateMonopolisticComp',
+         'updateKinkedDemand','updateMRP','updatePovertyCalc','updateProductivityGrowth'].forEach(fn => {
+          assert(contains('function '+fn), 'Missing JS function: '+fn);
+        });
       }
     },
     {
       name: 'Interactive Buttons',
       fn: () => {
         assert(contains('Apply to All Modules'), 'Missing Apply to All Modules button');
-      }
-    },
-    {
-      name: 'New Module JS Functions Registered',
-      fn: () => {
-        assert(contains('function updateScarcity'), 'Missing updateScarcity function');
-        assert(contains('function updatePPF'), 'Missing updatePPF function');
-        assert(contains('function updateBudgetConstraint'), 'Missing updateBudgetConstraint function');
-        assert(contains('function updateGDPCalc'), 'Missing updateGDPCalc function');
-        assert(contains('function updateLorenz'), 'Missing updateLorenz function');
-        assert(contains('function updateExpectedValue'), 'Missing updateExpectedValue function');
       }
     }
   ]

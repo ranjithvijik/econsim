@@ -4,81 +4,71 @@ const { countOccurrences, contains, assert, assertEqual, assertAtLeast } = requi
 
 module.exports = {
   name: 'Simulator Modules & Sections',
-  description: 'Validates the presence and structure of all economic modules plus live markets.',
+  description: 'Validates all 63 economic modules plus live markets.',
   tests: [
     {
-      name: 'Functional Modules are registered in nav',
+      name: 'Nav items present (63+ modules)',
       fn: () => {
-        assertAtLeast(countOccurrences('class="nav-item"'), 40, 'Should have 40+ nav module items');
+        assertAtLeast(countOccurrences('class="nav-item"'), 55, 'Should have 55+ nav items');
       }
     },
     {
-      name: 'All section titles exist (26 original + 20 new)',
+      name: 'All section titles exist (63 total)',
       fn: () => {
-        assertAtLeast(countOccurrences('<h2 class="section-title">'), 46, 'Should have at least 46 section titles');
+        assertAtLeast(countOccurrences('<h2 class="section-title">'), 63, 'Should have at least 63 section titles');
       }
     },
     {
       name: 'Live Markets section exists',
       fn: () => {
-        assert(contains('id="live-markets"'), 'Missing live markets section');
-        assert(contains('Real-Time Market Data'), 'Missing Real-Time Market Data title');
+        assert(contains('id="live-markets"'), 'Missing live markets');
+        assert(contains('Real-Time Market Data'), 'Missing Real-Time Market Data');
       }
     },
     {
-      name: 'Original modules present',
+      name: 'Original 26 modules present',
       fn: () => {
-        assert(contains('id="supply-demand"'), 'Missing supply-demand');
-        assert(contains('id="elasticity"'), 'Missing elasticity');
-        assert(contains('id="production-costs"'), 'Missing production-costs');
-        assert(contains('id="ad-as"'), 'Missing AD-AS');
-        assert(contains('id="solow-growth"'), 'Missing solow-growth');
+        ['supply-demand','elasticity','production-costs','revenue-profit','market-structures',
+         'reaction-functions','bertrand','collusion','entry-deterrence','merger',
+         'game-theory','sequential-games','dynamic-games','mixed-strategy','coordination','behavioral',
+         'externalities','auctions','firm-org','csr-ethics',
+         'ad-as','fiscal-policy','monetary-policy','phillips-curve','solow-growth'].forEach(id => {
+          assert(contains('id="'+id+'"'), 'Missing original module: '+id);
+        });
       }
     },
     {
-      name: 'New Fundamentals modules present',
+      name: 'Wave 1 Fundamentals & Macro modules present',
       fn: () => {
-        assert(contains('id="scarcity-choice"'), 'Missing scarcity-choice');
-        assert(contains('id="ppf-sim"'), 'Missing ppf-sim');
-        assert(contains('id="budget-constraint"'), 'Missing budget-constraint');
-        assert(contains('id="opp-cost"'), 'Missing opp-cost');
-        assert(contains('id="price-controls"'), 'Missing price-controls');
+        ['scarcity-choice','ppf-sim','budget-constraint','opp-cost','price-controls',
+         'labor-market','credit-market','gdp-calc','real-nominal-gdp','growth-rate',
+         'unemp-calc','cpi-calc','comp-advantage','tariff-sim',
+         'utility-max','perf-comp','price-disc','lorenz','expected-value'].forEach(id => {
+          assert(contains('id="'+id+'"'), 'Missing Wave 1 module: '+id);
+        });
       }
     },
     {
-      name: 'New Market/GDP/Trade modules present',
+      name: 'Wave 2 Keynesian, Production & Welfare modules present',
       fn: () => {
-        assert(contains('id="labor-market"'), 'Missing labor-market');
-        assert(contains('id="credit-market"'), 'Missing credit-market');
-        assert(contains('id="gdp-calc"'), 'Missing gdp-calc');
-        assert(contains('id="real-nominal-gdp"'), 'Missing real-nominal-gdp');
-        assert(contains('id="growth-rate"'), 'Missing growth-rate');
-        assert(contains('id="unemp-calc"'), 'Missing unemp-calc');
-        assert(contains('id="cpi-calc"'), 'Missing cpi-calc');
-        assert(contains('id="comp-advantage"'), 'Missing comp-advantage');
-        assert(contains('id="tariff-sim"'), 'Missing tariff-sim');
+        ['keynesian-cross','paradox-thrift','fractional-reserve','purchasing-power','balance-trade',
+         'demand-shifter','supply-elasticity','cross-income-elast',
+         'marginal-decision','short-run-prod','indifference-curves','monopolistic-comp','kinked-demand','mrp-labor',
+         'poverty-calc','unemp-types','productivity-growth'].forEach(id => {
+          assert(contains('id="'+id+'"'), 'Missing Wave 2 module: '+id);
+        });
       }
     },
     {
-      name: 'New Micro modules present',
+      name: 'Section subtitles present',
       fn: () => {
-        assert(contains('id="utility-max"'), 'Missing utility-max');
-        assert(contains('id="perf-comp"'), 'Missing perf-comp');
-        assert(contains('id="price-disc"'), 'Missing price-disc');
-        assert(contains('id="lorenz"'), 'Missing lorenz');
-        assert(contains('id="expected-value"'), 'Missing expected-value');
+        assertAtLeast(countOccurrences('class="section-subtitle"'), 63, 'Missing section subtitles');
       }
     },
     {
-      name: 'Explanations and subtitles present',
+      name: 'Source tags exist throughout',
       fn: () => {
-        assertAtLeast(countOccurrences('class="section-subtitle"'), 46, 'Missing section subtitles');
-      }
-    },
-    {
-      name: 'Source tags exist',
-      fn: () => {
-        assertAtLeast(countOccurrences('class="source-tag'), 10, 'Should have multiple source references');
+        assertAtLeast(countOccurrences('class="source-tag'), 30, 'Should have 30+ source references');
       }
     }
   ]
