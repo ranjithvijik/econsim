@@ -1153,7 +1153,7 @@
                 <div class="sidebar-logo-icon">📊</div>
                 <div>
                     <div class="sidebar-logo-text">EconSim Pro</div>
-                    <div class="sidebar-logo-sub">26 MODULES INCLUDED</div>
+                    <div class="sidebar-logo-sub">46 MODULES INCLUDED</div>
                 </div>
             </div>
 
@@ -1220,6 +1220,37 @@
                     Curve</span><span class="nav-number">24</span></div>
             <div class="nav-item" onclick="showSection('solow-growth')"><span class="nav-icon">🌱</span><span>Economic
                     Growth</span><span class="nav-number">25</span></div>
+
+            <div class="nav-section-title">Fundamentals</div>
+            <div class="nav-item" onclick="showSection('scarcity-choice')"><span class="nav-icon">⚖️</span><span>Scarcity & Choice</span><span class="nav-number">F1</span></div>
+            <div class="nav-item" onclick="showSection('ppf-sim')"><span class="nav-icon">📐</span><span>PPF Simulator</span><span class="nav-number">F2</span></div>
+            <div class="nav-item" onclick="showSection('budget-constraint')"><span class="nav-icon">💰</span><span>Budget Constraint</span><span class="nav-number">F3</span></div>
+            <div class="nav-item" onclick="showSection('opp-cost')"><span class="nav-icon">🎯</span><span>Opportunity Cost</span><span class="nav-number">F4</span></div>
+            <div class="nav-item" onclick="showSection('price-controls')"><span class="nav-icon">🏛️</span><span>Price Controls</span><span class="nav-number">F5</span></div>
+
+            <div class="nav-section-title">Factor & Credit Markets</div>
+            <div class="nav-item" onclick="showSection('labor-market')"><span class="nav-icon">👷</span><span>Labor Market</span><span class="nav-number">M1</span></div>
+            <div class="nav-item" onclick="showSection('credit-market')"><span class="nav-icon">💳</span><span>Credit Market</span><span class="nav-number">M2</span></div>
+
+            <div class="nav-section-title">GDP & National Accounts</div>
+            <div class="nav-item" onclick="showSection('gdp-calc')"><span class="nav-icon">📊</span><span>GDP Calculator</span><span class="nav-number">G1</span></div>
+            <div class="nav-item" onclick="showSection('real-nominal-gdp')"><span class="nav-icon">📉</span><span>Real vs Nominal GDP</span><span class="nav-number">G2</span></div>
+
+            <div class="nav-section-title">Growth, Employment & Prices</div>
+            <div class="nav-item" onclick="showSection('growth-rate')"><span class="nav-icon">📈</span><span>Growth Rate</span><span class="nav-number">G3</span></div>
+            <div class="nav-item" onclick="showSection('unemp-calc')"><span class="nav-icon">👥</span><span>Unemployment</span><span class="nav-number">G5</span></div>
+            <div class="nav-item" onclick="showSection('cpi-calc')"><span class="nav-icon">🛒</span><span>CPI & Inflation</span><span class="nav-number">G7</span></div>
+
+            <div class="nav-section-title">International Trade</div>
+            <div class="nav-item" onclick="showSection('comp-advantage')"><span class="nav-icon">🌍</span><span>Comparative Advantage</span><span class="nav-number">T1</span></div>
+            <div class="nav-item" onclick="showSection('tariff-sim')"><span class="nav-icon">🚢</span><span>Tariffs & Quotas</span><span class="nav-number">T3</span></div>
+
+            <div class="nav-section-title">Micro: Consumer & Producer</div>
+            <div class="nav-item" onclick="showSection('utility-max')"><span class="nav-icon">🎯</span><span>Utility Maximization</span><span class="nav-number">U1</span></div>
+            <div class="nav-item" onclick="showSection('perf-comp')"><span class="nav-icon">⚡</span><span>Perfect Competition</span><span class="nav-number">U2</span></div>
+            <div class="nav-item" onclick="showSection('price-disc')"><span class="nav-icon">💲</span><span>Price Discrimination</span><span class="nav-number">U3</span></div>
+            <div class="nav-item" onclick="showSection('lorenz')"><span class="nav-icon">📊</span><span>Lorenz Curve</span><span class="nav-number">U4</span></div>
+            <div class="nav-item" onclick="showSection('expected-value')"><span class="nav-icon">🎲</span><span>Expected Value</span><span class="nav-number">U5</span></div>
             <div class="sidebar-footer">
                 <div style="color:var(--teal);font-weight:600;margin-bottom:4px;">Economics Simulator Pro v6.0</div>
                 <div>Built with RJBot on BoodleBox</div>
@@ -1232,7 +1263,7 @@
             </div>
             <header class="top-bar">
                 <div class="top-bar-left"><button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button><span
-                        class="ticker-badge">ECONSIM PRO v6</span><span style="font-size:14px;color:var(--gray-200);">26
+                        class="ticker-badge">ECONSIM PRO v6</span><span style="font-size:14px;color:var(--gray-200);">46
                         Modules</span></div>
                 <div class="top-bar-right">
                     <div class="theme-toggle"><button class="theme-toggle-btn active" id="darkBtn"
@@ -1796,7 +1827,332 @@
         function updateMonetary() { const Ms = parseFloat(document.getElementById('mp-ms').value), h = parseFloat(document.getElementById('mp-h').value), Y = parseFloat(document.getElementById('mp-y').value), rr = parseFloat(document.getElementById('mp-rr').value), b = parseFloat(document.getElementById('mp-b').value); document.getElementById('mp-ms-val').textContent = Ms; document.getElementById('mp-h-val').textContent = h; document.getElementById('mp-y-val').textContent = Y; document.getElementById('mp-rr-val').textContent = rr; document.getElementById('mp-b-val').textContent = b; const k = 0.5, r = (k * Y - Ms) / h, mm = 100 / rr, br = 5, dI = -b * (r - br) / 100, dY = dI * 5; document.getElementById('mp-rate').textContent = `${r.toFixed(1)}%`; document.getElementById('mp-mmult').textContent = `${mm.toFixed(1)}x`; document.getElementById('mp-di').textContent = `${dI >= 0 ? '+' : ''}$${dI.toFixed(0)}`; document.getElementById('mp-dy').textContent = `${dY >= 0 ? '+' : ''}$${dY.toFixed(0)}`; document.getElementById('mp-insight').textContent = r < br ? 'Expansionary: lower rates stimulate investment.' : r > br ? 'Contractionary: higher rates reduce investment.' : 'Neutral stance.'; const ctx = document.getElementById('monetaryChart'); if (!ctx) return; const col = getChartColors(), rv = [], md = [], ms = []; for (let ri = 0; ri <= 15; ri++) { rv.push(ri); md.push(k * Y - h * ri); ms.push(Ms); } if (monetaryChart) monetaryChart.destroy(); monetaryChart = new Chart(ctx, { type: 'line', data: { labels: rv, datasets: [{ label: 'Money Demand', data: md, borderColor: col.teal, fill: false, borderWidth: 2 }, { label: 'Money Supply', data: ms, borderColor: col.green, borderDash: [5, 5], fill: false, borderWidth: 2 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: col.text } } }, scales: { x: { title: { display: true, text: 'Interest Rate (%)', color: col.text }, ticks: { color: col.text }, grid: { color: col.grid } }, y: { title: { display: true, text: 'Money', color: col.text }, ticks: { color: col.text }, grid: { color: col.grid } } } } }); }
         function updatePhillips() { const un = parseFloat(document.getElementById('pc2-un').value), pie = parseFloat(document.getElementById('pc2-pie').value), sh = parseFloat(document.getElementById('pc2-shock').value), al = parseFloat(document.getElementById('pc2-alpha').value), u = parseFloat(document.getElementById('pc2-u').value); document.getElementById('pc2-un-val').textContent = `${un.toFixed(1)}%`; document.getElementById('pc2-pie-val').textContent = `${pie.toFixed(1)}%`; document.getElementById('pc2-shock-val').textContent = `${sh.toFixed(1)}%`; document.getElementById('pc2-alpha-val').textContent = al.toFixed(1); document.getElementById('pc2-u-val').textContent = `${u.toFixed(1)}%`; const pi = pie - al * (u - un) + sh, cy = u - un, ok = -2 * cy; let pos = 'At LRPC'; if (u < un - 0.3) pos = 'Left of LRPC'; else if (u > un + 0.3) pos = 'Right of LRPC'; document.getElementById('pc2-pi').textContent = `${pi.toFixed(1)}%`; document.getElementById('pc2-cyclic').textContent = `${cy >= 0 ? '+' : ''}${cy.toFixed(1)}%`; document.getElementById('pc2-okun').textContent = `${ok.toFixed(1)}%`; document.getElementById('pc2-pos').textContent = pos; document.getElementById('pc2-insight').textContent = sh > 0 ? 'Supply shock pushing inflation higher (stagflation risk).' : u < un ? 'Overheating: low unemployment, rising inflation.' : u > un ? 'Slack: high unemployment, falling inflation.' : 'At natural rate.'; const ctx = document.getElementById('phillipsChart'); if (!ctx) return; const col = getChartColors(), uv = [], sr = []; for (let x = 0.5; x <= 12; x += 0.5) { uv.push(x.toFixed(1)); sr.push(pie - al * (x - un) + sh); } if (phillipsChart) phillipsChart.destroy(); phillipsChart = new Chart(ctx, { type: 'line', data: { labels: uv, datasets: [{ label: 'SRPC', data: sr, borderColor: col.teal, fill: false, borderWidth: 2, tension: 0.3 }, { label: 'LRPC', data: uv.map(x => Math.abs(parseFloat(x) - un) < 0.3 ? 10 : null), borderColor: col.purple, borderDash: [5, 5], fill: false, borderWidth: 2 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: col.text } } }, scales: { x: { title: { display: true, text: 'Unemployment (%)', color: col.text }, ticks: { color: col.text }, grid: { color: col.grid } }, y: { title: { display: true, text: 'Inflation (%)', color: col.text }, ticks: { color: col.text }, grid: { color: col.grid } } } } }); }
         function updateGrowth() { const s = parseFloat(document.getElementById('sg-s').value), d = parseFloat(document.getElementById('sg-d').value), n = parseFloat(document.getElementById('sg-n').value), A = parseFloat(document.getElementById('sg-a').value), al = parseFloat(document.getElementById('sg-alpha').value); document.getElementById('sg-s-val').textContent = s.toFixed(2); document.getElementById('sg-d-val').textContent = d.toFixed(2); document.getElementById('sg-n-val').textContent = n.toFixed(3); document.getElementById('sg-a-val').textContent = A.toFixed(2); document.getElementById('sg-alpha-val').textContent = al.toFixed(2); const kS = Math.pow(s * A / (d + n), 1 / (1 - al)), yS = A * Math.pow(kS, al), cS = (1 - s) * yS; let gs = 'At GR'; if (s < al - 0.02) gs = 'Below GR'; else if (s > al + 0.02) gs = 'Above GR'; document.getElementById('sg-kstar').textContent = kS.toFixed(2); document.getElementById('sg-ystar').textContent = yS.toFixed(2); document.getElementById('sg-cstar').textContent = cS.toFixed(2); document.getElementById('sg-golden').textContent = gs; document.getElementById('sg-insight').textContent = s < al ? `Savings ${(s * 100).toFixed(0)}% below Golden Rule ${(al * 100).toFixed(0)}%. Increase savings for higher consumption.` : s > al ? `Savings ${(s * 100).toFixed(0)}% above Golden Rule ${(al * 100).toFixed(0)}%. Dynamically inefficient.` : 'At Golden Rule — max consumption per worker.'; const ctx = document.getElementById('growthChart'); if (!ctx) return; const col = getChartColors(), kv = [], od = [], id = [], bd = []; for (let k = 0.1; k <= 20; k += 0.5) { kv.push(k.toFixed(1)); od.push(A * Math.pow(k, al)); id.push(s * A * Math.pow(k, al)); bd.push((d + n) * k); } if (growthChart) growthChart.destroy(); growthChart = new Chart(ctx, { type: 'line', data: { labels: kv, datasets: [{ label: 'Output f(k)', data: od, borderColor: col.teal, borderWidth: 2, fill: false, tension: 0.3 }, { label: 'Investment s·f(k)', data: id, borderColor: col.green, borderWidth: 2.5, fill: false, tension: 0.3 }, { label: 'Break-even (δ+n)k', data: bd, borderColor: col.red, borderWidth: 2, borderDash: [6, 3], fill: false }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: col.text } } }, scales: { x: { ticks: { color: col.text, maxTicksLimit: 8 }, grid: { color: col.grid }, title: { display: true, text: 'Capital per Worker (k)', color: col.text } }, y: { ticks: { color: col.text }, grid: { color: col.grid }, title: { display: true, text: 'Output / Investment', color: col.text } } } } }); }
-        function refreshAllCharts() { [updateSupplyDemand, updateCosts, updateMarketStructures, updateRevProfit, updateReactionFunctions, updateElasticity, updateADAS, updateFiscal, updateMonetary, updatePhillips, updateGrowth].forEach(f => { if (typeof f === 'function') try { f(); } catch (e) { } }); if (stockPriceChart) updateStockChart(); }
+
+        function pf(id){return parseFloat(document.getElementById(id).value)||0;}
+
+        function updateScarcity() {
+          const budget=pf('sc-budget'),food=pf('sc-food'),shelter=pf('sc-shelter'),edu=pf('sc-education');
+          document.getElementById('sc-budget-val').textContent='$'+budget;
+          document.getElementById('sc-food-val').textContent=food;
+          document.getElementById('sc-shelter-val').textContent=shelter;
+          document.getElementById('sc-education-val').textContent=edu;
+          const total=food+shelter+edu;
+          const fAmt=budget*food/100,sAmt=budget*shelter/100,eAmt=budget*edu/100;
+          const fUtil=(10*Math.sqrt(fAmt)).toFixed(0),sUtil=(9*Math.sqrt(sAmt)).toFixed(0),eUtil=(11*Math.sqrt(eAmt)).toFixed(0);
+          const totalUtil=parseInt(fUtil)+parseInt(sUtil)+parseInt(eUtil);
+          document.getElementById('sc-food-amt').textContent='$'+fAmt.toFixed(0);
+          document.getElementById('sc-shelter-amt').textContent='$'+sAmt.toFixed(0);
+          document.getElementById('sc-edu-amt').textContent='$'+eAmt.toFixed(0);
+          document.getElementById('sc-food-util').textContent=fUtil;
+          document.getElementById('sc-shelter-util').textContent=sUtil;
+          document.getElementById('sc-edu-util').textContent=eUtil;
+          document.getElementById('sc-total-pct').textContent=total+'%';
+          document.getElementById('sc-total-util').textContent=totalUtil;
+          const remaining=budget-(fAmt+sAmt+eAmt);
+          document.getElementById('sc-remaining').textContent='$'+Math.abs(remaining).toFixed(0);
+          const statusEl=document.getElementById('sc-status');
+          if(total>100){statusEl.textContent='⚠️ Over-allocated!';statusEl.className='result-value red';}
+          else if(total<100){statusEl.textContent='⚠️ Under-allocated';statusEl.className='result-value gold';}
+          else{statusEl.textContent='✓ Balanced';statusEl.className='result-value green';}
+          const maxCat=food>=shelter&&food>=edu?'Food':shelter>=edu?'Shelter':'Education';
+          const minCat=food<=shelter&&food<=edu?'Food':shelter<=edu?'Shelter':'Education';
+          document.getElementById('sc-opp-cost').textContent='Highest allocation: '+maxCat+'. Opportunity cost: each additional $1 to '+maxCat+' means $1 less for '+minCat+'. With diminishing returns, reallocating toward '+minCat+' may increase total utility.';
+        }
+
+        let ppfChartInstance;
+        function updatePPF() {
+          const maxA=pf('ppf-maxA'),maxB=pf('ppf-maxB'),pointA=pf('ppf-pointA'),tech=pf('ppf-tech')/100;
+          document.getElementById('ppf-maxA-val').textContent=maxA;
+          document.getElementById('ppf-maxB-val').textContent=maxB;
+          document.getElementById('ppf-pointA-val').textContent=pointA;
+          document.getElementById('ppf-tech-val').textContent=(tech*100).toFixed(0);
+          const effMaxA=maxA*(1+tech),effMaxB=maxB*(1+tech);
+          const clampedA=Math.min(pointA,effMaxA),ratioA=clampedA/effMaxA;
+          const pointB=effMaxB*Math.sqrt(Math.max(0,1-ratioA*ratioA));
+          const denom=Math.sqrt(Math.max(0.01,1-ratioA*ratioA));
+          const oppCost=(effMaxB*ratioA)/(effMaxA*denom);
+          document.getElementById('ppf-a-out').textContent=clampedA.toFixed(0);
+          document.getElementById('ppf-b-out').textContent=pointB.toFixed(0);
+          document.getElementById('ppf-opp').textContent=oppCost.toFixed(2)+' B';
+          document.getElementById('ppf-eff').textContent=pointA<=effMaxA?'On PPF ✓':'Unattainable ✗';
+          const ctx=document.getElementById('ppfChart');if(!ctx)return;
+          const col=getChartColors(),ppfData=[],ppfTechData=[];
+          for(let a=0;a<=maxA;a+=maxA/40){const r=a/maxA;ppfData.push({x:a,y:maxB*Math.sqrt(Math.max(0,1-r*r))});}
+          if(tech>0){for(let a=0;a<=effMaxA;a+=effMaxA/40){const r=a/effMaxA;ppfTechData.push({x:a,y:effMaxB*Math.sqrt(Math.max(0,1-r*r))});}}
+          if(ppfChartInstance)ppfChartInstance.destroy();
+          ppfChartInstance=new Chart(ctx,{type:'scatter',data:{datasets:[{label:'PPF',data:ppfData,showLine:true,borderColor:col.teal,fill:false,borderWidth:2,pointRadius:0},...(tech>0?[{label:'PPF+Tech',data:ppfTechData,showLine:true,borderColor:col.green,borderDash:[5,5],fill:false,borderWidth:2,pointRadius:0}]:[]),{label:'Current',data:[{x:clampedA,y:pointB}],borderColor:col.gold,backgroundColor:col.gold,pointRadius:10,pointStyle:'star'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:col.text}}},scales:{x:{title:{display:true,text:'Good A',color:col.text},ticks:{color:col.text},grid:{color:col.grid},beginAtZero:true},y:{title:{display:true,text:'Good B',color:col.text},ticks:{color:col.text},grid:{color:col.grid},beginAtZero:true}}}});
+        }
+
+        let bcChartInstance;
+        function updateBudgetConstraint() {
+          const M=pf('bc-income'),Px=pf('bc-px'),Py=pf('bc-py'),Qx=pf('bc-qx');
+          document.getElementById('bc-income-val').textContent='$'+M;
+          document.getElementById('bc-px-val').textContent='$'+Px;
+          document.getElementById('bc-py-val').textContent='$'+Py;
+          document.getElementById('bc-qx-val').textContent=Qx;
+          const maxX=M/Px,maxY=M/Py,slope=-Px/Py,chosenY=Math.max(0,(M-Px*Qx)/Py);
+          document.getElementById('bc-max-x').textContent=maxX.toFixed(1);
+          document.getElementById('bc-max-y').textContent=maxY.toFixed(1);
+          document.getElementById('bc-slope').textContent=slope.toFixed(2);
+          document.getElementById('bc-chosen-y').textContent=chosenY.toFixed(1);
+          const ctx=document.getElementById('bcChart');if(!ctx)return;
+          const col=getChartColors();
+          if(bcChartInstance)bcChartInstance.destroy();
+          bcChartInstance=new Chart(ctx,{type:'scatter',data:{datasets:[{label:'Budget Line',data:[{x:0,y:maxY},{x:maxX,y:0}],showLine:true,borderColor:col.teal,fill:false,borderWidth:2,pointRadius:4},{label:'Chosen',data:[{x:Qx,y:chosenY}],borderColor:col.gold,backgroundColor:col.gold,pointRadius:10,pointStyle:'star'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:col.text}}},scales:{x:{title:{display:true,text:'Good X',color:col.text},ticks:{color:col.text},grid:{color:col.grid},beginAtZero:true},y:{title:{display:true,text:'Good Y',color:col.text},ticks:{color:col.text},grid:{color:col.grid},beginAtZero:true}}}});
+        }
+
+        function updateOppCost() {
+          const valA=parseFloat(document.getElementById('oc-valA').value)||0,costA=parseFloat(document.getElementById('oc-costA').value)||0,valB=parseFloat(document.getElementById('oc-valB').value)||0;
+          const optA=document.getElementById('oc-optA').value,optB=document.getElementById('oc-optB').value;
+          const explicit=costA,implicit=valB,totalEconCost=explicit+implicit,econProfit=valA-totalEconCost,acctProfit=valA-explicit;
+          document.getElementById('oc-explicit').textContent='$'+explicit.toLocaleString();
+          document.getElementById('oc-implicit').textContent='$'+implicit.toLocaleString();
+          document.getElementById('oc-total').textContent='$'+totalEconCost.toLocaleString();
+          document.getElementById('oc-econ-profit').textContent='$'+econProfit.toLocaleString();
+          document.getElementById('oc-acct-profit').textContent='$'+acctProfit.toLocaleString();
+          document.getElementById('oc-econ-profit').className=econProfit>=0?'result-value green':'result-value red';
+          document.getElementById('oc-decision').textContent=econProfit>=0?'✓ "'+optA+'" is economically rational. Economic profit of $'+econProfit.toLocaleString()+'.':'⚠️ "'+optA+'" has negative economic profit. Consider "'+optB+'" instead.';
+        }
+
+        function updatePriceControls() {
+          const a=pf('pc2-a'),b=pf('pc2-b2'),c=pf('pc2-c2'),d=pf('pc2-d2'),ceil=pf('pc2-ceiling'),floor=pf('pc2-floor');
+          ['pc2-a','pc2-b2','pc2-c2','pc2-d2','pc2-ceiling','pc2-floor'].forEach(function(id){document.getElementById(id+'-val').textContent=document.getElementById(id).value;});
+          const eqP=(a-c)/(b+d),eqQ=a-b*eqP;
+          document.getElementById('pc2-eq-p').textContent='$'+eqP.toFixed(2);
+          document.getElementById('pc2-eq-q').textContent=eqQ.toFixed(2);
+          var effP=eqP,qd=eqQ,qs=eqQ,gap=0,dwl=0,status='No binding control';
+          if(ceil>0&&ceil<eqP){effP=ceil;qd=Math.max(0,a-b*ceil);qs=Math.max(0,(ceil-c)/d);gap=qd-qs;status='⚠️ BINDING CEILING → Shortage';dwl=0.5*(eqP-ceil)*(eqQ-qs);}
+          else if(floor>0&&floor>eqP){effP=floor;qd=Math.max(0,a-b*floor);qs=(floor-c)/d;gap=qd-qs;status='⚠️ BINDING FLOOR → Surplus';dwl=0.5*(floor-eqP)*(eqQ-qd);}
+          document.getElementById('pc2-eff-p').textContent='$'+effP.toFixed(2);
+          document.getElementById('pc2-qd').textContent=qd.toFixed(2);
+          document.getElementById('pc2-qs').textContent=qs.toFixed(2);
+          document.getElementById('pc2-gap').textContent=gap===0?'0 (Equilibrium)':(gap>0?'Shortage: '+gap.toFixed(1):'Surplus: '+Math.abs(gap).toFixed(1));
+          document.getElementById('pc2-dwl2').textContent='$'+Math.abs(dwl).toFixed(2);
+          document.getElementById('pc2-status2').textContent=status;
+        }
+
+        function updateLaborMarket() {
+          const ldInt=pf('lm-ld-int'),ldS=pf('lm-ld-slope'),lsInt=pf('lm-ls-int'),lsS=pf('lm-ls-slope'),mw=pf('lm-minwage');
+          ['lm-ld-int','lm-ld-slope','lm-ls-int','lm-ls-slope','lm-minwage'].forEach(function(id){document.getElementById(id+'-val').textContent=document.getElementById(id).value;});
+          const eqW=(ldInt-lsInt)/(ldS+lsS),eqL=ldInt-ldS*eqW;
+          document.getElementById('lm-eq-w').textContent='$'+eqW.toFixed(2);
+          document.getElementById('lm-eq-l').textContent=eqL.toFixed(1)+'M';
+          var effW=eqW,ld=eqL,ls=eqL,unemp=0,status='Not binding';
+          if(mw>eqW){effW=mw;ld=Math.max(0,ldInt-ldS*mw);ls=lsInt+lsS*mw;unemp=ls-ld;status='⚠️ BINDING — creates unemployment';}
+          document.getElementById('lm-eff-w').textContent='$'+effW.toFixed(2);
+          document.getElementById('lm-ld').textContent=ld.toFixed(1)+'M';
+          document.getElementById('lm-ls').textContent=ls.toFixed(1)+'M';
+          document.getElementById('lm-unemp').textContent=unemp>0?unemp.toFixed(1)+'M':'0';
+          document.getElementById('lm-mw-status').textContent=status;
+        }
+
+        function updateCreditMarket() {
+          const dd=pf('cm-dd'),ds=pf('cm-ds'),si=pf('cm-si'),ss=pf('cm-ss'),cap=pf('cm-cap');
+          ['cm-dd','cm-ds','cm-si','cm-ss','cm-cap'].forEach(function(id){document.getElementById(id+'-val').textContent=document.getElementById(id).value;});
+          const eqR=(dd-si)/(ds+ss),eqQ=dd-ds*eqR;
+          document.getElementById('cm-eq-r').textContent=eqR.toFixed(1)+'%';
+          document.getElementById('cm-eq-q').textContent='$'+eqQ.toFixed(0)+'B';
+          var effR=eqR,qd=eqQ,qs=eqQ,shortage=0;
+          if(cap>0&&cap<eqR){effR=cap;qd=dd-ds*cap;qs=si+ss*cap;shortage=qd-qs;}
+          document.getElementById('cm-eff-r').textContent=effR.toFixed(1)+'%';
+          document.getElementById('cm-qd2').textContent='$'+qd.toFixed(0)+'B';
+          document.getElementById('cm-qs2').textContent='$'+qs.toFixed(0)+'B';
+          document.getElementById('cm-shortage').textContent=shortage>0?'$'+shortage.toFixed(0)+'B':'$0';
+        }
+
+        function updateGDPCalc() {
+          const c=pf('gdp-c'),i=pf('gdp-i'),g=pf('gdp-g'),x=pf('gdp-x'),m=pf('gdp-m');
+          ['gdp-c','gdp-i','gdp-g','gdp-x','gdp-m'].forEach(function(id){document.getElementById(id+'-val').textContent=document.getElementById(id).value;});
+          const nx=x-m,gdp=c+i+g+nx;
+          document.getElementById('gdp-total').textContent='$'+gdp.toFixed(1)+'T';
+          document.getElementById('gdp-nx').textContent=(nx>=0?'':'')+'$'+nx.toFixed(1)+'T';
+          document.getElementById('gdp-c-share').textContent=(c/gdp*100).toFixed(1)+'%';
+          document.getElementById('gdp-i-share').textContent=(i/gdp*100).toFixed(1)+'%';
+          document.getElementById('gdp-g-share').textContent=(g/gdp*100).toFixed(1)+'%';
+          document.getElementById('gdp-nx-share').textContent=(nx/gdp*100).toFixed(1)+'%';
+        }
+
+        function updateRealNominal() {
+          const nom=pf('rn-nominal'),defl=pf('rn-deflator'),base=pf('rn-base-year');
+          ['rn-nominal','rn-deflator','rn-base-year'].forEach(function(id){document.getElementById(id+'-val').textContent=document.getElementById(id).value;});
+          const real=nom/defl*100,priceEffect=defl-100;
+          document.getElementById('rn-nom-out').textContent='$'+nom.toFixed(1)+'T';
+          document.getElementById('rn-real-out').textContent='$'+real.toFixed(1)+'T';
+          document.getElementById('rn-price-effect').textContent=(priceEffect>=0?'+':'')+priceEffect.toFixed(0)+'%';
+          document.getElementById('rn-gap').textContent='$'+Math.abs(nom-real).toFixed(1)+'T';
+          document.getElementById('rn-interp').textContent=defl>100?'Prices '+(defl-100).toFixed(0)+'% above '+base+' base':defl<100?'Prices '+(100-defl).toFixed(0)+'% below '+base+' base':'At base year prices';
+        }
+
+        function updateGrowthRate() {
+          const g1=pf('gr-gdp1'),g2=pf('gr-gdp2'),yrs=pf('gr-years'),pop=pf('gr-pop-growth');
+          ['gr-gdp1','gr-gdp2','gr-years','gr-pop-growth'].forEach(function(id){document.getElementById(id+'-val').textContent=document.getElementById(id).value;});
+          const totalGrowth=(g2-g1)/g1*100;
+          const annualGrowth=yrs>0?(Math.pow(g2/g1,1/yrs)-1)*100:totalGrowth;
+          const perCapGrowth=annualGrowth-pop;
+          const doubling=annualGrowth>0?(70/annualGrowth).toFixed(1):'∞';
+          const future=g2*Math.pow(1+annualGrowth/100,10);
+          document.getElementById('gr-nominal').textContent=totalGrowth.toFixed(1)+'%';
+          document.getElementById('gr-annual').textContent=annualGrowth.toFixed(1)+'%';
+          document.getElementById('gr-percap').textContent=perCapGrowth.toFixed(1)+'%';
+          document.getElementById('gr-double').textContent=doubling+' years';
+          document.getElementById('gr-future').textContent='$'+future.toFixed(1)+'T';
+        }
+
+        function updateUnempRate() {
+          const emp=pf('ur-employed'),unemp=pf('ur-unemployed'),nilf=pf('ur-nilf');
+          ['ur-employed','ur-unemployed','ur-nilf'].forEach(function(id){document.getElementById(id+'-val').textContent=document.getElementById(id).value;});
+          const lf=emp+unemp,pop=lf+nilf;
+          document.getElementById('ur-lf').textContent=lf+'M';
+          document.getElementById('ur-rate').textContent=(unemp/lf*100).toFixed(1)+'%';
+          document.getElementById('ur-lfpr').textContent=(lf/pop*100).toFixed(1)+'%';
+          document.getElementById('ur-epr').textContent=(emp/pop*100).toFixed(1)+'%';
+        }
+
+        function updateCPICalc() {
+          const base=pf('cpi-base'),current=pf('cpi-current'),prev=pf('cpi-prev');
+          ['cpi-base','cpi-current','cpi-prev'].forEach(function(id){document.getElementById(id+'-val').textContent=document.getElementById(id).value;});
+          const cpi=current/base*100,inflation=(cpi-prev)/prev*100,purchasing=100/cpi*100;
+          document.getElementById('cpi-index').textContent=cpi.toFixed(1);
+          document.getElementById('cpi-inflation').textContent=inflation.toFixed(1)+'%';
+          document.getElementById('cpi-change').textContent=(cpi>=100?'+':'')+(cpi-100).toFixed(1)+'%';
+          document.getElementById('cpi-purchasing').textContent='$'+purchasing.toFixed(2);
+        }
+
+        function updateCompAdvantage() {
+          const aw=pf('ca-a-wine'),ac=pf('ca-a-cloth'),bw=pf('ca-b-wine'),bc=pf('ca-b-cloth');
+          ['ca-a-wine','ca-a-cloth','ca-b-wine','ca-b-cloth'].forEach(function(id){document.getElementById(id+'-val').textContent=document.getElementById(id).value;});
+          const aOcWine=ac/aw,bOcWine=bc/bw;
+          document.getElementById('ca-a-oc-wine').textContent=aOcWine.toFixed(2)+' Cloth';
+          document.getElementById('ca-b-oc-wine').textContent=bOcWine.toFixed(2)+' Cloth';
+          document.getElementById('ca-a-spec').textContent=aOcWine<bOcWine?'Wine':'Cloth';
+          document.getElementById('ca-b-spec').textContent=bOcWine<aOcWine?'Wine':'Cloth';
+          document.getElementById('ca-abs-wine').textContent=aw>bw?'Country A':'Country B';
+          document.getElementById('ca-abs-cloth').textContent=ac>bc?'Country A':'Country B';
+          document.getElementById('ca-gains').textContent=aOcWine!==bOcWine?'✓ Yes — different OCs':'✗ No gains (identical OCs)';
+        }
+
+        function updateTariff() {
+          const domP=pf('tar-dom-p'),wp=pf('tar-world-p'),tariff=pf('tar-tariff'),dSlope=pf('tar-dom-d-slope'),sSlope=pf('tar-dom-s-slope');
+          ['tar-dom-p','tar-world-p','tar-tariff','tar-dom-d-slope','tar-dom-s-slope'].forEach(function(id){document.getElementById(id+'-val').textContent=document.getElementById(id).value;});
+          const a=domP*(dSlope+sSlope);
+          const qd_ft=Math.max(0,a-wp*dSlope),qs_ft=Math.max(0,wp*sSlope),imports_ft=qd_ft-qs_ft;
+          const tp=wp+tariff;
+          const qd_t=Math.max(0,a-tp*dSlope),qs_t=Math.max(0,tp*sSlope),imports_t=Math.max(0,qd_t-qs_t);
+          const govRev=tariff*imports_t,csLoss=0.5*(qd_ft+qd_t)*tariff,psGain=0.5*(qs_ft+qs_t)*tariff,dwl=csLoss-psGain-govRev;
+          document.getElementById('tar-ft-p').textContent='$'+wp;
+          document.getElementById('tar-t-p').textContent='$'+tp;
+          document.getElementById('tar-cs-loss').textContent='−$'+Math.abs(csLoss).toFixed(0);
+          document.getElementById('tar-ps-gain').textContent='+$'+psGain.toFixed(0);
+          document.getElementById('tar-gov-rev').textContent='$'+govRev.toFixed(0);
+          document.getElementById('tar-dwl3').textContent='$'+Math.abs(dwl).toFixed(0);
+          document.getElementById('tar-imp-ft').textContent=imports_ft.toFixed(0);
+          document.getElementById('tar-imp-t').textContent=imports_t.toFixed(0);
+        }
+
+        function updateUtilityMax() {
+          const budget=pf('um-budget'),px=pf('um-px'),py=pf('um-py'),qx=pf('um-qx'),qy=pf('um-qy');
+          ['um-budget','um-px','um-py','um-qx','um-qy'].forEach(function(id){document.getElementById(id+'-val').textContent=document.getElementById(id).value;});
+          const muX=function(q){return Math.max(0,30-4*q);};
+          const muY=function(q){return Math.max(0,25-3*q);};
+          var tuX=0;for(var i=1;i<=qx;i++)tuX+=muX(i);
+          var tuY=0;for(var i=1;i<=qy;i++)tuY+=muY(i);
+          const spending=px*qx+py*qy,remaining=budget-spending;
+          const muxPx=qx>0?(muX(qx)/px).toFixed(2):'N/A';
+          const muyPy=qy>0?(muY(qy)/py).toFixed(2):'N/A';
+          document.getElementById('um-spending').textContent='$'+spending;
+          document.getElementById('um-remaining').textContent='$'+Math.max(0,remaining);
+          document.getElementById('um-tux').textContent=tuX;
+          document.getElementById('um-tuy').textContent=tuY;
+          document.getElementById('um-total').textContent=tuX+tuY;
+          document.getElementById('um-mux-px').textContent=muxPx;
+          document.getElementById('um-muy-py').textContent=muyPy;
+          const optEl=document.getElementById('um-optimal');
+          if(spending>budget){optEl.textContent='⚠️ Over budget!';optEl.className='result-value red';}
+          else if(remaining>=0&&remaining<px&&remaining<py&&muxPx!=='N/A'&&Math.abs(parseFloat(muxPx)-parseFloat(muyPy))<0.5){optEl.textContent='✓ Optimal!';optEl.className='result-value green';}
+          else{optEl.textContent='Adjust quantities';optEl.className='result-value gold';}
+        }
+
+        function updatePerfComp() {
+          const p=pf('pcomp-p'),fc=pf('pcomp-fc'),vc=pf('pcomp-vc'),qc=pf('pcomp-qc');
+          ['pcomp-p','pcomp-fc','pcomp-vc','pcomp-qc'].forEach(function(id){document.getElementById(id+'-val').textContent=document.getElementById(id).value;});
+          const q=qc>0?Math.max(0,(p-vc)/(2*qc)):0;
+          const tr=p*q,tc=fc+vc*q+qc*q*q,profit=tr-tc;
+          const avc=q>0?(vc*q+qc*q*q)/q:0,atc=q>0?tc/q:0;
+          document.getElementById('pcomp-q').textContent=q.toFixed(1);
+          document.getElementById('pcomp-tr').textContent='$'+tr.toFixed(0);
+          document.getElementById('pcomp-tc').textContent='$'+tc.toFixed(0);
+          const profEl=document.getElementById('pcomp-profit');
+          profEl.textContent='$'+profit.toFixed(0);
+          profEl.className=profit>=0?'result-value green':'result-value red';
+          document.getElementById('pcomp-avc').textContent='$'+avc.toFixed(2);
+          document.getElementById('pcomp-atc').textContent='$'+atc.toFixed(2);
+          const decEl=document.getElementById('pcomp-decision');
+          if(p<avc&&q>0){decEl.textContent='SHUTDOWN';decEl.className='result-value red';}
+          else{decEl.textContent='PRODUCE';decEl.className='result-value green';}
+          const lrEl=document.getElementById('pcomp-lr');
+          if(profit>10){lrEl.textContent='Firms ENTER → P falls';lrEl.className='result-value gold';}
+          else if(profit<-10){lrEl.textContent='Firms EXIT → P rises';lrEl.className='result-value red';}
+          else{lrEl.textContent='LR equilibrium (π≈0)';lrEl.className='result-value green';}
+        }
+
+        function updatePriceDisc() {
+          const a=pf('pd-a'),mc=pf('pd-mc'),e1=pf('pd-seg1-elast'),e2=pf('pd-seg2-elast');
+          ['pd-a','pd-mc','pd-seg1-elast','pd-seg2-elast'].forEach(function(id){document.getElementById(id+'-val').textContent=document.getElementById(id).value;});
+          const uniQ=(a-mc)/2,uniP=(a+mc)/2,uniPi=(uniP-mc)*uniQ;
+          const p1=mc*e1/(e1-1),p2=mc*e2/(e2-1);
+          const discPi=(p1-mc)*Math.max(0,(a/2-p1))+(p2-mc)*Math.max(0,(a/2-p2));
+          const firstPi=0.5*(a-mc)*(a-mc);
+          document.getElementById('pd-uniform').textContent='$'+uniP.toFixed(0);
+          document.getElementById('pd-uniform-pi').textContent='$'+uniPi.toFixed(0);
+          document.getElementById('pd-p1').textContent='$'+p1.toFixed(2);
+          document.getElementById('pd-p2').textContent='$'+p2.toFixed(2);
+          document.getElementById('pd-disc-pi').textContent='$'+discPi.toFixed(0);
+          document.getElementById('pd-first-pi').textContent='$'+firstPi.toFixed(0);
+          document.getElementById('pd-gain').textContent='+$'+(discPi-uniPi).toFixed(0);
+        }
+
+        let lorenzChartInstance;
+        function updateLorenz() {
+          const q=[pf('lz-q1'),pf('lz-q2'),pf('lz-q3'),pf('lz-q4'),pf('lz-q5')];
+          ['lz-q1','lz-q2','lz-q3','lz-q4','lz-q5'].forEach(function(id,i){document.getElementById(id+'-val').textContent=q[i];});
+          const total=q.reduce(function(s,v){return s+v;},0);
+          document.getElementById('lz-total').textContent=total+'%';
+          document.getElementById('lz-ratio').textContent=(q[4]/Math.max(1,q[0])).toFixed(1)+'x';
+          const cum=[0];var running=0;
+          q.forEach(function(v){running+=v/total*100;cum.push(running);});
+          const popPts=[0,20,40,60,80,100];
+          var areaUnder=0;
+          for(var i=0;i<5;i++)areaUnder+=0.5*(cum[i]+cum[i+1])*20;
+          const gini=(5000-areaUnder)/5000;
+          document.getElementById('lz-gini').textContent=gini.toFixed(3);
+          var level='Low';
+          if(gini>0.5)level='Very High';else if(gini>0.4)level='High';else if(gini>0.3)level='Moderate';
+          document.getElementById('lz-level').textContent=level;
+          const ctx=document.getElementById('lorenzChart');if(!ctx)return;
+          const col=getChartColors();
+          const lorenzData=popPts.map(function(p,i){return{x:p,y:cum[i]};});
+          const equalData=popPts.map(function(p){return{x:p,y:p};});
+          if(lorenzChartInstance)lorenzChartInstance.destroy();
+          lorenzChartInstance=new Chart(ctx,{type:'scatter',data:{datasets:[{label:'Equality',data:equalData,showLine:true,borderColor:col.green,borderDash:[5,5],fill:false,borderWidth:2,pointRadius:0},{label:'Lorenz',data:lorenzData,showLine:true,borderColor:col.teal,backgroundColor:'rgba(0,180,216,0.1)',fill:true,borderWidth:2,pointRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:col.text}}},scales:{x:{title:{display:true,text:'Cumulative % Population',color:col.text},ticks:{color:col.text},grid:{color:col.grid},min:0,max:100},y:{title:{display:true,text:'Cumulative % Income',color:col.text},ticks:{color:col.text},grid:{color:col.grid},min:0,max:100}}}});
+        }
+
+        function updateExpectedValue() {
+          const good=pf('ev-good'),bad=pf('ev-bad'),prob=pf('ev-prob')/100,safe=pf('ev-safe');
+          ['ev-good','ev-bad','ev-prob','ev-safe'].forEach(function(id){document.getElementById(id+'-val').textContent=document.getElementById(id).value;});
+          const ev=prob*good+(1-prob)*bad;
+          const variance=prob*Math.pow(good-ev,2)+(1-prob)*Math.pow(bad-ev,2);
+          const std=Math.sqrt(variance),premium=ev-safe;
+          document.getElementById('ev-expected').textContent='$'+ev.toLocaleString();
+          document.getElementById('ev-safe-out').textContent='$'+safe.toLocaleString();
+          document.getElementById('ev-premium').textContent=(premium>=0?'+':'-')+'$'+Math.abs(premium).toLocaleString();
+          document.getElementById('ev-std').textContent='$'+std.toFixed(0);
+          const choiceEl=document.getElementById('ev-choice');
+          if(ev>safe){choiceEl.textContent='Take the Gamble (EV > Safe)';choiceEl.className='result-value green';}
+          else if(ev<safe){choiceEl.textContent='Take Safe Option (Safe > EV)';choiceEl.className='result-value gold';}
+          else{choiceEl.textContent='Indifferent (EV = Safe)';choiceEl.className='result-value teal';}
+        }
+
+        function refreshAllCharts() { [updateSupplyDemand, updateCosts, updateMarketStructures, updateRevProfit, updateReactionFunctions, updateElasticity, updateADAS, updateFiscal, updateMonetary, updatePhillips, updateGrowth, updatePPF, updateBudgetConstraint, updateLorenz].forEach(f => { if (typeof f === 'function') try { f(); } catch (e) { } }); if (stockPriceChart) updateStockChart(); }
 
         document.addEventListener('DOMContentLoaded', function () {
             const container = document.getElementById('sectionContainer');
@@ -1808,6 +2164,12 @@
             updateBertrand(); updateEntryDeterrence(); updateCollusion(); calculateHHI();
             updateExternality(); calculateBid(); updateElasticity(); updateTCE(); updateCSR();
             updateADAS(); updateFiscal(); updateMonetary(); updatePhillips(); updateGrowth();
+            updateScarcity(); updatePPF(); updateBudgetConstraint(); updateOppCost();
+            updatePriceControls(); updateLaborMarket(); updateCreditMarket();
+            updateGDPCalc(); updateRealNominal(); updateGrowthRate();
+            updateUnempRate(); updateCPICalc(); updateCompAdvantage();
+            updateUtilityMax(); updatePerfComp(); updatePriceDisc();
+            updateLorenz(); updateExpectedValue(); updateTariff();
             currentStockData = demoStockData['AAPL'];
             displayStockData(currentStockData);
             updateStockChart('AAPL', '1mo');
@@ -1825,7 +2187,7 @@
                 });
                 updateTicker();
             }, 5000);
-            console.log('EconSim Pro v6.0 — All 26 modules loaded with updated subtitles!');
+            console.log('EconSim Pro v7.0 — All 46 modules loaded with updated subtitles!');
         });
 
         function buildAllSections() {
@@ -3493,6 +3855,628 @@
   </div>
 </div>
 </section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- NEW SIMULATORS: FUNDAMENTALS                              -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+
+<!-- F1: SCARCITY & CHOICE -->
+<section id="scarcity-choice" class="section">
+<div class="section-header">
+  <span class="section-label">FUNDAMENTALS 01</span>
+  <h2 class="section-title">Scarcity & Choice Simulator</h2>
+  <p class="section-subtitle">Allocate limited resources among competing wants. Every choice has an opportunity cost — the next best alternative forgone.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Micro 3e · Ch.1</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">⚖️ Resource Allocation</div>
+    <p style="font-size:14px;color:var(--gray-300);margin-bottom:10px;">You have a fixed budget of resources. Allocate between Food, Shelter, and Education.</p>
+    ${sl('sc-budget','Total Budget',100,1000,500,50,'updateScarcity','$')}
+    ${sl('sc-food','Food Allocation (%)',0,100,40,1,'updateScarcity','','')}
+    ${sl('sc-shelter','Shelter Allocation (%)',0,100,35,1,'updateScarcity','','')}
+    ${sl('sc-education','Education Allocation (%)',0,100,25,1,'updateScarcity','','')}
+    <div class="formula-block">
+      <span class="formula-label">Constraint</span>
+      Food% + Shelter% + Education% = 100%<br>
+      Opportunity Cost = Value of next best alternative
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Allocation Results</div>
+    <div class="grid-3" style="gap:10px;">
+      <div class="kpi-card"><div class="kpi-label">Food ($)</div><div class="kpi-val teal" id="sc-food-amt">$200</div><div class="kpi-sub">Utility: <span id="sc-food-util">80</span></div></div>
+      <div class="kpi-card gold"><div class="kpi-label">Shelter ($)</div><div class="kpi-val"><span id="sc-shelter-amt">$175</span></div><div class="kpi-sub">Utility: <span id="sc-shelter-util">70</span></div></div>
+      <div class="kpi-card green"><div class="kpi-label">Education ($)</div><div class="kpi-val"><span id="sc-edu-amt">$125</span></div><div class="kpi-sub">Utility: <span id="sc-edu-util">50</span></div></div>
+    </div>
+    <div class="result-box" style="margin-top:12px;">
+      <div class="result-item"><span class="result-label">Total Allocation</span><span class="result-value" id="sc-total-pct">100%</span></div>
+      <div class="result-item"><span class="result-label">Total Utility</span><span class="result-value teal" id="sc-total-util">200</span></div>
+      <div class="result-item"><span class="result-label">Budget Remaining</span><span class="result-value" id="sc-remaining">$0</span></div>
+      <div class="result-item"><span class="result-label">Status</span><span class="result-value green" id="sc-status">✓ Balanced</span></div>
+    </div>
+    <div class="insight-card" style="margin-top:12px;"><div class="insight-label">💡 Opportunity Cost</div><p id="sc-opp-cost">Every dollar spent on food is a dollar NOT spent on shelter or education.</p></div>
+  </div>
+</div>
+</section>
+
+<!-- F2: PPF -->
+<section id="ppf-sim" class="section">
+<div class="section-header">
+  <span class="section-label">FUNDAMENTALS 02</span>
+  <h2 class="section-title">Production Possibilities Frontier (PPF)</h2>
+  <p class="section-subtitle">Explore opportunity cost, efficiency, and economic growth using the PPF model.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Micro 3e · Ch.1-2</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">📈 PPF Parameters</div>
+    ${sl('ppf-maxA','Max Good A',50,500,200,10,'updatePPF')}
+    ${sl('ppf-maxB','Max Good B',50,500,300,10,'updatePPF')}
+    ${sl('ppf-pointA','Produce Good A',0,500,100,5,'updatePPF')}
+    ${sl('ppf-tech','Technology Boost (%)',0,100,0,5,'updatePPF','','')}
+    <div class="formula-block">
+      <span class="formula-label">PPF Equation</span>
+      (A/MaxA)² + (B/MaxB)² = 1 (concave PPF)<br>
+      Opportunity Cost of A = ΔB/ΔA
+    </div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">Production Possibilities Frontier</div>
+    <div class="chart-subtitle">Points on curve = efficient; inside = inefficient; outside = unattainable</div>
+    <div class="chart-wrap h-320"><canvas id="ppfChart"></canvas></div>
+  </div>
+</div>
+<div class="grid-4" style="margin-top:16px;">
+  <div class="kpi-card"><div class="kpi-label">Good A</div><div class="kpi-val teal" id="ppf-a-out">100</div></div>
+  <div class="kpi-card gold"><div class="kpi-label">Good B</div><div class="kpi-val" id="ppf-b-out">260</div></div>
+  <div class="kpi-card green"><div class="kpi-label">Opp. Cost of A</div><div class="kpi-val" id="ppf-opp">0.87 B</div></div>
+  <div class="kpi-card purple"><div class="kpi-label">Efficiency</div><div class="kpi-val" id="ppf-eff">On PPF ✓</div></div>
+</div>
+</section>
+
+<!-- F3: BUDGET CONSTRAINT -->
+<section id="budget-constraint" class="section">
+<div class="section-header">
+  <span class="section-label">FUNDAMENTALS 03</span>
+  <h2 class="section-title">Budget Constraint Simulator</h2>
+  <p class="section-subtitle">Change income and prices to see how the budget line shifts. The slope = -Px/Py represents the opportunity cost.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Micro 3e · Ch.2</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">💰 Budget Parameters</div>
+    ${sl('bc-income','Income (M)',50,500,200,10,'updateBudgetConstraint','$')}
+    ${sl('bc-px','Price of X (Px)',1,50,10,1,'updateBudgetConstraint','$')}
+    ${sl('bc-py','Price of Y (Py)',1,50,20,1,'updateBudgetConstraint','$')}
+    ${sl('bc-qx','Quantity of X chosen',0,50,10,1,'updateBudgetConstraint')}
+    <div class="formula-block">
+      <span class="formula-label">Budget Constraint</span>
+      M = Px·X + Py·Y<br>
+      Slope = −Px/Py
+    </div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">Budget Line</div>
+    <div class="chart-subtitle">All affordable combinations of X and Y</div>
+    <div class="chart-wrap h-280"><canvas id="bcChart"></canvas></div>
+  </div>
+</div>
+<div class="grid-4" style="margin-top:16px;">
+  <div class="kpi-card"><div class="kpi-label">Max X (M/Px)</div><div class="kpi-val teal" id="bc-max-x">20</div></div>
+  <div class="kpi-card gold"><div class="kpi-label">Max Y (M/Py)</div><div class="kpi-val" id="bc-max-y">10</div></div>
+  <div class="kpi-card green"><div class="kpi-label">Slope (−Px/Py)</div><div class="kpi-val" id="bc-slope">−0.50</div></div>
+  <div class="kpi-card purple"><div class="kpi-label">Y at chosen X</div><div class="kpi-val" id="bc-chosen-y">5.0</div></div>
+</div>
+</section>
+
+<!-- F4: OPPORTUNITY COST -->
+<section id="opp-cost" class="section">
+<div class="section-header">
+  <span class="section-label">FUNDAMENTALS 04</span>
+  <h2 class="section-title">Opportunity Cost Calculator</h2>
+  <p class="section-subtitle">The true cost of any choice is the value of the next best alternative forgone.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Micro 3e · Ch.2</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">🎯 Choice Comparison</div>
+    <div class="input-group"><label>Option A (Chosen)</label><input type="text" id="oc-optA" value="Go to college" onchange="updateOppCost()"></div>
+    <div class="input-group"><label>Option A Value ($)</label><input type="number" id="oc-valA" value="60000" onchange="updateOppCost()"></div>
+    <div class="input-group"><label>Option A Direct Cost ($)</label><input type="number" id="oc-costA" value="40000" onchange="updateOppCost()"></div>
+    <div class="input-group"><label>Option B (Forgone)</label><input type="text" id="oc-optB" value="Work full-time" onchange="updateOppCost()"></div>
+    <div class="input-group"><label>Option B Value ($)</label><input type="number" id="oc-valB" value="35000" onchange="updateOppCost()"></div>
+    <button class="btn btn-teal" onclick="updateOppCost()">📊 Calculate</button>
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Results</div>
+    <div class="result-box">
+      <div class="result-item"><span class="result-label">Explicit Cost</span><span class="result-value" id="oc-explicit">$40,000</span></div>
+      <div class="result-item"><span class="result-label">Implicit Cost (Forgone)</span><span class="result-value gold" id="oc-implicit">$35,000</span></div>
+      <div class="result-item"><span class="result-label">Total Economic Cost</span><span class="result-value red" id="oc-total">$75,000</span></div>
+      <div class="result-item"><span class="result-label">Economic Profit</span><span class="result-value green" id="oc-econ-profit">−$15,000</span></div>
+      <div class="result-item"><span class="result-label">Accounting Profit</span><span class="result-value teal" id="oc-acct-profit">$20,000</span></div>
+    </div>
+    <div class="insight-card" style="margin-top:12px;"><div class="insight-label">💡 Decision</div><p id="oc-decision">Analysis pending...</p></div>
+  </div>
+</div>
+</section>
+
+<!-- F5: PRICE CONTROLS -->
+<section id="price-controls" class="section">
+<div class="section-header">
+  <span class="section-label">FUNDAMENTALS 05</span>
+  <h2 class="section-title">Price Ceiling & Price Floor Simulator</h2>
+  <p class="section-subtitle">Set rent controls or minimum wages and observe surplus/shortage effects and deadweight loss.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Micro 3e · Ch.3</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">🏛️ Market & Controls</div>
+    ${sl('pc2-a','Demand Intercept',50,200,100,1,'updatePriceControls')}
+    ${sl('pc2-b2','Demand Slope',0.5,5,2,0.1,'updatePriceControls')}
+    ${sl('pc2-c2','Supply Intercept',0,50,10,1,'updatePriceControls')}
+    ${sl('pc2-d2','Supply Slope',0.5,5,1.5,0.1,'updatePriceControls')}
+    ${sl('pc2-ceiling','Price Ceiling',0,80,20,1,'updatePriceControls','$')}
+    ${sl('pc2-floor','Price Floor',0,80,35,1,'updatePriceControls','$')}
+    <button class="btn btn-outline" onclick="document.getElementById('pc2-ceiling').value=0;document.getElementById('pc2-floor').value=0;updatePriceControls();">Clear Controls</button>
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Market Outcomes</div>
+    <div class="grid-2" style="gap:10px;">
+      <div class="kpi-card"><div class="kpi-label">Equilibrium P*</div><div class="kpi-val teal" id="pc2-eq-p">$25.71</div></div>
+      <div class="kpi-card gold"><div class="kpi-label">Equilibrium Q*</div><div class="kpi-val" id="pc2-eq-q">48.57</div></div>
+    </div>
+    <div class="result-box" style="margin-top:12px;">
+      <div class="result-item"><span class="result-label">Effective Price</span><span class="result-value teal" id="pc2-eff-p">$25.71</span></div>
+      <div class="result-item"><span class="result-label">Qty Demanded</span><span class="result-value" id="pc2-qd">48.57</span></div>
+      <div class="result-item"><span class="result-label">Qty Supplied</span><span class="result-value" id="pc2-qs">48.57</span></div>
+      <div class="result-item"><span class="result-label">Shortage/Surplus</span><span class="result-value gold" id="pc2-gap">0 (Equilibrium)</span></div>
+      <div class="result-item"><span class="result-label">Deadweight Loss</span><span class="result-value red" id="pc2-dwl2">$0</span></div>
+      <div class="result-item"><span class="result-label">Control Status</span><span class="result-value" id="pc2-status2">No binding control</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- M1: LABOR MARKET -->
+<section id="labor-market" class="section">
+<div class="section-header">
+  <span class="section-label">MARKETS 01</span>
+  <h2 class="section-title">Labor Market Simulator</h2>
+  <p class="section-subtitle">Adjust wages, labor demand/supply factors and observe employment effects including minimum wage impacts.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Macro 3e · Ch.4</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">👷 Labor Market Parameters</div>
+    ${sl('lm-ld-int','Labor Demand Intercept',50,200,120,5,'updateLaborMarket')}
+    ${sl('lm-ld-slope','Labor Demand Slope',1,10,4,0.5,'updateLaborMarket')}
+    ${sl('lm-ls-int','Labor Supply Intercept',0,50,5,1,'updateLaborMarket')}
+    ${sl('lm-ls-slope','Labor Supply Slope',1,10,3,0.5,'updateLaborMarket')}
+    ${sl('lm-minwage','Minimum Wage ($/hr)',0,30,0,1,'updateLaborMarket','$')}
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Employment Outcomes</div>
+    <div class="grid-2" style="gap:10px;">
+      <div class="kpi-card"><div class="kpi-label">Equilibrium Wage</div><div class="kpi-val teal" id="lm-eq-w">$16.43</div></div>
+      <div class="kpi-card gold"><div class="kpi-label">Equilibrium Employment</div><div class="kpi-val" id="lm-eq-l">54.3M</div></div>
+    </div>
+    <div class="result-box" style="margin-top:12px;">
+      <div class="result-item"><span class="result-label">Effective Wage</span><span class="result-value teal" id="lm-eff-w">$16.43</span></div>
+      <div class="result-item"><span class="result-label">Workers Demanded</span><span class="result-value" id="lm-ld">54.3M</span></div>
+      <div class="result-item"><span class="result-label">Workers Supplied</span><span class="result-value" id="lm-ls">54.3M</span></div>
+      <div class="result-item"><span class="result-label">Unemployment</span><span class="result-value red" id="lm-unemp">0</span></div>
+      <div class="result-item"><span class="result-label">Min Wage Status</span><span class="result-value" id="lm-mw-status">Not binding</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- M2: CREDIT MARKET -->
+<section id="credit-market" class="section">
+<div class="section-header">
+  <span class="section-label">MARKETS 02</span>
+  <h2 class="section-title">Credit Market & Interest Rate Simulator</h2>
+  <p class="section-subtitle">Explore demand/supply of credit and the effect of interest rate ceilings.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Macro 3e · Ch.4</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">💳 Credit Parameters</div>
+    ${sl('cm-dd','Credit Demand Intercept',500,2000,1200,50,'updateCreditMarket')}
+    ${sl('cm-ds','Credit Demand Slope',10,100,50,5,'updateCreditMarket')}
+    ${sl('cm-si','Credit Supply Intercept',0,500,100,50,'updateCreditMarket')}
+    ${sl('cm-ss','Credit Supply Slope',10,100,40,5,'updateCreditMarket')}
+    ${sl('cm-cap','Interest Rate Cap (%)',0,25,0,1,'updateCreditMarket','','')}
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Credit Market Outcomes</div>
+    <div class="result-box">
+      <div class="result-item"><span class="result-label">Equilibrium Rate</span><span class="result-value teal" id="cm-eq-r">12.2%</span></div>
+      <div class="result-item"><span class="result-label">Equilibrium Credit</span><span class="result-value" id="cm-eq-q">$590B</span></div>
+      <div class="result-item"><span class="result-label">Effective Rate</span><span class="result-value gold" id="cm-eff-r">12.2%</span></div>
+      <div class="result-item"><span class="result-label">Credit Demanded</span><span class="result-value" id="cm-qd2">$590B</span></div>
+      <div class="result-item"><span class="result-label">Credit Supplied</span><span class="result-value" id="cm-qs2">$590B</span></div>
+      <div class="result-item"><span class="result-label">Credit Shortage</span><span class="result-value red" id="cm-shortage">$0</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- G1: GDP CALCULATOR -->
+<section id="gdp-calc" class="section">
+<div class="section-header">
+  <span class="section-label">MACRO 01</span>
+  <h2 class="section-title">GDP Components Calculator</h2>
+  <p class="section-subtitle">Input C, I, G, and NX to compute GDP using the expenditure approach.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Macro 3e · Ch.6</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">📊 Expenditure Components ($Trillions)</div>
+    ${sl('gdp-c','Consumption (C)',5,20,14.5,0.1,'updateGDPCalc')}
+    ${sl('gdp-i','Investment (I)',1,8,3.8,0.1,'updateGDPCalc')}
+    ${sl('gdp-g','Government (G)',1,10,4.2,0.1,'updateGDPCalc')}
+    ${sl('gdp-x','Exports (X)',0.5,5,2.5,0.1,'updateGDPCalc')}
+    ${sl('gdp-m','Imports (M)',0.5,6,3.3,0.1,'updateGDPCalc')}
+  </div>
+  <div class="card">
+    <div class="card-title">📋 GDP Results</div>
+    <div class="grid-2" style="gap:10px;">
+      <div class="kpi-card"><div class="kpi-label">GDP (Y)</div><div class="kpi-val teal" id="gdp-total">$21.7T</div></div>
+      <div class="kpi-card gold"><div class="kpi-label">Net Exports (NX)</div><div class="kpi-val" id="gdp-nx">−$0.8T</div></div>
+    </div>
+    <div class="result-box" style="margin-top:12px;">
+      <div class="result-item"><span class="result-label">C share</span><span class="result-value" id="gdp-c-share">66.8%</span></div>
+      <div class="result-item"><span class="result-label">I share</span><span class="result-value" id="gdp-i-share">17.5%</span></div>
+      <div class="result-item"><span class="result-label">G share</span><span class="result-value" id="gdp-g-share">19.4%</span></div>
+      <div class="result-item"><span class="result-label">NX share</span><span class="result-value" id="gdp-nx-share">−3.7%</span></div>
+    </div>
+    <div class="formula-block" style="margin-top:12px;"><span class="formula-label">GDP Identity</span>Y = C + I + G + (X − M)</div>
+  </div>
+</div>
+</section>
+
+<!-- G2: REAL VS NOMINAL GDP -->
+<section id="real-nominal-gdp" class="section">
+<div class="section-header">
+  <span class="section-label">MACRO 02</span>
+  <h2 class="section-title">Real vs. Nominal GDP Converter</h2>
+  <p class="section-subtitle">Adjust price levels and base years to deflate nominal GDP.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Macro 3e · Ch.6</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">📊 GDP Deflator</div>
+    ${sl('rn-nominal','Nominal GDP ($T)',10,35,25,0.5,'updateRealNominal')}
+    ${sl('rn-deflator','GDP Deflator (base=100)',80,200,120,1,'updateRealNominal')}
+    ${sl('rn-base-year','Base Year',2000,2025,2012,1,'updateRealNominal')}
+    <div class="formula-block"><span class="formula-label">Conversion</span>Real GDP = (Nominal / Deflator) × 100</div>
+  </div>
+  <div class="card">
+    <div class="card-title">📋 Results</div>
+    <div class="grid-2" style="gap:10px;">
+      <div class="kpi-card"><div class="kpi-label">Nominal GDP</div><div class="kpi-val gold" id="rn-nom-out">$25.0T</div></div>
+      <div class="kpi-card green"><div class="kpi-label">Real GDP</div><div class="kpi-val" id="rn-real-out">$20.8T</div></div>
+    </div>
+    <div class="result-box" style="margin-top:12px;">
+      <div class="result-item"><span class="result-label">Price Level Effect</span><span class="result-value" id="rn-price-effect">+20%</span></div>
+      <div class="result-item"><span class="result-label">Real vs Nominal Gap</span><span class="result-value red" id="rn-gap">$4.2T</span></div>
+      <div class="result-item"><span class="result-label">Interpretation</span><span class="result-value" id="rn-interp">Prices 20% above base year</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- G3: GROWTH RATE -->
+<section id="growth-rate" class="section">
+<div class="section-header">
+  <span class="section-label">MACRO 03</span>
+  <h2 class="section-title">Economic Growth Rate & Rule of 70</h2>
+  <p class="section-subtitle">Compare GDP over time and compute growth rates. Use the Rule of 70 to estimate doubling time.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Macro 3e · Ch.7</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">📈 Growth Parameters</div>
+    ${sl('gr-gdp1','GDP Year 1 ($T)',5,30,20,0.5,'updateGrowthRate')}
+    ${sl('gr-gdp2','GDP Year 2 ($T)',5,35,21,0.5,'updateGrowthRate')}
+    ${sl('gr-years','Years Between',1,20,1,1,'updateGrowthRate')}
+    ${sl('gr-pop-growth','Population Growth (%)',0,5,1,0.1,'updateGrowthRate','','')}
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Growth Results</div>
+    <div class="result-box">
+      <div class="result-item"><span class="result-label">Nominal Growth</span><span class="result-value teal" id="gr-nominal">5.0%</span></div>
+      <div class="result-item"><span class="result-label">Annual Growth</span><span class="result-value gold" id="gr-annual">5.0%</span></div>
+      <div class="result-item"><span class="result-label">Per Capita Growth</span><span class="result-value green" id="gr-percap">4.0%</span></div>
+      <div class="result-item"><span class="result-label">Rule of 70: Doubling</span><span class="result-value purple" id="gr-double">14 years</span></div>
+      <div class="result-item"><span class="result-label">GDP in 10 years</span><span class="result-value" id="gr-future">$34.2T</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- G5: UNEMPLOYMENT RATE -->
+<section id="unemp-calc" class="section">
+<div class="section-header">
+  <span class="section-label">MACRO 05</span>
+  <h2 class="section-title">Unemployment Rate Calculator</h2>
+  <p class="section-subtitle">Classify individuals and compute the unemployment rate, LFPR, and employment-population ratio.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Macro 3e · Ch.8</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">👥 Population Categories (millions)</div>
+    ${sl('ur-employed','Employed',100,200,158,1,'updateUnempRate')}
+    ${sl('ur-unemployed','Unemployed',1,30,6,1,'updateUnempRate')}
+    ${sl('ur-nilf','Not in Labor Force',50,120,95,1,'updateUnempRate')}
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Results</div>
+    <div class="result-box">
+      <div class="result-item"><span class="result-label">Labor Force</span><span class="result-value" id="ur-lf">164M</span></div>
+      <div class="result-item"><span class="result-label">Unemployment Rate</span><span class="result-value teal" id="ur-rate">3.7%</span></div>
+      <div class="result-item"><span class="result-label">LFPR</span><span class="result-value gold" id="ur-lfpr">63.3%</span></div>
+      <div class="result-item"><span class="result-label">Employment-Pop Ratio</span><span class="result-value green" id="ur-epr">61.0%</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- G7: CPI & INFLATION -->
+<section id="cpi-calc" class="section">
+<div class="section-header">
+  <span class="section-label">MACRO 07</span>
+  <h2 class="section-title">CPI & Inflation Rate Calculator</h2>
+  <p class="section-subtitle">Build a market basket and compute CPI and inflation.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Macro 3e · Ch.9</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">🛒 Market Basket</div>
+    ${sl('cpi-base','Base Year Basket Cost ($)',500,2000,1000,50,'updateCPICalc','$')}
+    ${sl('cpi-current','Current Year Cost ($)',500,3000,1150,50,'updateCPICalc','$')}
+    ${sl('cpi-prev','Previous Year CPI',80,200,110,1,'updateCPICalc')}
+    <div class="formula-block"><span class="formula-label">CPI Formula</span>CPI = (Current / Base) × 100</div>
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Results</div>
+    <div class="result-box">
+      <div class="result-item"><span class="result-label">CPI</span><span class="result-value teal" id="cpi-index">115.0</span></div>
+      <div class="result-item"><span class="result-label">Inflation Rate</span><span class="result-value gold" id="cpi-inflation">4.5%</span></div>
+      <div class="result-item"><span class="result-label">Price Level Change</span><span class="result-value" id="cpi-change">+15%</span></div>
+      <div class="result-item"><span class="result-label">$100 base = today</span><span class="result-value red" id="cpi-purchasing">$86.96</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- T1: COMPARATIVE ADVANTAGE -->
+<section id="comp-advantage" class="section">
+<div class="section-header">
+  <span class="section-label">TRADE 01</span>
+  <h2 class="section-title">Comparative Advantage & Gains from Trade</h2>
+  <p class="section-subtitle">Two-country, two-good model showing gains from specialization.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Macro 3e · Ch.10</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">🌍 Production Capabilities (units/hour)</div>
+    ${sl('ca-a-wine','Country A: Wine',1,20,6,1,'updateCompAdvantage')}
+    ${sl('ca-a-cloth','Country A: Cloth',1,20,4,1,'updateCompAdvantage')}
+    ${sl('ca-b-wine','Country B: Wine',1,20,2,1,'updateCompAdvantage')}
+    ${sl('ca-b-cloth','Country B: Cloth',1,20,8,1,'updateCompAdvantage')}
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Trade Analysis</div>
+    <div class="result-box">
+      <div class="result-item"><span class="result-label">A's OC of Wine</span><span class="result-value" id="ca-a-oc-wine">0.67 Cloth</span></div>
+      <div class="result-item"><span class="result-label">B's OC of Wine</span><span class="result-value" id="ca-b-oc-wine">4.00 Cloth</span></div>
+      <div class="result-item"><span class="result-label">A specializes in</span><span class="result-value teal" id="ca-a-spec">Wine</span></div>
+      <div class="result-item"><span class="result-label">B specializes in</span><span class="result-value gold" id="ca-b-spec">Cloth</span></div>
+      <div class="result-item"><span class="result-label">Absolute Adv. (Wine)</span><span class="result-value" id="ca-abs-wine">Country A</span></div>
+      <div class="result-item"><span class="result-label">Absolute Adv. (Cloth)</span><span class="result-value" id="ca-abs-cloth">Country B</span></div>
+      <div class="result-item"><span class="result-label">Gains from Trade?</span><span class="result-value green" id="ca-gains">✓ Yes</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- T3: TARIFF SIMULATOR -->
+<section id="tariff-sim" class="section">
+<div class="section-header">
+  <span class="section-label">TRADE 03</span>
+  <h2 class="section-title">Tariff & Quota Impact Simulator</h2>
+  <p class="section-subtitle">Apply tariffs or quotas and observe effects on price, quantity, and welfare.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Micro 3e · Ch.18-19</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">🌍 Trade Parameters</div>
+    ${sl('tar-dom-p','Domestic Eq. Price',20,100,60,5,'updateTariff','$')}
+    ${sl('tar-world-p','World Price',10,80,30,5,'updateTariff','$')}
+    ${sl('tar-tariff','Tariff ($/unit)',0,40,10,1,'updateTariff','$')}
+    ${sl('tar-dom-d-slope','Demand Slope',0.5,5,1,0.1,'updateTariff')}
+    ${sl('tar-dom-s-slope','Supply Slope',0.5,5,1,0.1,'updateTariff')}
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Welfare Analysis</div>
+    <div class="result-box">
+      <div class="result-item"><span class="result-label">Free Trade Price</span><span class="result-value teal" id="tar-ft-p">$30</span></div>
+      <div class="result-item"><span class="result-label">Tariff Price</span><span class="result-value gold" id="tar-t-p">$40</span></div>
+      <div class="result-item"><span class="result-label">CS Loss</span><span class="result-value red" id="tar-cs-loss">−$500</span></div>
+      <div class="result-item"><span class="result-label">PS Gain</span><span class="result-value green" id="tar-ps-gain">+$200</span></div>
+      <div class="result-item"><span class="result-label">Gov Revenue</span><span class="result-value" id="tar-gov-rev">$200</span></div>
+      <div class="result-item"><span class="result-label">DWL</span><span class="result-value red" id="tar-dwl3">$100</span></div>
+      <div class="result-item"><span class="result-label">Imports (Free Trade)</span><span class="result-value" id="tar-imp-ft">60</span></div>
+      <div class="result-item"><span class="result-label">Imports (w/ Tariff)</span><span class="result-value" id="tar-imp-t">40</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- U1: UTILITY MAXIMIZATION -->
+<section id="utility-max" class="section">
+<div class="section-header">
+  <span class="section-label">MICRO 06</span>
+  <h2 class="section-title">Utility Maximization Simulator</h2>
+  <p class="section-subtitle">Allocate a budget across goods to maximize total utility using the MU/P rule.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Micro 3e · Ch.6 Table 6.4</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">🎯 Budget & Prices</div>
+    ${sl('um-budget','Budget ($)',10,200,56,1,'updateUtilityMax','$')}
+    ${sl('um-px','Price of X ($)',1,30,14,1,'updateUtilityMax','$')}
+    ${sl('um-py','Price of Y ($)',1,30,7,1,'updateUtilityMax','$')}
+    ${sl('um-qx','Quantity of X',0,10,2,1,'updateUtilityMax')}
+    ${sl('um-qy','Quantity of Y',0,10,4,1,'updateUtilityMax')}
+    <div class="formula-block"><span class="formula-label">Rule</span>MUx/Px = MUy/Py</div>
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Utility Analysis</div>
+    <div class="result-box">
+      <div class="result-item"><span class="result-label">Total Spending</span><span class="result-value" id="um-spending">$56</span></div>
+      <div class="result-item"><span class="result-label">Budget Remaining</span><span class="result-value" id="um-remaining">$0</span></div>
+      <div class="result-item"><span class="result-label">Total Utility (X)</span><span class="result-value teal" id="um-tux">46</span></div>
+      <div class="result-item"><span class="result-label">Total Utility (Y)</span><span class="result-value gold" id="um-tuy">81</span></div>
+      <div class="result-item"><span class="result-label">Total Utility</span><span class="result-value green" id="um-total">127</span></div>
+      <div class="result-item"><span class="result-label">MUx/Px</span><span class="result-value" id="um-mux-px">1.29</span></div>
+      <div class="result-item"><span class="result-label">MUy/Py</span><span class="result-value" id="um-muy-py">2.14</span></div>
+      <div class="result-item"><span class="result-label">Optimal?</span><span class="result-value" id="um-optimal">Not yet</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- U2: PERFECT COMPETITION -->
+<section id="perf-comp" class="section">
+<div class="section-header">
+  <span class="section-label">MICRO 08</span>
+  <h2 class="section-title">Perfect Competition: Profit, Shutdown & Entry/Exit</h2>
+  <p class="section-subtitle">Find profit-maximizing output (P=MR=MC), shutdown decision (P vs AVC), and long-run equilibrium.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Micro 3e · Ch.8</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">📈 Firm Parameters</div>
+    ${sl('pcomp-p','Market Price',5,100,40,1,'updatePerfComp','$')}
+    ${sl('pcomp-fc','Fixed Cost',0,500,100,10,'updatePerfComp','$')}
+    ${sl('pcomp-vc','Variable Cost/unit',1,30,10,1,'updatePerfComp','$')}
+    ${sl('pcomp-qc','Quadratic Cost Factor',0,1,0.15,0.01,'updatePerfComp')}
+    <div class="formula-block"><span class="formula-label">Profit Max Rule</span>P = MR = MC; MC = VC + 2·QC·Q</div>
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Firm Decision</div>
+    <div class="result-box">
+      <div class="result-item"><span class="result-label">Optimal Q (MR=MC)</span><span class="result-value teal" id="pcomp-q">100</span></div>
+      <div class="result-item"><span class="result-label">Total Revenue</span><span class="result-value" id="pcomp-tr">$4,000</span></div>
+      <div class="result-item"><span class="result-label">Total Cost</span><span class="result-value" id="pcomp-tc">$2,600</span></div>
+      <div class="result-item"><span class="result-label">Economic Profit</span><span class="result-value green" id="pcomp-profit">$1,400</span></div>
+      <div class="result-item"><span class="result-label">AVC at Q*</span><span class="result-value" id="pcomp-avc">$25</span></div>
+      <div class="result-item"><span class="result-label">ATC at Q*</span><span class="result-value" id="pcomp-atc">$26</span></div>
+      <div class="result-item"><span class="result-label">Short-Run</span><span class="result-value green" id="pcomp-decision">PRODUCE</span></div>
+      <div class="result-item"><span class="result-label">Long-Run</span><span class="result-value gold" id="pcomp-lr">Firms ENTER</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- U3: PRICE DISCRIMINATION -->
+<section id="price-disc" class="section">
+<div class="section-header">
+  <span class="section-label">MICRO 09B</span>
+  <h2 class="section-title">Price Discrimination Simulator</h2>
+  <p class="section-subtitle">Explore 1st, 2nd, and 3rd degree price discrimination and profit impacts.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Micro 3e · Ch.9</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">💰 Parameters</div>
+    ${sl('pd-a','Demand Intercept',50,200,100,5,'updatePriceDisc')}
+    ${sl('pd-mc','Marginal Cost',5,50,20,1,'updatePriceDisc','$')}
+    ${sl('pd-seg1-elast','Segment 1 Elasticity',1.5,8,2,0.1,'updatePriceDisc')}
+    ${sl('pd-seg2-elast','Segment 2 Elasticity',1.5,8,5,0.1,'updatePriceDisc')}
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Discrimination Results</div>
+    <div class="result-box">
+      <div class="result-item"><span class="result-label">Uniform Price</span><span class="result-value" id="pd-uniform">$60</span></div>
+      <div class="result-item"><span class="result-label">Uniform Profit</span><span class="result-value" id="pd-uniform-pi">$800</span></div>
+      <div class="result-item"><span class="result-label">Seg 1 Price (inelastic)</span><span class="result-value teal" id="pd-p1">$40</span></div>
+      <div class="result-item"><span class="result-label">Seg 2 Price (elastic)</span><span class="result-value gold" id="pd-p2">$25</span></div>
+      <div class="result-item"><span class="result-label">3rd Degree Profit</span><span class="result-value green" id="pd-disc-pi">$950</span></div>
+      <div class="result-item"><span class="result-label">1st Degree Profit</span><span class="result-value purple" id="pd-first-pi">$1,600</span></div>
+      <div class="result-item"><span class="result-label">Gain from Disc.</span><span class="result-value green" id="pd-gain">+$150</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- U4: LORENZ CURVE -->
+<section id="lorenz" class="section">
+<div class="section-header">
+  <span class="section-label">MICRO 14</span>
+  <h2 class="section-title">Income Inequality & Lorenz Curve</h2>
+  <p class="section-subtitle">Adjust income distribution and compute the Gini coefficient.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Micro 3e · Ch.14-15</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">📊 Income Quintiles (% of total income)</div>
+    ${sl('lz-q1','Bottom 20%',1,20,3,1,'updateLorenz','','')}
+    ${sl('lz-q2','Second 20%',3,20,9,1,'updateLorenz','','')}
+    ${sl('lz-q3','Middle 20%',5,25,15,1,'updateLorenz','','')}
+    ${sl('lz-q4','Fourth 20%',10,35,23,1,'updateLorenz','','')}
+    ${sl('lz-q5','Top 20%',20,70,50,1,'updateLorenz','','')}
+  </div>
+  <div class="card">
+    <div class="card-title">📋 Inequality Metrics</div>
+    <div class="grid-2" style="gap:10px;">
+      <div class="kpi-card"><div class="kpi-label">Gini Coefficient</div><div class="kpi-val teal" id="lz-gini">0.45</div></div>
+      <div class="kpi-card gold"><div class="kpi-label">Top/Bottom Ratio</div><div class="kpi-val" id="lz-ratio">16.7x</div></div>
+    </div>
+    <div class="result-box" style="margin-top:12px;">
+      <div class="result-item"><span class="result-label">Total Shares</span><span class="result-value" id="lz-total">100%</span></div>
+      <div class="result-item"><span class="result-label">Inequality Level</span><span class="result-value" id="lz-level">Moderate</span></div>
+    </div>
+    <div class="chart-wrap h-280" style="margin-top:12px;"><canvas id="lorenzChart"></canvas></div>
+  </div>
+</div>
+</section>
+
+<!-- U5: EXPECTED VALUE -->
+<section id="expected-value" class="section">
+<div class="section-header">
+  <span class="section-label">MICRO 16</span>
+  <h2 class="section-title">Expected Value & Risk Calculator</h2>
+  <p class="section-subtitle">Compare risky vs. safe options using expected value and risk attitudes.</p>
+  <span class="source-tag source-openstax">📗 OpenStax Micro 3e · Ch.16</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">🎲 Risky Option</div>
+    ${sl('ev-good','Good Outcome ($)',100,10000,5000,100,'updateExpectedValue','$')}
+    ${sl('ev-bad','Bad Outcome ($)',0,5000,1000,100,'updateExpectedValue','$')}
+    ${sl('ev-prob','Probability of Good (%)',0,100,60,1,'updateExpectedValue','','')}
+    ${sl('ev-safe','Safe Option ($)',500,8000,3000,100,'updateExpectedValue','$')}
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Decision Analysis</div>
+    <div class="result-box">
+      <div class="result-item"><span class="result-label">Expected Value (Risky)</span><span class="result-value teal" id="ev-expected">$3,400</span></div>
+      <div class="result-item"><span class="result-label">Safe Option</span><span class="result-value gold" id="ev-safe-out">$3,000</span></div>
+      <div class="result-item"><span class="result-label">Risk Premium</span><span class="result-value" id="ev-premium">$400</span></div>
+      <div class="result-item"><span class="result-label">Std Deviation</span><span class="result-value" id="ev-std">$1,960</span></div>
+      <div class="result-item"><span class="result-label">Risk-Neutral Choice</span><span class="result-value green" id="ev-choice">Take the Gamble</span></div>
+    </div>
+    <div class="insight-card" style="margin-top:12px;"><div class="insight-label">🧠 Risk Attitudes</div><p><strong>Risk-Averse:</strong> Prefers safe even if EV > safe.<br><strong>Risk-Neutral:</strong> Highest EV.<br><strong>Risk-Loving:</strong> Prefers gamble.</p></div>
+  </div>
+</div>
+</section>
+
 `;
         }
     </script>

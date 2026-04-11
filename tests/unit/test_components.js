@@ -9,33 +9,43 @@ module.exports = {
     {
       name: 'Interactive Sliders Exist',
       fn: () => {
-        // Sliders are dynamically generated through the sl() interpolation function
-        assertAtLeast(countOccurrences('sl('), 10, 'Should have multiple slider constructor calls');
+        assertAtLeast(countOccurrences('sl('), 30, 'Should have 30+ slider constructor calls across all modules');
       }
     },
     {
       name: 'Chart Canvas Elements Present',
       fn: () => {
-        assertAtLeast(countOccurrences('<canvas'), 10, 'Should have multiple canvas elements for Chart.js renders');
+        assertAtLeast(countOccurrences('<canvas'), 12, 'Should have 12+ canvas elements for Chart.js renders');
       }
     },
     {
       name: 'KPI Result Cards Exist',
       fn: () => {
-        assertAtLeast(countOccurrences('class="kpi-card"'), 20, 'Missing KPI blocks');
-        assertAtLeast(countOccurrences('class="kpi-val"'), 20, 'Missing KPI value outputs');
+        assertAtLeast(countOccurrences('class="kpi-card"'), 30, 'Missing KPI blocks');
+        assertAtLeast(countOccurrences('class="kpi-val"'), 30, 'Missing KPI value outputs');
       }
     },
     {
       name: 'Formula Blocks for Education',
       fn: () => {
-        assertAtLeast(countOccurrences('class="formula-block"'), 10, 'Expected multiple mathematical formula blocks');
+        assertAtLeast(countOccurrences('class="formula-block"'), 15, 'Expected 15+ mathematical formula blocks');
       }
     },
     {
       name: 'Interactive Buttons',
       fn: () => {
-        assert(contains('Apply to All Modules'), 'Missing Apply to All Modules button in Live Markets');
+        assert(contains('Apply to All Modules'), 'Missing Apply to All Modules button');
+      }
+    },
+    {
+      name: 'New Module JS Functions Registered',
+      fn: () => {
+        assert(contains('function updateScarcity'), 'Missing updateScarcity function');
+        assert(contains('function updatePPF'), 'Missing updatePPF function');
+        assert(contains('function updateBudgetConstraint'), 'Missing updateBudgetConstraint function');
+        assert(contains('function updateGDPCalc'), 'Missing updateGDPCalc function');
+        assert(contains('function updateLorenz'), 'Missing updateLorenz function');
+        assert(contains('function updateExpectedValue'), 'Missing updateExpectedValue function');
       }
     }
   ]

@@ -9,15 +9,13 @@ module.exports = {
     {
       name: 'Functional Modules are registered in nav',
       fn: () => {
-        // Checking for navigation items specifically (about 24 items in the core layout)
-        assertAtLeast(countOccurrences('class="nav-item"'), 24, 'Should have core nav module items');
+        assertAtLeast(countOccurrences('class="nav-item"'), 40, 'Should have 40+ nav module items');
       }
     },
     {
-      name: 'All 26 sections exist',
+      name: 'All section titles exist (26 original + 20 new)',
       fn: () => {
-        // Checking for section titles
-        assertAtLeast(countOccurrences('<h2 class="section-title">'), 26, 'Should have at least 26 section titles');
+        assertAtLeast(countOccurrences('<h2 class="section-title">'), 46, 'Should have at least 46 section titles');
       }
     },
     {
@@ -28,15 +26,59 @@ module.exports = {
       }
     },
     {
-      name: 'Explanations and enhanced subtitles are present',
+      name: 'Original modules present',
       fn: () => {
-        assertAtLeast(countOccurrences('class="section-subtitle"'), 26, 'Missing section subtitles');
+        assert(contains('id="supply-demand"'), 'Missing supply-demand');
+        assert(contains('id="elasticity"'), 'Missing elasticity');
+        assert(contains('id="production-costs"'), 'Missing production-costs');
+        assert(contains('id="ad-as"'), 'Missing AD-AS');
+        assert(contains('id="solow-growth"'), 'Missing solow-growth');
       }
     },
     {
-      name: 'Source tags (OpenStax / Perloff) exist',
+      name: 'New Fundamentals modules present',
       fn: () => {
-        assertAtLeast(countOccurrences('class="source-tag'), 10, 'There should be multiple source references throughout the modules');
+        assert(contains('id="scarcity-choice"'), 'Missing scarcity-choice');
+        assert(contains('id="ppf-sim"'), 'Missing ppf-sim');
+        assert(contains('id="budget-constraint"'), 'Missing budget-constraint');
+        assert(contains('id="opp-cost"'), 'Missing opp-cost');
+        assert(contains('id="price-controls"'), 'Missing price-controls');
+      }
+    },
+    {
+      name: 'New Market/GDP/Trade modules present',
+      fn: () => {
+        assert(contains('id="labor-market"'), 'Missing labor-market');
+        assert(contains('id="credit-market"'), 'Missing credit-market');
+        assert(contains('id="gdp-calc"'), 'Missing gdp-calc');
+        assert(contains('id="real-nominal-gdp"'), 'Missing real-nominal-gdp');
+        assert(contains('id="growth-rate"'), 'Missing growth-rate');
+        assert(contains('id="unemp-calc"'), 'Missing unemp-calc');
+        assert(contains('id="cpi-calc"'), 'Missing cpi-calc');
+        assert(contains('id="comp-advantage"'), 'Missing comp-advantage');
+        assert(contains('id="tariff-sim"'), 'Missing tariff-sim');
+      }
+    },
+    {
+      name: 'New Micro modules present',
+      fn: () => {
+        assert(contains('id="utility-max"'), 'Missing utility-max');
+        assert(contains('id="perf-comp"'), 'Missing perf-comp');
+        assert(contains('id="price-disc"'), 'Missing price-disc');
+        assert(contains('id="lorenz"'), 'Missing lorenz');
+        assert(contains('id="expected-value"'), 'Missing expected-value');
+      }
+    },
+    {
+      name: 'Explanations and subtitles present',
+      fn: () => {
+        assertAtLeast(countOccurrences('class="section-subtitle"'), 46, 'Missing section subtitles');
+      }
+    },
+    {
+      name: 'Source tags exist',
+      fn: () => {
+        assertAtLeast(countOccurrences('class="source-tag'), 10, 'Should have multiple source references');
       }
     }
   ]
