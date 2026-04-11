@@ -1358,8 +1358,10 @@
             return null;
         }
 
-        // --- FRED Direct API Configuration ---
+        // --- Serverless API Configurations ---
+        const AV_API_KEY = '__AV_API_KEY__';
         const FRED_API_KEY = '__FRED_API_KEY__';
+        
         const FRED_SERIES_MAP = {
             'FEDFUNDS': { id: 'FEDFUNDS', units: 'lin' },
             'CPIAUCSL': { id: 'CPIAUCSL', units: 'pc1' }, // Percent Change from Year Ago
@@ -1381,6 +1383,43 @@
             if (data && data.observations && data.observations.length > 0) {
                 const val = parseFloat(data.observations[0].value);
                 return isNaN(val) ? null : val;
+            }
+            return null;
+        }
+
+        async function fetchAlphaVantageQuote(symbol) {
+            if (AV_API_KEY === '__AV_API_KEY__' || !AV_API_KEY) return null;
+            const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${AV_API_KEY}`;
+            try {
+                // Direct fetch since AlphaVantage provides CORS wrapper
+                const resp = await fetch(url, { signal: AbortSignal.timeout(5000) });
+                if (!resp.ok) return null;
+                const data = await resp.json();
+                
+                // Fallback catch if API is rate limited (AV returns a 'Note' or 'Information' key)
+                if (data.Note || data.Information) {
+                    console.warn('⚠️ Alpha Vantage rate limit reached. Falling back to alternative tier.');
+                    return null;
+                }
+                
+                const quote = data['Global Quote'];
+                if (quote && quote['05. price']) {
+                    const price = parseFloat(quote['05. price']);
+                    return {
+                        name: symbol + ' (AlphaVantage)',
+                        sector: 'Market Asset',
+                        price: price,
+                        change: parseFloat(quote['09. change']),
+                        changePercent: parseFloat(quote['10. change percent'].replace('%','')),
+                        open: parseFloat(quote['02. open']),
+                        high: parseFloat(quote['03. high']),
+                        low: parseFloat(quote['04. low']),
+                        volume: parseInt(quote['06. volume']),
+                        pe: 15, marketCap: price * 1e7, dividend: 0, dividendYield: 0, high52: price * 1.2, low52: price * 0.8, beta: 1
+                    };
+                }
+            } catch (err) {
+                console.error('AlphaVantage fetch error:', err);
             }
             return null;
         }
@@ -1752,9 +1791,21 @@
                 } catch (err) { /* silent fail to tier 3 */ }
             }
 
-            // TIER 3: Demo Fallback
+            // TIER 3: Alpha Vantage Direct Connect
             if (!dataFound) {
-                console.warn('⚠️ Tier 3: All live sources failed. Falling back to simulation.');
+                try {
+                    const avData = await fetchAlphaVantageQuote(sym);
+                    if (avData) {
+                        currentStockData = avData;
+                        dataFound = true;
+                        console.log('📡 Tier 3: Data fetched directly via Alpha Vantage API');
+                    }
+                } catch (err) { /* silent fail to fallback */ }
+            }
+
+            // TIER 4: Demo Fallback
+            if (!dataFound) {
+                console.warn('⚠️ All live sources failed. Falling back to simulated data.');
                 await new Promise(r => setTimeout(r, 400)); // Brief delay for UX
                 currentStockData = demoStockData[sym] || generateRandomStock(sym);
             }
