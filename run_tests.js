@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * run_tests.js — EconSim Pro QA Orchestrator
+ * run_tests.js — EconSim QA Orchestrator
  * ═════════════════════════════════════════════
- * Single-command test runner for the Economics Simulator Pro.
+ * Single-command test runner for the Economics Simulator.
  * Executes all test modules against index.html and writes a human-readable
  * QA-REPORT.md, mirroring the quantlab QA pattern.
  *
@@ -112,7 +112,7 @@ function generateReport(moduleResults, totalMs) {
 
   // ── Header ────────────────────────────────────────────────────────────────
   lines.push(
-    '# EconSim Pro — QA Report',
+    '# EconSim — QA Report',
     '',
     `> Generated: **${now}**  |  Grade: **${g}**  |  Pass Rate: **${passPct.toFixed(1)}%**`,
     '',
@@ -250,7 +250,7 @@ function main() {
   const line  = '═'.repeat(width);
 
   console.log('\n' + line);
-  console.log('  EconSim Pro QA Orchestrator');
+  console.log('  EconSim QA Orchestrator');
   console.log(line);
   console.log(`  Time   : ${new Date().toLocaleString()}`);
   console.log(`  Report : ${OUT_PATH}`);

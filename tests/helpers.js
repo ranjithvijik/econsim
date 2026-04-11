@@ -1,5 +1,5 @@
 /**
- * tests/helpers.js — Shared test utilities for SGI QA suite
+ * tests/helpers.js — Shared test utilities for EconSim QA suite
  */
 
 'use strict';

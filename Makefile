@@ -1,5 +1,5 @@
 # ============================================================
-#  EconSim Pro — Makefile
+#  EconSim — Makefile
 #  Usage: make <target>
 # ============================================================
 
@@ -15,7 +15,7 @@ REPORT  := QA-REPORT.md
 .PHONY: help
 help:
 	@echo ""
-	@echo "  EconSim Pro QA — available make targets"
+	@echo "  EconSim QA — available make targets"
 	@echo "  ──────────────────────────────────────────"
 	@echo "  make install     Install Node.js dependencies (node-html-parser)"
 	@echo "  make test        Run full test suite (verbose)"

@@ -18,7 +18,7 @@ module.exports = {
       name: 'Title element is present and correct',
       fn: () => {
         assert(contains('<title>'), 'Missing <title> tag');
-        assert(contains('Economics Simulator Pro'), 'Title should contain Economics Simulator Pro');
+        assert(contains('Economics Simulator'), 'Title should contain Economics Simulator');
       }
     },
     {

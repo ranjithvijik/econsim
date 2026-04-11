@@ -1,4 +1,4 @@
-name: EconSim Pro QA
+name: EconSim QA
 
 on:
   push:

@@ -1,8 +1,8 @@
-# Economics Simulator Pro
+# Economics Simulator
 
 [![QA Status](https://github.com/ranjithvijik/econsim/actions/workflows/qa.yml/badge.svg)](https://github.com/ranjithvijik/econsim/actions)
 
-**Economics Simulator Pro** is a comprehensive, interactive, and serverless web simulator designed to deeply explore both microeconomic and macroeconomic principles. Featuring 78 distinct educational modules, the platform seamlessly connects robust theoretical models with dynamic visualizations and live market data.
+**Economics Simulator** is a comprehensive, interactive, and serverless web simulator designed to deeply explore both microeconomic and macroeconomic principles. Featuring 78 distinct educational modules, the platform seamlessly connects robust theoretical models with dynamic visualizations and live market data.
 
 Built entirely using Vanilla HTML, CSS, and JavaScript, it acts as a premier teaching tool, allowing users to empirically manipulate exogenous variables and instantly observe shifts in equilibrium states, elasticity, and macroeconomic policy impacts.
 
@@ -50,7 +50,7 @@ The platform is systematically segmented into comprehensive tracks:
 
 ## 🔌 External APIs & Data Sources
 
-EconSim Pro integrates direct connections to real-world data providers to dynamically adjust curriculum constants, shifting models out of theoretical bounds and into live economic reflection.
+EconSim integrates direct connections to real-world data providers to dynamically adjust curriculum constants, shifting models out of theoretical bounds and into live economic reflection.
 
 ### API Keys (GitHub Secrets)
 The following keys should be configured as **Environment Variables** or **GitHub Repository Secrets** for automated deployments:
