@@ -1,0 +1,18 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - echo "Injecting API keys..."
+        - sed -i "s/__AV_API_KEY__/${AV_API_KEY}/g" index.html
+        - echo "Verifying injection..."
+        - if grep -q "__AV_API_KEY__" index.html; then echo "WARNING - placeholder not replaced, AV_API_KEY env var may not be set"; else echo "Success - API key injected"; fi
+    build:
+      commands:
+        - echo "Build complete"
+  artifacts:
+    baseDirectory: /
+    files:
+      - index.html
+  cache:
+    paths: []

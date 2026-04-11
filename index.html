@@ -1238,8 +1238,11 @@
                     <div class="theme-toggle"><button class="theme-toggle-btn active" id="darkBtn"
                             onclick="setTheme('dark')">🌙</button><button class="theme-toggle-btn" id="lightBtn"
                             onclick="setTheme('light')">☀️</button></div>
-                    <div class="status-dot"></div><span
-                        style="font-size:12px;color:var(--green);font-family:var(--font-mono);font-weight:600;">LIVE</span>
+                    <div class="status-dot"></div>
+                    <div style="display:flex; flex-direction:column; align-items:flex-end; line-height: 1.2;">
+                        <span style="font-size:12px;color:var(--green);font-family:var(--font-mono);font-weight:600;">LIVE</span>
+                        <span id="lastUpdatedTime" style="font-size:10px;color:var(--gray-300);font-family:var(--font-mono);"></span>
+                    </div>
                 </div>
             </header>
             <div id="sectionContainer"></div>
@@ -1651,7 +1654,7 @@
             document.getElementById('stockLoading').style.display = 'none';
             document.getElementById('stockData').style.display = 'block';
         }
-        function displayStockData(d) { document.getElementById('stockPrice').textContent = `$${d.price.toFixed(2)}`; document.getElementById('stockName').textContent = d.name; document.getElementById('stockSector').textContent = d.sector; const cd = document.getElementById('stockChangeDisplay'); const cs = d.change >= 0 ? '+' : ''; cd.textContent = `${cs}$${d.change.toFixed(2)} (${cs}${d.changePercent.toFixed(2)}%)`; cd.className = `stock-change ${d.change >= 0 ? 'up' : 'down'}`; document.getElementById('stockOpen').textContent = `$${d.open.toFixed(2)}`; document.getElementById('stockHigh').textContent = `$${d.high.toFixed(2)}`; document.getElementById('stockLow').textContent = `$${d.low.toFixed(2)}`; document.getElementById('stockVolume').textContent = formatVolume(d.volume); document.getElementById('stockPE').textContent = d.pe.toFixed(1); document.getElementById('stockMarketCap').textContent = formatMarketCap(d.marketCap); document.getElementById('stockDividend').textContent = `${d.dividendYield.toFixed(2)}%`; document.getElementById('stock52High').textContent = `$${d.high52.toFixed(2)}`; document.getElementById('stock52Low').textContent = `$${d.low52.toFixed(2)}`; document.getElementById('stockBeta').textContent = d.beta.toFixed(2); document.getElementById('pv-dividend').textContent = `$${d.dividend.toFixed(2)}`; }
+        function displayStockData(d) { document.getElementById('stockPrice').textContent = `$${d.price.toFixed(2)}`; document.getElementById('stockName').textContent = d.name; document.getElementById('stockSector').textContent = d.sector; const cd = document.getElementById('stockChangeDisplay'); const cs = d.change >= 0 ? '+' : ''; cd.textContent = `${cs}$${d.change.toFixed(2)} (${cs}${d.changePercent.toFixed(2)}%)`; cd.className = `stock-change ${d.change >= 0 ? 'up' : 'down'}`; document.getElementById('stockOpen').textContent = `$${d.open.toFixed(2)}`; document.getElementById('stockHigh').textContent = `$${d.high.toFixed(2)}`; document.getElementById('stockLow').textContent = `$${d.low.toFixed(2)}`; document.getElementById('stockVolume').textContent = formatVolume(d.volume); document.getElementById('stockPE').textContent = d.pe.toFixed(1); document.getElementById('stockMarketCap').textContent = formatMarketCap(d.marketCap); document.getElementById('stockDividend').textContent = `${d.dividendYield.toFixed(2)}%`; document.getElementById('stock52High').textContent = `$${d.high52.toFixed(2)}`; document.getElementById('stock52Low').textContent = `$${d.low52.toFixed(2)}`; document.getElementById('stockBeta').textContent = d.beta.toFixed(2); document.getElementById('pv-dividend').textContent = `$${d.dividend.toFixed(2)}`; const el = document.getElementById('lastUpdatedTime'); if(el) { const now = new Date(); el.textContent = now.toLocaleDateString() + ' ' + now.toLocaleTimeString(); } }
         async function updateStockChart(sym = 'AAPL', per = '1mo') {
             const ctx = document.getElementById('stockPriceChart');
             if (!ctx) return;
@@ -1836,7 +1839,7 @@
 <div class="section-header">
   <span class="section-label live">📡 LIVE DATA</span>
   <h2 class="section-title">Real-Time Market Data</h2>
-  <p class="section-subtitle">Live market data integration with FRED economic indicators and macro transmission. Use this module to explore how real stock prices, valuations, and macroeconomic conditions interact. The Present Value calculator lets you apply the Gordon Growth Model to estimate intrinsic stock value — as Perloff & Brander Ch.7 derives: <strong>PV = π₁/(1+i) + π₂/(1+i)² + ...</strong> The FRED panel links real-world interest rates, inflation, and labor data directly into the simulator's assumptions across all modules. As OpenStax Macro 3e explains, financial markets aggregate information through prices — the foundation of efficient capital allocation.</p>
+  <p class="section-subtitle">Real-time market data forms the empirical backbone of modern financial and economic analysis. This module establishes a live connection to global equities, allowing you to observe high-frequency price fluctuations, assess market volatility, and dynamically apply live asset prices across theoretical modules. By bridging the gap between textbook models and actual market mechanics, you can empirically stress-test economic principles—such as the Efficient Market Hypothesis and systematic risk factors—against live intraday conditions.</p>
   <div>
     <span class="source-tag source-perloff">📘 Perloff & Brander 3e · Ch.7 Present Value & Firm Valuation</span>
     <span class="source-tag source-openstax">📗 OpenStax Macro 3e · Financial Markets & Monetary Policy</span>
@@ -2052,7 +2055,7 @@
 <div class="section-header">
   <span class="section-label">Module 01</span>
   <h2 class="section-title">Supply & Demand Equilibrium</h2>
-  <p class="section-subtitle">The foundation of all economics. Markets reach equilibrium where the quantity demanded by consumers equals the quantity supplied by producers. As OpenStax <em>Principles of Microeconomics 3e</em> states: <strong>"Economics is greatly impacted by how well information travels through society."</strong> Use the sliders to shift demand (consumer preferences, income) and supply (input costs, technology). Watch how equilibrium price and quantity adjust, and observe the resulting consumer and producer surplus — the total welfare gains from trade.</p>
+  <p class="section-subtitle">The foundation of market economics. Equilibrium is the naturally occurring state where consumer welfare (Demand) perfectly aligns with producer capabilities (Supply). As OpenStax <em>Principles of Microeconomics 3e</em> notes: <strong>"Economics is greatly impacted by how well information travels through society."</strong> Adjust fundamental exogenous variables—such as input costs, consumer income shifts, and technological advancements—to witness the dynamic recalibration of market-clearing prices. Observe the resulting optimization of Consumer and Producer Surplus, the true measures of societal welfare gains.</p>
   <div>
     <span class="source-tag source-openstax">📗 OpenStax Micro 3e · Ch.3 Demand & Supply</span>
     <span class="source-tag source-perloff">📘 Perloff & Brander 3e · Ch.2</span>
@@ -2102,7 +2105,7 @@
 <div class="section-header">
   <span class="section-label">Module 02</span>
   <h2 class="section-title">Elasticity & Optimal Pricing</h2>
-  <p class="section-subtitle">Price elasticity of demand measures how responsive quantity demanded is to price changes. The Lerner Index (L = 1/|ε|) directly links a firm's market power to the elasticity it faces — the more inelastic the demand, the higher the optimal markup over marginal cost. The optimal pricing rule P* = MC × |ε|/(|ε| - 1) is the foundation of managerial pricing strategy. Firms facing elastic demand (|ε| > 2) should set prices close to cost; firms facing inelastic demand can charge substantial markups.</p>
+  <p class="section-subtitle">Price Elasticity of Demand quantifies how hyper-responsive consumers are to price fluctuations, forming the bedrock of managerial strategy. Using the <strong>Lerner Index (<span style="font-family: var(--font-mono)">L = 1/|ε|</span>)</strong>, firms directly bridge their monopolistic market power to consumer elasticity. The optimal pricing architecture dictates that firms facing highly elastic demand must operate on razor-thin margins, while those with inelastic products (e.g., life-saving pharmaceuticals) command substantial premiums. Master this module to decode the calculus behind global corporate pricing structures.</p>
   <div>
     <span class="source-tag source-perloff">📘 Perloff & Brander 3e · Ch.3</span>
     <span class="source-tag source-openstax">📗 OpenStax Micro 3e · Ch.5 Elasticity</span>
@@ -2147,7 +2150,7 @@
 <div class="section-header">
   <span class="section-label">Module 03</span>
   <h2 class="section-title">Production & Cost Curves</h2>
-  <p class="section-subtitle">Every firm faces a cost structure that determines its profitability. Fixed costs (rent, equipment) don't change with output, while variable costs (labor, materials) rise as production increases. The U-shaped Average Total Cost curve reflects economies of scale at low output and diseconomies at high output. As OpenStax Micro 3e Table 7.2 shows with the lumberjack example: with 1 worker you get 4 trees, with 2 workers 10 trees (MP=6), but by worker 5 output actually falls (MP=-1) — <strong>diminishing marginal returns</strong> in action.</p>
+  <p class="section-subtitle">Firms operate within strict constraints defined by their production technologies and cost landscapes. While Fixed Costs serve as market entry barriers, Variable Costs dynamically scale with output. The crucial <strong>Law of Diminishing Marginal Returns</strong> dictates that continuously adding variable inputs (like labor) to a fixed facility eventually yields declining output per unit—driving the foundational U-shape of Average Total Costs. Optimize production scaling here to locate the precise inflection points where economies of scale transform into inefficiencies.</p>
   <div>
     <span class="source-tag source-openstax">📗 OpenStax Micro 3e · Ch.7 Production & Costs</span>
   </div>
@@ -2197,7 +2200,7 @@
 <div class="section-header">
   <span class="section-label">Module 04</span>
   <h2 class="section-title">Revenue vs Profit</h2>
-  <p class="section-subtitle">Managers face a fundamental choice: maximize profit, maximize revenue, or pursue other objectives? A profit-maximizing firm produces where MR = MC. A revenue-maximizing firm produces where MR = 0. As Perloff & Brander Ch.7 emphasizes, firms should maximize the <strong>present value</strong> of future profits: PV = π₁/(1+i) + π₂/(1+i)² + ... This connects short-run production decisions to long-run firm valuation.</p>
+  <p class="section-subtitle">Revenue generation does not inherently equate to economic profit. This critical distinction separates basic accounting from true economic optimization. To maximize absolute profit (π = TR - TC), rational firms must relentlessly execute the <strong>Marginal Cost = Marginal Revenue (MC=MR) rule</strong>. By dynamically plotting Total Revenue parabolas against escalating Total Costs, this module visually isolates the exact production volume where the vertical spread (profit) reaches its mathematical zenith.</p>
   <div>
     <span class="source-tag source-perloff">📘 Perloff & Brander 3e · Ch.7 Present Value</span>
     <span class="source-tag source-openstax">📗 OpenStax Micro 3e · Ch.8</span>
@@ -2256,7 +2259,7 @@
 <div class="section-header">
   <span class="section-label">Module 05</span>
   <h2 class="section-title">Market Structures: Competition to Monopoly</h2>
-  <p class="section-subtitle">Market structure determines how firms compete and how much market power hold. As Perloff & Brander Ch.7 explains, the number of firms, product differentiation, and barriers to entry define the competitive landscape. Compare perfect competition (P = MC, zero profit), monopoly (MR = MC, positive profit, deadweight loss), and Cournot duopoly (intermediate outcomes).</p>
+  <p class="section-subtitle">The spectrum of market structures dictates a firm's pricing autonomy and the overarching efficiency of resource allocation. Ranging from Perfect Competition—where firms are passive price-takers and economic profit evaporates over time—to pure Monopoly, which exhibits profound deadweight loss due to output restriction. Interactively transition through these regimes to witness the tradeoff between market consolidation and consumer surplus, culminating in the <strong>Herfindahl-Hirschman Index (HHI)</strong> implications.</p>
   <div>
     <span class="source-tag source-perloff">📘 Perloff & Brander 3e · Ch.7 Firm Organization & Market Structure</span>
     <span class="source-tag source-openstax">📗 OpenStax Micro 3e · Ch.8-10</span>
@@ -2302,7 +2305,7 @@
 <div class="section-header">
   <span class="section-label">Module 06</span>
   <h2 class="section-title">Reaction Functions: Cournot vs Stackelberg</h2>
-  <p class="section-subtitle">In Cournot competition, firms simultaneously choose quantities. Each firm's best response (reaction function) shows its optimal output given the rival's output. The Cournot-Nash equilibrium occurs where the two reaction functions intersect. In Stackelberg competition, one firm moves first (the leader) and commits to a quantity, forcing the follower to react. The leader gains a first-mover advantage by producing more than the Cournot quantity, pushing the follower to produce less. As Perloff & Brander Ch.13 explains: <strong>"Dynamic games could be repeated games or sequential games. Under some conditions, firms may benefit from pursuing deterring entry and cost strategies."</strong></p>
+  <p class="section-subtitle">Oligopoly markets are characterized by interdependent strategic decision-making. In a <strong>Cournot scenario</strong>, rival firms simultaneously adjust output based on best-response (reaction) functions, converging on a stable Nash equilibrium. Conversely, the <strong>Stackelberg model</strong> introduces a sequential dynamic where a visionary First-Mover pre-commits to hyper-production, forcing the Follower into submission and locking in a disproportionate structural advantage.</p>
   <div>
     <span class="source-tag source-perloff">📘 Perloff & Brander 3e · Ch.13 Strategies Over Time</span>
     <span class="source-tag source-openstax">📗 OpenStax Micro 3e · Ch.10 Oligopoly</span>
@@ -2356,7 +2359,7 @@
 <div class="section-header">
   <span class="section-label">Module 07</span>
   <h2 class="section-title">Bertrand Price Competition</h2>
-  <p class="section-subtitle">The Bertrand model assumes firms compete on price rather than quantity. The striking result — the Bertrand Paradox — shows that with just two firms selling identical products, price competition drives the price down to marginal cost, eliminating all economic profit. This is the same outcome as perfect competition! The paradox highlights why firms invest heavily in product differentiation, branding, and switching costs — to escape the brutal logic of homogeneous Bertrand competition.</p>
+  <p class="section-subtitle">Unlike Cournot firms competing on volume, Bertrand competitors engage in cutthroat price warfare over identical commodities. Remarkably, if both firms have identical marginal costs, a duopoly can violently drive prices down to zero economic profit—effectively simulating perfect competition with just two players (the <em>Bertrand Paradox</em>). Modulate product differentiation here to observe how brand loyalty and unique value propositions rescue firms from this brutal zero-sum race to the bottom.</p>
   <div>
     <span class="source-tag source-perloff">📘 Perloff & Brander 3e · Ch.12 Game Theory & Business Strategy</span>
     <span class="source-tag source-openstax">📗 OpenStax Micro 3e · Ch.10</span>
@@ -2410,7 +2413,7 @@
 <div class="section-header">
   <span class="section-label">Module 08</span>
   <h2 class="section-title">Collusion & Cartels</h2>
-  <p class="section-subtitle">Collusion occurs when firms coordinate to restrict output and raise prices above competitive levels, acting like a collective monopolist. The challenge is stability: each firm has an incentive to secretly cheat by producing more than its quota. As Perloff & Brander Ch.13 explains, the <strong>tit-for-tat strategy</strong> can sustain cooperation: <em>"if the tit-for-tat strategy is modified to extend the punishment for more than one period, then it may ensure cooperation. The extension of time should be enough to more than compensate the one time extra profit."</em></p>
+  <p class="section-subtitle">When oligopolists suppress their competitive instincts and collude, they functionally replicate a Monopoly, maximizing joint industry profits. However, cartels are inherently unstable due to the overwhelming temptation to cheat—secretly slashing prices to steal massive market share. Utilizing <strong>Trigger Strategies (like Tit-for-Tat)</strong> in repeating interactions, explore the precise mathematical friction point where the long-term rewards of cooperation outweigh the short-term windfall of betrayal.</p>
   <div>
     <span class="source-tag source-perloff">📘 Perloff & Brander 3e · Ch.13 Strategies Over Time</span>
   </div>
@@ -2465,7 +2468,7 @@
 <div class="section-header">
   <span class="section-label">Module 09</span>
   <h2 class="section-title">Entry Deterrence</h2>
-  <p class="section-subtitle">Incumbent firms can use strategic behavior to deter potential entrants. Perloff & Brander Ch.13 provides the framework: <strong>"Under some conditions, firms may benefit from pursuing deterring entry and cost strategies."</strong> Limit pricing involves setting a price low enough that the entrant's expected profit is negative. Capacity commitment means building excess capacity as a credible signal. The key insight from Ch.13's <strong>Figure 13.4</strong> is that investment in capacity <em>before</em> the entry decision makes the threat to flood the market <strong>credible</strong>.</p>
+  <p class="section-subtitle">Incumbent monopolists do not passively await competition; they aggressively weaponize their cost structures and production capacities to terrify potential entrants. Through predatory pricing, massive scale economies, and irrevocable sunk capital investments, incumbents construct invisible barriers to entry. Analyze these strategic commitment mechanisms and calculate the threshold at which the cost of deterring an opponent begins to destroy the incumbent's own profitability.</p>
   <div>
     <span class="source-tag source-perloff">📘 Perloff & Brander 3e · Ch.13 Entry Deterrence & Figure 13.4</span>
   </div>
@@ -2521,7 +2524,7 @@
 <div class="section-header">
   <span class="section-label">Module 10</span>
   <h2 class="section-title">Merger Analysis & HHI</h2>
-  <p class="section-subtitle">The Herfindahl-Hirschman Index (HHI) measures market concentration by summing the squares of each firm's market share. The DOJ and FTC use HHI thresholds to evaluate proposed mergers. As Perloff & Brander Ch.7 explains, market structure is <strong>endogenous</strong> — mergers are one of the primary ways firms reshape the competitive landscape. A merger that increases HHI by more than 200 points in a concentrated market triggers heightened antitrust scrutiny.</p>
+  <p class="section-subtitle">Corporate Mergers and Acquisitions (M&A) violently disrupt market equilibrium. While proponents champion massive synergistic cost efficiencies and economies of scale, antitrust regulators fear concentrated monopolistic pricing power. Utilizing the Department of Justice's <strong>Herfindahl-Hirschman Index (HHI)</strong> framework, simulate complex horizontal mergers. Scrutinize whether the projected post-merger cost reductions mathematically justify the impending reduction in consumer choice and welfare.</p>
   <div>
     <span class="source-tag source-perloff">📘 Perloff & Brander 3e · Ch.7 Firm Organization & Market Structure</span>
     <span class="source-tag source-openstax">📗 OpenStax Micro 3e · Ch.11 Monopoly & Antitrust</span>
@@ -2577,7 +2580,7 @@
 <div class="section-header">
   <span class="section-label">Module 11</span>
   <h2 class="section-title">Static Game Theory & Nash Equilibrium</h2>
-  <p class="section-subtitle">Game theory analyzes strategic interactions where each player's outcome depends on the choices of others. In a simultaneous-move (static) game, players choose strategies without knowing what the other will do. A Nash Equilibrium occurs when no player can improve their payoff by unilaterally changing strategy. As Perloff & Brander Ch.12 demonstrates with the <strong>Google & Samsung complementary investment game</strong> (Table 12.10), coordination problems arise when firms must decide whether to invest in compatible technologies without knowing the other's choice.</p>
+  <p class="section-subtitle">The theoretical architecture of strategic interaction. When players simultaneously select strategies with perfect knowledge of the payoff matrix, they perpetually hunt for a <strong>Nash Equilibrium</strong>—a state where no player possesses an incentive to unilaterally deviate. Analyze classic paradigms such as the Prisoner's Dilemma, revealing the fundamental paradox of rational agents acting in self-interest yet arriving at mutually destructive, suboptimal outcomes.</p>
   <div>
     <span class="source-tag source-perloff">📘 Perloff & Brander 3e · Ch.12 Game Theory & Business Strategy</span>
     <span class="source-tag source-openstax">📗 OpenStax Micro 3e · Ch.10 Table 10.3, 10.6</span>
@@ -2637,7 +2640,7 @@
 <div class="section-header">
   <span class="section-label">Module 12</span>
   <h2 class="section-title">Sequential Games & Backward Induction</h2>
-  <p class="section-subtitle">In sequential (dynamic) games, players move in order and can observe previous actions. As Perloff & Brander Ch.13 defines: <strong>"Sequential game: many stages or decision points and players alternate moves"</strong> represented in <strong>extensive form</strong> — a branched diagram. The key solution concept is backward induction — start at the end of the game tree and work backwards to find the Subgame Perfect Nash Equilibrium (SPNE). This eliminates non-credible threats.</p>
+  <p class="section-subtitle">Real-world strategic engagements often unfold dynamically over time, rather than in simultaneous blind bursts. Expressed through extensive-form game trees, sequential games grant a massive informational advantage. By employing <strong>Backward Induction</strong>—starting from the terminal nodes and strategically reasoning backward—players can prune irrational subgames and pinpoint the highly sophisticated <em>Subgame Perfect Nash Equilibrium (SPNE)</em>, effectively predicting the entire future cascade of moves.</p>
   <div>
     <span class="source-tag source-perloff">📘 Perloff & Brander 3e · Ch.13 Sequential Games</span>
   </div>
@@ -2693,7 +2696,7 @@
 <div class="section-header">
   <span class="section-label">Module 13</span>
   <h2 class="section-title">Repeated Games & Cooperation Over Time</h2>
-  <p class="section-subtitle">When firms interact repeatedly over time, cooperation can emerge even among self-interested players. Perloff & Brander Ch.13 explains: <strong>"Dynamic games could be repeated games or sequential games. Under some conditions, firms may benefit from pursuing deterring entry and cost strategies."</strong> The ICC framework determines when cooperation is sustainable. The critical insight: <em>"if the tit-for-tat strategy is modified to extend the punishment for more than one period, then it may ensure cooperation. The extension of time should be enough to more than compensate the one time extra profit."</em></p>
+  <p class="section-subtitle">When firms interact repeatedly over an infinite or uncertain horizon, the terrifying threat of future retaliation enforces present-day cooperation. The Incentive Compatibility Constraint (ICC) serves as the mathematical tightrope determining if a cartel can survive. As Perloff & Brander explain: <em>"If the tit-for-tat strategy extends punishment... it may ensure cooperation."</em> Adjust the Discount Factor to observe how patience and the shadow of the future enable the emergence of profound trust among fierce rivals.</p>
   <div>
     <span class="source-tag source-perloff">📘 Perloff & Brander 3e · Ch.13 Strategies Over Time</span>
   </div>
@@ -2752,7 +2755,7 @@
 <div class="section-header">
   <span class="section-label">Module 14</span>
   <h2 class="section-title">Mixed Strategy Equilibria</h2>
-  <p class="section-subtitle">Some games have no pure strategy Nash equilibrium — no single action is always best. In these cases, players randomize. A mixed strategy Nash equilibrium specifies the probability each player assigns to each action, chosen so that the opponent is <strong>indifferent</strong> between their own strategies. This concept applies to competitive situations like penalty kicks in soccer, audit strategies, military tactics, and — as OpenStax Micro 3e Table 10.7 illustrates — the classic <strong>Jane & Bill bank robbery</strong> interrogation.</p>
+  <p class="section-subtitle">Certain highly competitive scenarios—such as penalty kicks, corporate tax audits, or military deployments—possess absolutely no predictable Pure Strategy equilibrium. To prevent ruthless exploitation by opponents, players must introduce profound unpredictability via a <strong>Mixed Strategy Nash Equilibrium</strong>. Strategically randomize action selections using precise probability distributions, ensuring the opposition is mathematically indifferent to their own deterministic counter-moves.</p>
   <div>
     <span class="source-tag source-perloff">📘 Perloff & Brander 3e · Ch.12</span>
     <span class="source-tag source-openstax">📗 OpenStax Micro 3e · Ch.10 Table 10.7</span>
@@ -2802,7 +2805,7 @@
 <div class="section-header">
   <span class="section-label">Module 15</span>
   <h2 class="section-title">Coordination Games</h2>
-  <p class="section-subtitle">Coordination games have multiple Nash equilibria, and the challenge is getting players to coordinate on the same one. As Perloff & Brander Ch.12 explains: <strong>"Managers often worry about whether their products will work with other products."</strong> Smartphones must work with headphones, car audio systems, and hearing aids — all requiring the same technical standard. The Bluetooth Special Interest Group (SSO) with <strong>over 33,000 member companies</strong> solved this coordination problem.</p>
+  <p class="section-subtitle">Unlike hyper-competitive zero-sum games, coordination games feature multiple equally optimal Nash equilibria where the sole challenge is achieving systemic alignment. From standardizing EV charging ports and 5G cellular frequencies to the global rollout of Bluetooth (an SSO involving thousands of firms), the inability to coordinate results in catastrophic network fragmentation. Analyze the critical role of cheap talk, focal points (Schelling points), and regulatory bodies in forging unified industry standards.</p>
   <div>
     <span class="source-tag source-perloff">📘 Perloff & Brander 3e · Ch.12 Coordination & SSOs</span>
   </div>
@@ -2859,7 +2862,7 @@
 <div class="section-header">
   <span class="section-label">Module 16</span>
   <h2 class="section-title">Behavioral Game Theory</h2>
-  <p class="section-subtitle">Standard game theory assumes perfect rationality, but as Perloff & Brander Ch.13 emphasizes: <strong>"Behavioral game theory shows how managers may act based on simple rules or psychological factors rather than rational strategies."</strong> K-level thinking, anchoring, loss aversion, and herding all shape real-world strategic behavior. Understanding these biases helps managers predict competitor behavior more accurately than pure Nash analysis.</p>
+  <p class="section-subtitle">Traditional microeconomics assumes flawless Vulcan logic, yet human executives are fundamentally bounded by psychological biases. Behavioral Game Theory introduces sophisticated deviations: <em>Level-K thinking</em> (anticipating the opponent's depth of reasoning), extreme loss aversion, and irrational herd mentalities in financial markets. Understanding these systemic cognitive blind spots empowers elite managers to mathematically exploit the predictable irrationality of their competitors rather than relying on pure Nash analysis.</p>
   <div>
     <span class="source-tag source-perloff">📘 Perloff & Brander 3e · Ch.13 Behavioral Game Theory</span>
   </div>
@@ -2914,7 +2917,7 @@
 <div class="section-header">
   <span class="section-label">Module 17</span>
   <h2 class="section-title">Externalities & Market Failure</h2>
-  <p class="section-subtitle">An externality occurs when a transaction affects third parties who are not part of the exchange. Negative externalities (pollution, congestion) cause the <strong>marginal social cost (MSC)</strong> to exceed the <strong>marginal private cost (MPC)</strong>, leading to overproduction relative to the <strong>socially optimal quantity</strong>. Positive externalities (education, vaccination) cause the <strong>marginal social benefit (MSB)</strong> to exceed the <strong>marginal private benefit (MPB)</strong>, leading to underproduction. The deadweight loss represents the welfare cost of this market failure. As the AP Microeconomics framework emphasizes: <em>"Your teacher is going to ask you to draw externalities, including the socially optimal quantity and deadweight loss."</em></p>
+  <p class="section-subtitle">Unregulated free markets frequently hallucinate true societal costs, triggering profound Market Failures. Negative externalities (industrial pollution, systemic financial risk) mathematically force Marginal Social Cost (MSC) higher than private cost, leading to dangerous overproduction. Conversely, positive externalities (open-source software, vaccination networks) face chronic underfunding. Deploy Pigouvian taxes, tradable carbon permits, and subsidies here to forcefully realign the private incentives with optimal societal welfare (eliminating Deadweight Loss).</p>
   <div>
     <span class="source-tag source-openstax">📗 OpenStax Micro 3e · Ch.12-13 Environmental Protection & Positive Externalities</span>
     <span class="source-tag source-perloff">📘 AP Micro · Modules 74-76 Externalities</span>
@@ -2984,7 +2987,7 @@
 <div class="section-header">
   <span class="section-label">Module 18</span>
   <h2 class="section-title">Auctions & Bargaining</h2>
-  <p class="section-subtitle">Auctions are mechanisms for price discovery when the seller doesn't know buyers' valuations. In an English (ascending) auction, the dominant strategy is to bid up to your true value. In a first-price sealed-bid auction, rational bidders shade their bids below their true value — the optimal bid is b(v) = v×(n-1)/n. The Revenue Equivalence Theorem (Vickrey, 1961) shows that all standard auction formats yield the same expected revenue to the seller under certain conditions. As Perloff & Brander Ch.12 discusses, auction design is a direct application of game theory — each bidder's strategy depends on beliefs about others' valuations.</p>
+  <p class="section-subtitle">Auctions are brilliant algorithmic engines for raw price discovery when asset valuations are entirely obscured. While ascending (English) auctions encourage aggressive dominant bidding strategies, sealed-bid formats require sophisticated bid-shading to prevent the catastrophic "Winner's Curse." Based on the Nobel-winning <strong>Revenue Equivalence Theorem</strong>, simulate multiple auction environments and witness how asymmetric information fundamentally warps bidder psychology and final capitalization.</p>
   <div>
     <span class="source-tag source-perloff">📘 Perloff & Brander 3e · Ch.12 Game Theory & Auctions</span>
   </div>
@@ -3041,7 +3044,7 @@
 <div class="section-header">
   <span class="section-label">Module 19</span>
   <h2 class="section-title">Firm Organization & Make-or-Buy Decisions</h2>
-  <p class="section-subtitle">Perloff & Brander Ch.7 provides the framework for understanding when firms should produce internally vs. purchase from markets. As <strong>Figure 7.2</strong> illustrates, production involves sequential <strong>vertical stages</strong>: upstream (raw inputs like wheat → semi-processed materials like flour) and downstream (flour + labor → final good like bread → consumers). Oliver Williamson's Transaction Cost Economics (TCE) identifies asset specificity, uncertainty, and frequency as the key determinants of the make-or-buy decision.</p>
+  <p class="section-subtitle">The structural boundaries of the modern corporation are not arbitrary; they are dictated by extreme efficiency optimization. Utilizing Oliver Williamson's Transaction Cost Economics (TCE), this module evaluates whether an entity should vertically integrate (<em>Make</em>) or outsource to the brutal free market (<em>Buy</em>). Balance the staggering costs of internal bureaucratic bloat against the existential threats of supply chain holdups and heavy Asset Specificity to architect the ultimate, frictionless corporate structure.</p>
   <div>
     <span class="source-tag source-perloff">📘 Perloff & Brander 3e · Ch.7 Firm Organization & Market Structure</span>
     <span class="source-tag source-perloff">📘 Perloff & Brander 3e · Ch.13 Hold-Up Solutions</span>
@@ -3111,7 +3114,7 @@
 <div class="section-header">
   <span class="section-label">Module 20</span>
   <h2 class="section-title">CSR & Business Ethics</h2>
-  <p class="section-subtitle">Corporate Social Responsibility (CSR) and Environmental, Social, and Governance (ESG) criteria increasingly shape business strategy and investment decisions. The debate centers on two views: Friedman's shareholder primacy (<em>"the social responsibility of business is to increase its profits"</em>) versus stakeholder theory (firms should consider employees, customers, communities, and the environment). As Perloff & Brander Ch.7 discusses in the context of firm organization, the <strong>boundaries of the firm</strong> extend beyond production decisions to include social and ethical responsibilities.</p>
+  <p class="section-subtitle">The philosophical and operational identity of the modern firm is shifting exponentially. Moving beyond Milton Friedman's rigid doctrine of pure shareholder primacy, contemporary Corporate Social Responsibility (CSR) integrated with robust ESG (Environmental, Social, Governance) frameworks mandates a holistic optimization function. Firms must strategically balance aggressive profit-seeking algorithms with the long-term stabilization of broader stakeholder ecosystems (labor pools, local biomes, and civic infrastructure) to secure durable brand equity.</p>
   <div>
     <span class="source-tag source-perloff">📘 Perloff & Brander 3e · Ch.7 Firm Organization</span>
     <span class="source-tag source-openstax">📗 OpenStax Micro 3e · Ch.12-13 Public Goods & Externalities</span>
@@ -3174,7 +3177,7 @@
 <div class="section-header">
   <span class="section-label">Module 21</span>
   <h2 class="section-title">Aggregate Demand–Aggregate Supply Model</h2>
-  <p class="section-subtitle">The AD-AS model is the workhorse of macroeconomic analysis. AD slopes downward because higher price levels reduce real wealth, increase interest rates, and make exports less competitive. Short-Run Aggregate Supply (SRAS) slopes upward because some input prices are sticky. Long-Run Aggregate Supply (LRAS) is vertical at potential output — in the long run, the economy produces at its natural rate regardless of the price level. As OpenStax <em>Principles of Macroeconomics 3e</em> explains, this model uses <em>"conversational language and ample illustrations to explore economic theories"</em> — showing how demand shocks, supply shocks, and policy interventions determine the price level and real GDP.</p>
+  <p class="section-subtitle">The supreme analytical framework governing the macroeconomy. The AD-AS model brilliantly captures the chaotic interplay between aggregate national spending (AD) and rigid production capacities (SRAS). Trace the devastating real-time ripples of exogenous demand shocks (stimulus injections, credit freezes) and supply chain disruptions (oil embargoes, semiconductor shortages) as they fiercely contest optimal price levels and actual GDP. Observe how the Long-Run Aggregate Supply (LRAS) anchor eventually asserts gravitational dominance.</p>
   <div>
     <span class="source-tag source-openstax">📗 OpenStax Macro 3e · Ch.10 AD/AS Model</span>
   </div>
@@ -3237,7 +3240,7 @@
 <div class="section-header">
   <span class="section-label">Module 22</span>
   <h2 class="section-title">Fiscal Policy & Multipliers</h2>
-  <p class="section-subtitle">Fiscal policy uses government spending, taxation, and transfers to influence aggregate demand. The spending multiplier (1/(1-MPC)) shows how an initial injection of government spending creates a chain of re-spending that amplifies the GDP impact. The tax multiplier is smaller in absolute value because some of the tax cut is saved rather than spent. Crowding out occurs when government borrowing raises interest rates, partially offsetting the stimulus. As OpenStax Macro 3e Appendix B derives: the multiplier is diluted by taxes and imports in the real world.</p>
+  <p class="section-subtitle">Governments wield Fiscal Policy as a colossal thermodynamic lever to artificially regulate the temperature of the macroeconomy. By forcefully injecting capital via deficit spending or extracting it via taxation, lawmakers attempt to smooth out brutal business cycles. Track the potent <strong>Keynesian Spending Multiplier <span style="font-family: var(--font-mono)">(1 / (1 - MPC))</span></strong> as initial injections cascade linearly through successive layers of consumption, dynamically offset by the dangerous drag of interest rate "Crowding Out" and trade leakages.</p>
   <div>
     <span class="source-tag source-openstax">📗 OpenStax Macro 3e · Ch.12 Fiscal Policy + Appendix B</span>
   </div>
@@ -3304,7 +3307,7 @@
 <div class="section-header">
   <span class="section-label">Module 23</span>
   <h2 class="section-title">Monetary Policy</h2>
-  <p class="section-subtitle">Central banks (like the Federal Reserve) conduct monetary policy by controlling the money supply to influence interest rates, investment, and aggregate demand. In the money market, equilibrium occurs where money demand equals money supply, determining the interest rate. As OpenStax Macro 3e Ch.14 explains, the Fed uses three main tools: open market operations, the discount rate, and reserve requirements. The transmission mechanism runs: ΔMs → Δr → ΔI → ΔAD → ΔY.</p>
+  <p class="section-subtitle">Central Banking is the profound art of macroeconomic fluid dynamics. Institutions like the Federal Reserve artificially throttle the aggregate Money Supply via Open Market Operations and interbank lending rates. Manipulating this liquidity directly warps corporate investment incentives and consumer credit velocity. Trace the entire transmission mechanism (<span style="font-family: var(--font-mono)">ΔMs → Δr → ΔInvestment → ΔAD → ΔY</span>) to comprehend how abstract monetary levers physically dictate commercial expansion or contraction.</p>
   <div>
     <span class="source-tag source-openstax">📗 OpenStax Macro 3e · Ch.14 Monetary Policy & Bank Regulation</span>
   </div>
@@ -3370,7 +3373,7 @@
 <div class="section-header">
   <span class="section-label">Module 24</span>
   <h2 class="section-title">Phillips Curve</h2>
-  <p class="section-subtitle">The Phillips Curve captures the short-run trade-off between inflation and unemployment. When unemployment falls below the natural rate, firms compete for scarce workers, pushing up wages and prices. The expectations-augmented Phillips Curve (π = πe − α(u − un) + shock) shows that this trade-off depends on inflation expectations and supply shocks. In the long run, the Phillips Curve is vertical at the natural rate — there is no permanent trade-off. As OpenStax Macro 3e Ch.12 explains, the 1960s showed a clear negative relationship, but the 1970s supply shocks broke the simple trade-off.</p>
+  <p class="section-subtitle">The notorious short-run paradox between Inflation and Unemployment. The Phillips Curve brutally illustrates that policymakers attempting to aggressively overdrive output and employment below the Natural Rate inevitably trigger massive, self-sustaining inflationary spirals. Conversely, incorporating <em>Rational Expectations</em> demonstrates that the Long-Run Phillips Curve rests perfectly vertical—proving categorically that central banks cannot permanently purchase employment using the currency of inflation without devastating the purchasing power of the populace.</p>
   <div>
     <span class="source-tag source-openstax">📗 OpenStax Macro 3e · Ch.11-12 Inflation & Phillips Curve</span>
   </div>
@@ -3429,7 +3432,7 @@
 <div class="section-header">
   <span class="section-label">Module 25</span>
   <h2 class="section-title">Solow Growth Model</h2>
-  <p class="section-subtitle">The Solow Growth Model explains long-run economic growth through capital accumulation, population growth, and technological progress. As OpenStax Macro 3e Ch.7 explains: <em>"Modern economic growth came about because of increases in technology and physical/human capital."</em> The economy converges to a steady state where investment exactly replaces depreciated capital and equips new workers. The Golden Rule savings rate (s = α) maximizes long-run consumption per worker. Ch.19 extends this with the <strong>neoclassical growth consensus</strong>: the aggregate production function Y = f(K, L, T) drives long-run prosperity.</p>
+  <p class="section-subtitle">The ultimate mathematical paradigm for predicting the multi-generational prosperity of nations. The Solow Neoclassical Growth Model proves that while brute capital accumulation engine eventually suffocates under the crushing weight of capital depreciation (the Steady State), true infinite exponential growth relies exclusively on the exogenous magic of <strong>Technological Progress</strong>. Calibrate the savings rate closer to the "Golden Rule" optimum to permanently elevate the standard of living and global economic dominance of populations.</p>
   <div>
     <span class="source-tag source-openstax">📗 OpenStax Macro 3e · Ch.7 Economic Growth + Ch.19 Neoclassical</span>
   </div>
