@@ -10,6 +10,73 @@ const {
 
 const GUIDE = 'econsimguide.html';
 
+/** Sidebar + body module order aligned with index.html (subset documented in guide). */
+const EXPECTED_SIDEBAR_TARGETS = [
+  'welcome',
+  'interface',
+  'usage',
+  'pedagogy',
+  'mf1',
+  'm01',
+  'm02',
+  'mp3',
+  'm05',
+  'm06',
+  'mx5',
+  'm08',
+  'm09',
+  'm10',
+  'm11',
+  'm12',
+  'm07',
+  'm13',
+  'm14',
+  'm15',
+  'm16',
+  'm03',
+  'm17',
+  'm18',
+  'm20',
+  'm21',
+  'm25',
+  'm29',
+  'mm2',
+  'm24',
+  'm22',
+  'm23',
+  'mp1',
+  'mg1',
+  'm27',
+  'mt1',
+  'mu1',
+  'm19',
+  'mk1',
+  'm28',
+  'mk5',
+  'me1',
+  'mp2',
+  'mw1',
+  'mi1',
+  'mm1',
+  'm04',
+  'm30',
+  'm26',
+  'mx4',
+  'references',
+];
+
+function sidebarNavTargets(html) {
+  const start = html.indexOf('<div class="sidebar-nav">');
+  const end = html.indexOf('id="searchNoResults"', start);
+  assert(start !== -1 && end !== -1, 'sidebar-nav block not found');
+  const block = html.slice(start, end);
+  const re = /class="nav-item[^"]*"[^>]*data-target="([^"]+)"/g;
+  const out = [];
+  let m;
+  while ((m = re.exec(block)) !== null) out.push(m[1]);
+  return out;
+}
+
 module.exports = {
   name: 'Student Guide HTML',
   description: 'Validates econsimguide.html structure, theme wiring, and navigation.',
@@ -65,6 +132,52 @@ module.exports = {
       fn: () => {
         assert(contains('[data-theme="light"]', GUIDE), 'Missing light theme CSS block');
         assert(contains('--text-primary', GUIDE), 'Missing --text-primary token');
+      },
+    },
+    {
+      name: 'Sidebar nav order matches simulator (index.html) order',
+      fn: () => {
+        const fs = require('fs');
+        const path = require('path');
+        const html = fs.readFileSync(path.join(__dirname, '..', '..', GUIDE), 'utf8');
+        const got = sidebarNavTargets(html);
+        assertEqual(
+          got.length,
+          EXPECTED_SIDEBAR_TARGETS.length,
+          `Expected ${EXPECTED_SIDEBAR_TARGETS.length} sidebar targets, got ${got.length}`,
+        );
+        for (let i = 0; i < EXPECTED_SIDEBAR_TARGETS.length; i++) {
+          assertEqual(
+            got[i],
+            EXPECTED_SIDEBAR_TARGETS[i],
+            `Sidebar position ${i}: expected data-target="${EXPECTED_SIDEBAR_TARGETS[i]}", got "${got[i]}"`,
+          );
+        }
+      },
+    },
+    {
+      name: 'Guide body page ids follow same order as sidebar (mf1 … mx4)',
+      fn: () => {
+        const fs = require('fs');
+        const path = require('path');
+        const html = fs.readFileSync(path.join(__dirname, '..', '..', GUIDE), 'utf8');
+        const ped = html.indexOf('id="pedagogy"');
+        const ref = html.indexOf('id="references"');
+        assert(ped !== -1 && ref !== -1, 'pedagogy or references anchor missing');
+        const body = html.slice(ped, ref);
+        const moduleOnly = EXPECTED_SIDEBAR_TARGETS.slice(4, -1);
+        const positions = moduleOnly.map((id) => {
+          const needle = `id="${id}"`;
+          const p = body.indexOf(needle);
+          assert(p !== -1, `Module anchor ${needle} not found between pedagogy and references`);
+          return p;
+        });
+        for (let i = 0; i < positions.length - 1; i++) {
+          assert(
+            positions[i] < positions[i + 1],
+            `Order violation: "${moduleOnly[i]}" should appear before "${moduleOnly[i + 1]}" in body`,
+          );
+        }
       },
     },
   ],
