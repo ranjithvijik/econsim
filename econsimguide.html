@@ -4,6 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
   <title>EconSim — Student Guide</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -70,6 +72,57 @@
       --red-dark: #b91c1c;
       --teal-light: #99f6e4;
       --blue-light: #93c5fd;
+    }
+
+    /* Verbatim-style readings from OpenStax 3e PDFs (CC BY 4.0; attribution required) */
+    .openstax-pdf-excerpt {
+      margin: 14px 0;
+      padding: 14px 18px;
+      border-radius: 12px;
+      background: rgba(0, 180, 216, 0.08);
+      border: 1px solid var(--border);
+      font-size: 13px;
+      line-height: 1.68;
+      color: var(--gray-200);
+    }
+
+    .openstax-pdf-excerpt .os-pdf-h {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--teal);
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .openstax-pdf-excerpt p {
+      margin: 0 0 10px;
+    }
+
+    .openstax-pdf-excerpt p:last-of-type {
+      margin-bottom: 0;
+    }
+
+    .openstax-pdf-excerpt .os-pdf-foot {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--gray-400);
+      line-height: 1.5;
+    }
+
+    .openstax-pdf-excerpt a {
+      color: var(--teal);
+    }
+
+    [data-theme="light"] .openstax-pdf-excerpt {
+      background: rgba(8, 145, 178, 0.08);
+      color: var(--text-primary);
+    }
+
+    [data-theme="light"] .openstax-pdf-excerpt .os-pdf-foot {
+      color: var(--gray-400);
     }
 
     [data-theme="light"] {
@@ -463,7 +516,7 @@
 
     .hero-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 14px;
       margin-top: 30px;
       z-index: 1;
@@ -548,7 +601,15 @@
 
     .toc-list {
       columns: 2;
-      column-gap: 26px
+      column-gap: 26px;
+      column-fill: balance;
+    }
+
+    /* Narrow main column: multi-column TOC reads as “jumbled”; single column is stable */
+    @media (max-width: 1100px) {
+      .toc-list:not([style*='columns:1']) {
+        columns: 1;
+      }
     }
 
     .toc-item {
@@ -956,9 +1017,27 @@
 
     .grid-4 {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 12px;
       margin: 16px 0
+    }
+
+    @media (max-width: 1100px) {
+      .grid-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .hero-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 560px) {
+      .grid-4 {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .hero-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
     }
 
     .card {
@@ -1461,7 +1540,12 @@
     .main-content {
       flex: 1;
       min-width: 0;
-      position: relative
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      background: var(--navy-900);
+      isolation: isolate;
     }
 
     /* ============ TOP BAR ============ */
@@ -1865,14 +1949,6 @@
 
       .page {
         padding: 20px 16px
-      }
-
-      .grid-4 {
-        grid-template-columns: repeat(2, 1fr)
-      }
-
-      .hero-grid {
-        grid-template-columns: repeat(2, 1fr)
       }
     }
 
@@ -3117,6 +3193,13 @@
           <p>Understand the relationship between average and marginal costs.</p>
           <div class="tags"><span class="tag">OpenStax Micro 3e Ch.7</span></div>
         </div>
+        <div class="openstax-pdf-excerpt">
+          <div class="os-pdf-h">Reading from the textbook — Microeconomics 3e, §§7.1–7.2</div>
+          <p>Each business tries to earn a profit. <strong>Total revenue</strong> is income from selling products (price × quantity sold). <strong>Total cost</strong> is what the firm pays to produce and sell. We distinguish <strong>explicit</strong> costs (actual payments like wages and rent) from <strong>implicit</strong> costs (opportunity cost of resources the firm already owns).</p>
+          <p><strong>Accounting profit</strong> is total revenue minus explicit costs. <strong>Economic profit</strong> is total revenue minus total cost, including both explicit and implicit costs.</p>
+          <p><strong>Production</strong> is the process a firm uses to transform inputs into outputs. This chapter explores the relationship between the quantity of output and the cost of producing it — summarized by the firm&apos;s <strong>production function</strong>.</p>
+          <div class="os-pdf-foot">Access for free at openstax.org. Excerpted from <em>Principles of Microeconomics</em> 3e, §§7.1–7.2 (CC BY 4.0). Full PDF: <a href="https://assets.openstax.org/oscms-prodcms/media/documents/Microeconomics3e-WEB.pdf" target="_blank" rel="noopener">Microeconomics3e-WEB.pdf</a></div>
+        </div>
         <div class="formula">
           <div class="title">Cost Relationships</div>TC = FC + VC
           ATC = TC/Q = AFC + AVC
@@ -3776,6 +3859,12 @@
               <p>Aggregate Demand–Aggregate Supply: the workhorse short-run macro model.</p>
               <div class="tags"><span class="tag">OpenStax Macro 3e Ch.11</span></div>
             </div>
+            <div class="openstax-pdf-excerpt">
+              <div class="os-pdf-h">Reading from the textbook — Macroeconomics 3e, §§11.1–11.2</div>
+              <p>Macroeconomists divide between those who stress <strong>supply</strong> and those who stress <strong>demand</strong>. <strong>Say&apos;s law</strong> (&quot;Supply creates its own demand&quot;) captures the supply-side view; over long horizons, as productive capacity grows, demand tends to keep pace. <strong>Keynes&apos; law</strong> (&quot;Demand creates its own supply&quot;) fits many short-run episodes when output is demand-constrained.</p>
+              <p>Neither story is complete alone: limits on labor, capital, and technology still bind no matter how high demand runs. The <strong>aggregate demand/aggregate supply model</strong> combines both. <strong>Aggregate supply</strong> is total real GDP firms will produce at each <strong>price level</strong>. <strong>Potential GDP</strong> is what the economy can produce at full employment. The price level is an index; the <strong>inflation rate</strong> is its percentage change over time.</p>
+              <div class="os-pdf-foot">Access for free at openstax.org. Excerpted from <em>Principles of Macroeconomics</em> 3e, §§11.1–11.2 (CC BY 4.0). Full PDF: <a href="https://assets.openstax.org/oscms-prodcms/media/documents/Macroeconomics3e-WEB_X69daYk.pdf" target="_blank" rel="noopener">Macroeconomics3e-WEB_X69daYk.pdf</a></div>
+            </div>
             <table class="th-green">
               <tr>
                 <th>Input</th>
@@ -4325,6 +4414,12 @@
                     <h2>✖️ Keynesian Cross</h2>
                     <p>45-degree line model of aggregate expenditure and equilibrium output.</p>
                     <div class="tags"><span class="tag">OpenStax Macro 3e Ch.12</span></div>
+                  </div>
+                  <div class="openstax-pdf-excerpt">
+                    <div class="os-pdf-h">Reading from the textbook — Macroeconomics 3e, §12.1</div>
+                    <p>The Keynesian perspective focuses on <strong>aggregate demand</strong>. While factors of production determine <strong>potential GDP</strong>, <strong>real GDP</strong> depends on how much demand exists. If AD falls from full employment, the economy can sit in a <strong>recessionary gap</strong>; if AD pushes beyond potential, an <strong>inflationary gap</strong> and inflation can result. Policy may aim to close those gaps.</p>
+                    <p><strong>Aggregate demand</strong> is total planned spending on domestic goods and services — the sum of consumption, investment, government spending, and net exports.</p>
+                    <div class="os-pdf-foot">Access for free at openstax.org. Excerpted from <em>Principles of Macroeconomics</em> 3e, §12.1 (CC BY 4.0). Full PDF: <a href="https://assets.openstax.org/oscms-prodcms/media/documents/Macroeconomics3e-WEB_X69daYk.pdf" target="_blank" rel="noopener">Macroeconomics3e-WEB_X69daYk.pdf</a></div>
                   </div>
                   <div class="formula">
                     <div class="title">Keynesian Cross</div>AE = C₀ + MPC·Y + I + G

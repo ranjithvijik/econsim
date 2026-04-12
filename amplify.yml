@@ -10,10 +10,13 @@ customHeaders:
         value: 'SAMEORIGIN'
       - key: 'Referrer-Policy'
         value: 'strict-origin-when-cross-origin'
-  - pattern: '*.html'
+  # HTML must not be served from stale caches (private + no-store avoids shared CDN/browser keeping old builds)
+  - pattern: '**/*.html'
     headers:
       - key: 'Cache-Control'
-        value: 'public, max-age=0, must-revalidate'
+        value: 'private, no-store, no-cache, must-revalidate, max-age=0'
+      - key: 'Pragma'
+        value: 'no-cache'
 frontend:
   phases:
     preBuild:
@@ -25,11 +28,15 @@ frontend:
         - if grep -q "__AV_API_KEY__" index.html || grep -q "__FRED_API_KEY__" index.html; then echo "WARNING - placeholders not fully replaced, check environment variables"; else echo "Success - API keys injected"; fi
     build:
       commands:
+        # Amplify serves /econsimguide/ from econsimguide/index.html (clean URL); without this, /econsimguide/ 404s
+        - mkdir -p econsimguide
+        - cp econsimguide.html econsimguide/index.html
         - echo "Build complete"
   artifacts:
     baseDirectory: /
     files:
       - index.html
       - econsimguide.html
+      - econsimguide/index.html
   cache:
     paths: []

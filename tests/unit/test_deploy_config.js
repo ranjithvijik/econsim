@@ -12,13 +12,14 @@ module.exports = {
         const yml = readProjectFile('amplify.yml');
         assert(yml.includes('index.html'), 'amplify.yml should list index.html');
         assert(yml.includes('econsimguide.html'), 'amplify.yml should list econsimguide.html');
+        assert(yml.includes('econsimguide/index.html'), 'amplify.yml should ship directory index for /econsimguide/');
         assert(yml.includes('customHeaders'), 'amplify.yml should set customHeaders for caching and security');
       },
     },
     {
       name: 'Index links to Student Guide',
       fn: () => {
-        assert(contains('href="/econsimguide.html"', 'index.html'), 'index.html should use root-relative Student Guide link');
+        assert(contains('href="/econsimguide/"', 'index.html'), 'index.html should use root-relative Student Guide link');
         assert(contains('Student Guide', 'index.html'), 'index.html should label Student Guide link');
       },
     },

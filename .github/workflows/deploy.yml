@@ -29,6 +29,9 @@ jobs:
             echo "Placeholder successfully replaced."
           fi
 
+      - name: Student guide directory index (for /econsimguide/)
+        run: mkdir -p econsimguide && cp econsimguide.html econsimguide/index.html
+
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
@@ -36,3 +39,4 @@ jobs:
           path: |
             index.html
             econsimguide.html
+            econsimguide/index.html
