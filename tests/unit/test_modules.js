@@ -9,7 +9,8 @@ module.exports = {
     {
       name: 'Nav items present (78 modules)',
       fn: () => {
-        assertAtLeast(countOccurrences('class="nav-item"'), 78, 'Should have 78 nav items');
+        // Match "nav-item", "nav-item live", "nav-item active" (exact `class="nav-item"` alone is only 76)
+        assertAtLeast(countOccurrences('class="nav-item'), 78, 'Should have 78 nav items');
       }
     },
     {

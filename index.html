@@ -5074,9 +5074,6 @@
 </div>
 </section>
 
-<!-- MODULE 21: AD-AS MODEL (Source-Enhanced with OpenStax Macro 3e) -->
-</section>
-
 <!-- MODULE M4: IS-LM MODEL -->
 <section id="islm-model" class="section">
 <div class="section-header">
@@ -5106,9 +5103,12 @@
 </div>
 <div class="grid-2" style="margin-top:16px;">
   <div class="kpi-card"><div class="kpi-label">Equilibrium Output (Y*)</div><div class="kpi-val teal" id="islm-y-val">1200</div></div>
-  <div class="kpi-card gold"><div class="kpi-label">Interest Rate (r*)</div><div class="kpi-val" id="islm-r-val">3.5%</div></div>
+  <div class="kpi-card gold"><div class="kpi-label">Interest Rate (r*)</div><div class="kpi-val" id="islm-r-val">3.5%</div>  </div>
 </div>
 </section>
+
+<!-- MODULE 21: AD-AS MODEL (Source-Enhanced with OpenStax Macro 3e) -->
+<section id="ad-as" class="section">
 <div class="section-header">
   <span class="section-label">Module 21</span>
   <h2 class="section-title">Aggregate Demand–Aggregate Supply Model</h2>
@@ -5317,9 +5317,6 @@
 
 </section>
 
-<!-- MODULE 23: MONETARY POLICY (Source-Enhanced with OpenStax Macro 3e) -->
-</section>
-
 <!-- MODULE M18: TAYLOR RULE -->
 <section id="taylor-rule" class="section">
 <div class="section-header">
@@ -5353,6 +5350,9 @@
   </div>
 </div>
 </section>
+
+<!-- MODULE 23: MONETARY POLICY (Source-Enhanced with OpenStax Macro 3e) -->
+<section id="monetary-policy" class="section">
 <div class="section-header">
   <span class="section-label">Module 23</span>
   <h2 class="section-title">Monetary Policy</h2>
@@ -5960,34 +5960,7 @@
 </section>
 
 <!-- G2: REAL VS NOMINAL GDP -->
-</section>
-
-<!-- MODULE G4: BUSINESS CYCLE -->
-<section id="business-cycle" class="section">
-<div class="section-header">
-  <span class="section-label">Module G4</span>
-  <h2 class="section-title">Business Cycle Simulator</h2>
-  <p class="section-subtitle">Observe the fluctuations in economic activity: Expansion, Peak, Recession, and Trough.</p>
-  <div><span class="source-tag source-openstax">📗 OpenStax Macro 3e · Ch.7</span></div>
-</div>
-<div class="grid-2">
-  <div class="card">
-    <div class="card-title">📈 Cycle Dynamics</div>
-    ${sl('bc-vol', 'Volatility (%)', 1, 10, 3, 1, 'updateBusinessCycle')}
-    ${sl('bc-days', 'Time Periods', 10, 100, 50, 5, 'updateBusinessCycle')}
-    <div class="insight-card gold" style="margin-top:20px;">
-      <div class="insight-label">💡 Key Phases</div>
-      <p><strong>Expansion:</strong> Rising GDP, falling unemployment.<br>
-      <strong>Recession:</strong> Two quarters of falling GDP.</p>
-    </div>
-  </div>
-  <div class="chart-card">
-    <div class="chart-title">Real GDP Fluctuations</div>
-    <div class="chart-subtitle">Sine-wave model of the business cycle</div>
-    <div class="chart-wrap h-320"><canvas id="bcChart"></canvas></div>
-  </div>
-</div>
-</section>
+<section id="real-nominal-gdp" class="section">
 <div class="section-header">
   <span class="section-label">MACRO 02</span>
   <h2 class="section-title">Real vs. Nominal GDP Converter</h2>
@@ -6013,6 +5986,33 @@
       <div class="result-item"><span class="result-label">Real vs Nominal Gap</span><span class="result-value red" id="rn-gap">$4.2T</span></div>
       <div class="result-item"><span class="result-label">Interpretation</span><span class="result-value" id="rn-interp">Prices 20% above base year</span></div>
     </div>
+  </div>
+</div>
+</section>
+
+<!-- MODULE G4: BUSINESS CYCLE -->
+<section id="business-cycle" class="section">
+<div class="section-header">
+  <span class="section-label">Module G4</span>
+  <h2 class="section-title">Business Cycle Simulator</h2>
+  <p class="section-subtitle">Observe the fluctuations in economic activity: Expansion, Peak, Recession, and Trough.</p>
+  <div><span class="source-tag source-openstax">📗 OpenStax Macro 3e · Ch.7</span></div>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">📈 Cycle Dynamics</div>
+    ${sl('bc-vol', 'Volatility (%)', 1, 10, 3, 1, 'updateBusinessCycle')}
+    ${sl('bc-days', 'Time Periods', 10, 100, 50, 5, 'updateBusinessCycle')}
+    <div class="insight-card gold" style="margin-top:20px;">
+      <div class="insight-label">💡 Key Phases</div>
+      <p><strong>Expansion:</strong> Rising GDP, falling unemployment.<br>
+      <strong>Recession:</strong> Two quarters of falling GDP.</p>
+    </div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">Real GDP Fluctuations</div>
+    <div class="chart-subtitle">Sine-wave model of the business cycle</div>
+    <div class="chart-wrap h-320"><canvas id="bcChart"></canvas></div>
   </div>
 </div>
 </section>
@@ -7168,6 +7168,26 @@
 </section>
 
 <!-- I3: PUBLIC CHOICE -->
+<section id="public-choice" class="section">
+  <div class="section-header">
+    <span class="section-label">Module I3</span>
+    <h2 class="section-title">Public Choice & Rent Seeking</h2>
+    <p class="section-subtitle">Public choice theory applies economic logic to political decision-making. Explore how small, concentrated interest groups (Special Interests) exert disproportionate influence over large, diffuse groups of taxpayers (Rational Ignorance), and how Rent Seeking consumes social surplus.</p>
+    <div><span class="source-tag source-openstax">📗 OpenStax Micro Ch.18 · Public Economy</span></div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">🗳️ Political Variables</div>
+      ${sl('pc3-lobby', 'Lobbying Spending', 0, 1000, 200, 50, 'updatePublicChoice', '$')}
+      ${sl('pc3-voters', 'Ignorant Voters (%)', 0, 100, 70, 5, 'updatePublicChoice', '', '%')}
+    </div>
+    <div class="card">
+      <div class="card-title">📉 Deadweight Loss</div>
+      <div class="kpi-card red"><div class="kpi-label">Special Interest Gain</div><div class="kpi-val" id="pc3-gain">$0</div></div>
+      <div class="kpi-card gold"><div class="kpi-label">Social Cost (DWL)</div><div class="kpi-val" id="pc3-dwl">$0</div></div>
+    </div>
+  </div>
+  <div class="chart-card" style="margin-top:16px;"><div class="chart-title">Political Economy: Rent Seeking</div><div class="chart-subtitle">Resources consumed for political gain</div><div class="chart-wrap h-280"><canvas id="publicChoiceChart"></canvas></div></div>
 </section>
 
 <!-- MODULE I5: PUBLIC GOODS -->
@@ -7204,26 +7224,6 @@
     </div>
   </div>
 </div>
-</section>
-  <div class="section-header">
-    <span class="section-label">Module I3</span>
-    <h2 class="section-title">Public Choice & Rent Seeking</h2>
-    <p class="section-subtitle">Public choice theory applies economic logic to political decision-making. Explore how small, concentrated interest groups (Special Interests) exert disproportionate influence over large, diffuse groups of taxpayers (Rational Ignorance), and how Rent Seeking consumes social surplus.</p>
-    <div><span class="source-tag source-openstax">📗 OpenStax Micro Ch.18 · Public Economy</span></div>
-  </div>
-  <div class="grid-2">
-    <div class="card">
-      <div class="card-title">🗳️ Political Variables</div>
-      ${sl('pc3-lobby', 'Lobbying Spending', 0, 1000, 200, 50, 'updatePublicChoice', '$')}
-      ${sl('pc3-voters', 'Ignorant Voters (%)', 0, 100, 70, 5, 'updatePublicChoice', '', '%')}
-    </div>
-    <div class="card">
-      <div class="card-title">📉 Deadweight Loss</div>
-      <div class="kpi-card red"><div class="kpi-label">Special Interest Gain</div><div class="kpi-val" id="pc3-gain">$0</div></div>
-      <div class="kpi-card gold"><div class="kpi-label">Social Cost (DWL)</div><div class="kpi-val" id="pc3-dwl">$0</div></div>
-    </div>
-  </div>
-  <div class="chart-card" style="margin-top:16px;"><div class="chart-title">Political Economy: Rent Seeking</div><div class="chart-subtitle">Resources consumed for political gain</div><div class="chart-wrap h-280"><canvas id="publicChoiceChart"></canvas></div></div>
 </section>
 
 <!-- X1: EXCHANGE RATES -->
@@ -7274,8 +7274,38 @@
   </div>
 </section>
 
-<!-- X3: S-I IDENTITY -->
 <!-- X3: TRADE POLICY -->
+<section id="trade-policy" class="section">
+<div class="section-header">
+  <span class="section-label">Module X3</span>
+  <h2 class="section-title">Trade Policy: Tariffs, Quotas & VERs</h2>
+  <p class="section-subtitle">Governments use trade barriers to protect domestic industries. Compare the welfare effects: Tariffs generate tax revenue, Quotas create rents for license holders, and Voluntary Export Restraints (VERs) transfer rents to foreign exporters.</p>
+  <div><span class="source-tag source-openstax">📗 OpenStax Macro Ch.20 · Globalization and Protectionism</span></div>
+</div>
+
+<div class="grid-3">
+  <div class="card">
+    <div class="card-title">📜 Tariff</div>
+    <p class="small-text">A tax on imported goods. Higher prices for consumers, but the <strong>government collects revenue</strong>.</p>
+    <div class="kpi-card teal"><div class="kpi-label">Domestic Welfare</div><div class="kpi-val" style="font-size:14px;">CS ↓, PS ↑, Gov ↑</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">📦 Import Quota</div>
+    <p class="small-text">A quantitative limit on imports. Prices rise like a tariff, but <strong>quota holders</strong> capture the "rents."</p>
+    <div class="kpi-card gold"><div class="kpi-label">Quota Rents</div><div class="kpi-val" style="font-size:14px;">Captures Area C</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">🛡️ VER</div>
+    <p class="small-text">A "voluntary" limit by exporters. Prices rise, but <strong>foreign exporters</strong> capture the rents.</p>
+    <div class="kpi-card red"><div class="kpi-label">Worst Outcome</div><div class="kpi-val" style="font-size:14px;">Net Loss to Nation</div></div>
+  </div>
+</div>
+
+<div class="chart-card" style="margin-top:16px;">
+  <div class="chart-title">Welfare Impact Comparison: Tariff vs Quota vs VER</div>
+  <div class="chart-subtitle">All three raise prices equally — but who captures the rents differs</div>
+  <div class="chart-wrap h-320"><canvas id="tradePolicyChart"></canvas></div>
+</div>
 </section>
 
 <!-- MODULE X6: MUNDELL-FLEMING -->
@@ -7307,37 +7337,6 @@
     </div>
     <p class="chart-subtitle" id="mf-explanation" style="margin-top:12px;">Under fixed rates, fiscal policy is maximized but monetary policy is neutralized.</p>
   </div>
-</div>
-</section>
-<div class="section-header">
-  <span class="section-label">Module X3</span>
-  <h2 class="section-title">Trade Policy: Tariffs, Quotas & VERs</h2>
-  <p class="section-subtitle">Governments use trade barriers to protect domestic industries. Compare the welfare effects: Tariffs generate tax revenue, Quotas create rents for license holders, and Voluntary Export Restraints (VERs) transfer rents to foreign exporters.</p>
-  <div><span class="source-tag source-openstax">📗 OpenStax Macro Ch.20 · Globalization and Protectionism</span></div>
-</div>
-
-<div class="grid-3">
-  <div class="card">
-    <div class="card-title">📜 Tariff</div>
-    <p class="small-text">A tax on imported goods. Higher prices for consumers, but the <strong>government collects revenue</strong>.</p>
-    <div class="kpi-card teal"><div class="kpi-label">Domestic Welfare</div><div class="kpi-val" style="font-size:14px;">CS ↓, PS ↑, Gov ↑</div></div>
-  </div>
-  <div class="card">
-    <div class="card-title">📦 Import Quota</div>
-    <p class="small-text">A quantitative limit on imports. Prices rise like a tariff, but <strong>quota holders</strong> capture the "rents."</p>
-    <div class="kpi-card gold"><div class="kpi-label">Quota Rents</div><div class="kpi-val" style="font-size:14px;">Captures Area C</div></div>
-  </div>
-  <div class="card">
-    <div class="card-title">🛡️ VER</div>
-    <p class="small-text">A "voluntary" limit by exporters. Prices rise, but <strong>foreign exporters</strong> capture the rents.</p>
-    <div class="kpi-card red"><div class="kpi-label">Worst Outcome</div><div class="kpi-val" style="font-size:14px;">Net Loss to Nation</div></div>
-  </div>
-</div>
-
-<div class="chart-card" style="margin-top:16px;">
-  <div class="chart-title">Welfare Impact Comparison: Tariff vs Quota vs VER</div>
-  <div class="chart-subtitle">All three raise prices equally — but who captures the rents differs</div>
-  <div class="chart-wrap h-320"><canvas id="tradePolicyChart"></canvas></div>
 </div>
 </section>
 
