@@ -1,0 +1,20 @@
+{
+  "name": "econsim-qa",
+  "version": "1.0.0",
+  "description": "QA test suite for Economics Simulator",
+  "private": true,
+  "scripts": {
+    "test": "node run_tests.js",
+    "test:fast": "node run_tests.js --fast",
+    "test:html": "node run_tests.js --module html_structure",
+    "test:modules": "node run_tests.js --module simulator_modules",
+    "test:components": "node run_tests.js --module interactive_components",
+    "qa": "node run_tests.js --out QA-REPORT.md"
+  },
+  "devDependencies": {
+    "node-html-parser": "^6.1.13"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

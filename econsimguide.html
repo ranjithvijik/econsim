@@ -1,0 +1,4627 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EconSim — Student Guide</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --navy-900: #040d1a;
+      --navy-800: #0a1628;
+      --navy-700: #0f1f3d;
+      --navy-600: #162540;
+      --navy-500: #1e3258;
+      --navy-400: #243d70;
+      --blue-accent: #1a4080;
+      --teal: #00b4d8;
+      --teal-dim: #0096b7;
+      --teal-glow: rgba(0, 180, 216, 0.15);
+      --gold: #ffd700;
+      --gold-dim: #e5c100;
+      --gold-glow: rgba(255, 215, 0, 0.12);
+      --green: #00d084;
+      --red: #ff4d6d;
+      --orange: #ff9a00;
+      --purple: #a855f7;
+      --white: #ffffff;
+      --gray-100: #f0f4ff;
+      --gray-200: #b4c5e4;
+      --gray-300: #8ca3c4;
+      --gray-400: #50668f;
+      --border: rgba(255, 255, 255, 0.15);
+      --border-accent: rgba(0, 180, 216, 0.4);
+      --surface: rgba(15, 31, 61, 0.8);
+      --surface2: rgba(22, 37, 64, 0.9);
+      --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.6);
+      --font-body: 'Inter', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      /* Legacy Mappings for Guide Compatibility */
+      --slate-900: var(--navy-900);
+      --slate-800: var(--navy-800);
+      --slate-700: var(--navy-700);
+      --slate-600: var(--navy-600);
+      --slate-500: var(--gray-400);
+      --slate-400: var(--gray-400);
+      --slate-300: var(--gray-300);
+      --teal-dark: var(--teal-dim);
+      --blue-dark: var(--blue-accent);
+      --blue: #00b4d8;
+      --purple-dark: #7c3aed;
+      --pink: #ff4d6d;
+    }
+
+    [data-theme="light"] {
+      --navy-900: #ffffff;
+      --navy-800: #f8fafc;
+      --navy-700: #f1f5f9;
+      --navy-600: #e2e8f0;
+      --navy-500: #cbd5e1;
+      --navy-400: #94a3b8;
+      --blue-accent: #1d4ed8;
+      --teal: #0891b2;
+      --teal-dim: #0e7490;
+      --teal-glow: rgba(8, 145, 178, 0.1);
+      --gold: #ca8a04;
+      --gold-dim: #a16207;
+      --gold-glow: rgba(202, 138, 4, 0.1);
+      --green: #059669;
+      --red: #dc2626;
+      --orange: #d97706;
+      --purple: #7c3aed;
+      --white: #000000;
+      --gray-100: #0f172a;
+      --gray-200: #1e293b;
+      --gray-300: #334155;
+      --gray-400: #475569;
+      --border: rgba(0, 0, 0, 0.15);
+      --border-accent: rgba(8, 145, 178, 0.4);
+      --surface: rgba(255, 255, 255, 0.9);
+      --surface2: rgba(248, 250, 252, 0.95);
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+      /* Legacy Mappings for Guide Compatibility */
+      --slate-900: #ffffff;
+      --slate-800: #1e293b;
+      --slate-700: #f1f5f9;
+      --slate-600: #e2e8f0;
+      --slate-500: #64748b;
+      --slate-400: #94a3b8;
+      --slate-300: #cbd5e1;
+      --teal-dark: #0e7490;
+      --blue-dark: #1d4ed8;
+      --purple-dark: #6b21a8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--navy-900);
+      color: var(--white);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: var(--blue-dark);
+      text-decoration: none
+    }
+
+    a:hover {
+      text-decoration: underline
+    }
+
+    .cover {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f172a 0%, #12355b 35%, #0077b6 70%, #00b4d8 100%);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      padding: 56px 40px;
+      page-break-after: always
+    }
+
+    .cover:before,
+    .cover:after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      opacity: .12
+    }
+
+    .cover:before {
+      width: 380px;
+      height: 380px;
+      background: var(--gold);
+      top: -100px;
+      right: -100px
+    }
+
+    .cover:after {
+      width: 320px;
+      height: 320px;
+      background: var(--purple);
+      bottom: -100px;
+      left: -80px
+    }
+
+    .bars {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 24px;
+      z-index: 1
+    }
+
+    .bars span {
+      display: block;
+      width: 64px;
+      height: 10px;
+      border-radius: 999px
+    }
+
+    .b1 {
+      background: var(--green);
+    }
+
+    .b2 {
+      background: var(--orange)
+    }
+
+    .b3 {
+      background: var(--gray-300)
+    }
+
+    .b4 {
+      background: var(--gold)
+    }
+
+    .eyebrow {
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      font-weight: 300;
+      font-size: 14px;
+      opacity: .8;
+      z-index: 1
+    }
+
+    .cover h1 {
+      font-size: 60px;
+      line-height: 1.05;
+      font-weight: 900;
+      letter-spacing: -1px;
+      margin: 10px 0 8px;
+      z-index: 1
+    }
+
+    .cover h2 {
+      font-size: 22px;
+      font-weight: 400;
+      opacity: .92;
+      margin-bottom: 22px;
+      z-index: 1
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 10px 22px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .14);
+      border: 1px solid rgba(255, 255, 255, .28);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      z-index: 1
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-top: 30px;
+      z-index: 1;
+      max-width: 920px;
+      width: 100%
+    }
+
+    .hero-card {
+      background: rgba(255, 255, 255, .12);
+      border: 1px solid rgba(255, 255, 255, .22);
+      border-radius: 16px;
+      padding: 18px 14px
+    }
+
+    .hero-card .num {
+      font-size: 28px;
+      font-weight: 900;
+      display: block
+    }
+
+    .hero-card .lbl {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      opacity: .85
+    }
+
+    .meta {
+      margin-top: 26px;
+      font-size: 12px;
+      opacity: .72;
+      z-index: 1
+    }
+
+    .page {
+      padding: 34px 48px;
+      page-break-after: always
+    }
+
+    .toc-title {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--teal);
+      border-bottom: 4px solid var(--teal);
+      padding-bottom: 10px;
+      margin-bottom: 18px
+    }
+
+    .group {
+      margin: 16px 0 8px
+    }
+
+    .group h3 {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #fff;
+      padding: 7px 12px;
+      border-radius: 8px;
+      margin-bottom: 8px
+    }
+
+    .g-start h3 {
+      background: linear-gradient(90deg, var(--slate-900), var(--slate-700))
+    }
+
+    .g-micro h3 {
+      background: linear-gradient(90deg, var(--teal-dark), var(--teal))
+    }
+
+    .g-game h3 {
+      background: linear-gradient(90deg, var(--purple-dark), var(--purple))
+    }
+
+    .g-macro h3 {
+      background: linear-gradient(90deg, var(--blue-dark), var(--blue))
+    }
+
+    .g-welfare h3 {
+      background: linear-gradient(90deg, var(--pink), var(--red))
+    }
+
+    .toc-list {
+      columns: 2;
+      column-gap: 26px
+    }
+
+    .toc-item {
+      break-inside: avoid;
+      display: flex;
+      gap: 10px;
+      padding: 4px 10px;
+      border-bottom: 1px dotted var(--slate-300);
+      font-size: 11px
+    }
+
+    .toc-item .num {
+      min-width: 42px;
+      color: var(--slate-500);
+      font-weight: 800
+    }
+
+    .toc-item a {
+      flex: 1;
+      color: var(--slate-800)
+    }
+
+    .banner {
+      border-radius: 18px;
+      padding: 24px 28px;
+      color: #fff;
+      margin-bottom: 22px;
+      position: relative;
+      overflow: hidden
+    }
+
+    .banner:after {
+      content: '';
+      position: absolute;
+      right: -30px;
+      top: -30px;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .08)
+    }
+
+    .start {
+      background: linear-gradient(135deg, var(--slate-900), var(--slate-700))
+    }
+
+    .micro {
+      background: linear-gradient(135deg, var(--teal-dark), var(--teal))
+    }
+
+    .game {
+      background: linear-gradient(135deg, var(--purple-dark), var(--purple))
+    }
+
+    .macro {
+      background: linear-gradient(135deg, var(--blue-dark), var(--blue))
+    }
+
+    .welfare {
+      background: linear-gradient(135deg, var(--pink), var(--red))
+    }
+
+    .money {
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold))
+    }
+
+    .trade {
+      background: linear-gradient(135deg, var(--blue-dark), var(--teal))
+    }
+
+    .new {
+      background: linear-gradient(135deg, var(--slate-700), var(--slate-500))
+    }
+
+    .app {
+      background: linear-gradient(135deg, var(--slate-400), var(--slate-300))
+    }
+
+    .elast {
+      background: linear-gradient(135deg, var(--gold), var(--red))
+    }
+
+    .prod {
+      background: linear-gradient(135deg, var(--green-dark), var(--green))
+    }
+
+    .keynes {
+      background: linear-gradient(135deg, var(--slate-800), var(--purple-dark))
+    }
+
+    .fin {
+      background: linear-gradient(135deg, var(--teal-dark), var(--blue))
+    }
+
+    .sid {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      opacity: .75;
+      margin-bottom: 4px
+    }
+
+    .banner h2 {
+      font-size: 28px;
+      font-weight: 900;
+      margin-bottom: 4px;
+      position: relative;
+      z-index: 1
+    }
+
+    .banner p {
+      font-size: 13px;
+      max-width: 760px;
+      opacity: .92;
+      position: relative;
+      z-index: 1
+    }
+
+    .tags {
+      margin-top: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      position: relative;
+      z-index: 1
+    }
+
+    .tag,
+    .source-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .16);
+      border: 1px solid rgba(255, 255, 255, .26)
+    }
+
+    h3 {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--slate-800);
+      border-bottom: 2px solid var(--slate-200);
+      padding-bottom: 6px;
+      margin: 22px 0 12px
+    }
+
+    h4 {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--teal-dark);
+      margin: 18px 0 8px
+    }
+
+    p {
+      margin-bottom: 10px
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      font-size: 10px;
+      border: 1px solid var(--slate-200);
+      border-radius: 10px;
+      overflow: hidden
+    }
+
+    th,
+    td {
+      padding: 8px 10px;
+      text-align: left;
+      vertical-align: top
+    }
+
+    th {
+      color: #fff;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 1px
+    }
+
+    .th-teal th {
+      background: linear-gradient(90deg, var(--teal-dark), var(--teal))
+    }
+
+    .th-purple th {
+      background: linear-gradient(90deg, var(--purple-dark), var(--purple))
+    }
+
+    .th-gold th {
+      background: linear-gradient(90deg, var(--gold-dark), var(--gold))
+    }
+
+    .th-green th {
+      background: linear-gradient(90deg, var(--green-dark), var(--green))
+    }
+
+    .th-blue th {
+      background: linear-gradient(90deg, var(--blue-dark), var(--blue))
+    }
+
+    .th-red th {
+      background: linear-gradient(90deg, var(--red-dark), var(--red))
+    }
+
+    .th-slate th {
+      background: linear-gradient(90deg, var(--slate-700), var(--slate-500))
+    }
+
+    .th-pink th {
+      background: linear-gradient(90deg, var(--pink), var(--red))
+    }
+
+    .th-amber th {
+      background: linear-gradient(90deg, var(--gold-dark), var(--gold))
+    }
+
+    tr:nth-child(even) td {
+      background: var(--slate-50)
+    }
+
+    tr td {
+      border-bottom: 1px solid var(--slate-100)
+    }
+
+    .sidebar-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface2);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .theme-toggle {
+      display: flex;
+      background: var(--navy-600);
+      padding: 4px;
+      border-radius: 8px;
+      width: fit-content;
+    }
+
+    .theme-toggle-btn {
+      border: none;
+      background: none;
+      color: var(--gray-300);
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .theme-toggle-btn:hover {
+      color: var(--white);
+    }
+
+    .theme-toggle-btn.active {
+      background: var(--blue-accent);
+      color: var(--white);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .formula {
+      background: var(--slate-900);
+      color: var(--teal-light);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin: 14px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      line-height: 1.8;
+      border: 1px solid var(--slate-700);
+      white-space: pre-wrap;
+    }
+
+    .formula .title {
+      font-family: 'Inter', sans-serif;
+      color: var(--gold);
+      font-weight: 800;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 6px
+    }
+
+    .ibox {
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin: 14px 0;
+      font-size: 10.5px;
+      line-height: 1.55
+    }
+
+    .ibox .title {
+      font-weight: 900;
+      font-size: 11px;
+      margin-bottom: 4px
+    }
+
+    .ibox.teal {
+      background: linear-gradient(135deg, #ecfeff, #dff8fb);
+      border-left: 5px solid var(--teal)
+    }
+
+    .ibox.teal .title {
+      color: var(--teal-dark)
+    }
+
+    .ibox.green {
+      background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+      border-left: 5px solid var(--green)
+    }
+
+    .ibox.green .title {
+      color: var(--green-dark)
+    }
+
+    .ibox.gold {
+      background: linear-gradient(135deg, #fffbeb, #fef3c7);
+      border-left: 5px solid var(--gold)
+    }
+
+    .ibox.gold .title {
+      color: var(--gold-dark)
+    }
+
+    .ibox.purple {
+      background: linear-gradient(135deg, #f5f3ff, #ede9fe);
+      border-left: 5px solid var(--purple)
+    }
+
+    .ibox.purple .title {
+      color: var(--purple-dark)
+    }
+
+    .ibox.red {
+      background: linear-gradient(135deg, #fef2f2, #fee2e2);
+      border-left: 5px solid var(--red)
+    }
+
+    .ibox.red .title {
+      color: var(--red-dark)
+    }
+
+    .ibox.blue {
+      background: linear-gradient(135deg, #eff6ff, #dbeafe);
+      border-left: 5px solid var(--blue)
+    }
+
+    .ibox.blue .title {
+      color: var(--blue-dark)
+    }
+
+    .ibox.dark {
+      background: linear-gradient(135deg, var(--slate-800), var(--slate-700));
+      color: #fff;
+      border-left: 5px solid var(--teal)
+    }
+
+    .ibox.dark .title {
+      color: var(--teal-light)
+    }
+
+    .steps {
+      counter-reset: step;
+      margin: 14px 0
+    }
+
+    .step {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 10px;
+      align-items: flex-start
+    }
+
+    .step::before {
+      counter-increment: step;
+      content: counter(step);
+      min-width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--teal-dark), var(--teal));
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 12px
+    }
+
+    .step div {
+      font-size: 10.5px;
+      padding-top: 3px
+    }
+
+    .step strong {
+      color: var(--teal-dark)
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 16px 0
+    }
+
+    .card {
+      border-radius: 14px;
+      padding: 14px 16px;
+      border: 1px solid var(--slate-200)
+    }
+
+    .card.teal {
+      background: linear-gradient(135deg, #ecfeff, #cffafe)
+    }
+
+    .card.gold {
+      background: linear-gradient(135deg, #fffbeb, #fef3c7)
+    }
+
+    .card.green {
+      background: linear-gradient(135deg, #ecfdf5, #d1fae5)
+    }
+
+    .card.purple {
+      background: linear-gradient(135deg, #f5f3ff, #ede9fe)
+    }
+
+    .card .label {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--slate-500);
+      font-weight: 800
+    }
+
+    .card .value {
+      font-size: 22px;
+      font-weight: 900;
+      margin-top: 4px
+    }
+
+    .card.teal .value {
+      color: var(--teal-dark)
+    }
+
+    .card.gold .value {
+      color: var(--gold-dark)
+    }
+
+    .card.green .value {
+      color: var(--green-dark)
+    }
+
+    .card.purple .value {
+      color: var(--purple-dark)
+    }
+
+    .theory-deep {
+      background: linear-gradient(135deg, var(--slate-800), var(--slate-700));
+      color: #fff;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin: 14px 0;
+      font-size: 10.5px;
+      line-height: 1.55;
+      border-left: 5px solid var(--blue)
+    }
+
+    .theory-deep .title {
+      color: var(--blue-light);
+      font-weight: 900;
+      font-size: 11px;
+      margin-bottom: 4px
+    }
+
+    .footer {
+      margin-top: 24px;
+      padding-top: 10px;
+      border-top: 1px solid var(--slate-200);
+      font-size: 8px;
+      color: var(--slate-400);
+      display: flex;
+      justify-content: space-between
+    }
+
+    @media print {
+
+      .page,
+      .toc-page,
+      .section-page {
+        page-break-after: always
+      }
+
+      .cover-page {
+        page-break-after: always
+      }
+
+      .banner,
+      .ibox,
+      .formula,
+      th,
+      .card,
+      .toc-section-title,
+      .cover {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact
+      }
+    }
+
+    /* ============ ENHANCED v9.0 ADDITIONS ============ */
+
+    /* Example box — was missing from v7.5 */
+    .example-box {
+      background: linear-gradient(135deg, #fff7ed, #ffedd5);
+      border-left: 5px solid var(--gold);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin: 14px 0;
+      font-size: 10.5px;
+      line-height: 1.55
+    }
+
+    .example-box .title {
+      font-weight: 900;
+      font-size: 11px;
+      margin-bottom: 4px;
+      color: var(--gold-dark)
+    }
+
+
+    /* ═══ PEDAGOGICAL BOXES (v10) ═══ */
+    .clear-up {
+      background: linear-gradient(135deg, #eff6ff, #dbeafe);
+      border-left: 5px solid #3b82f6;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin: 14px 0;
+      font-size: 10.5px;
+      line-height: 1.55
+    }
+
+    .clear-up .title {
+      font-weight: 900;
+      font-size: 11px;
+      margin-bottom: 5px;
+      color: #1d4ed8
+    }
+
+    .clear-up ul,
+    .clear-up ol,
+    .clear-up p {
+      margin-top: 5px;
+      max-width: none
+    }
+
+    .clear-up ul,
+    .clear-up ol {
+      margin-left: 14px
+    }
+
+    .work-it-out {
+      background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+      border-left: 5px solid #22c55e;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin: 14px 0;
+      font-size: 10.5px;
+      line-height: 1.55
+    }
+
+    .work-it-out .title {
+      font-weight: 900;
+      font-size: 11px;
+      margin-bottom: 5px;
+      color: #15803d
+    }
+
+    .work-it-out p {
+      margin-top: 5px;
+      max-width: none
+    }
+
+    .bring-home {
+      background: linear-gradient(135deg, #faf5ff, #ede9fe);
+      border-left: 5px solid #a855f7;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin: 14px 0;
+      font-size: 10.5px;
+      line-height: 1.55
+    }
+
+    .bring-home .title {
+      font-weight: 900;
+      font-size: 11px;
+      margin-bottom: 5px;
+      color: #7e22ce
+    }
+
+    .bring-home ul,
+    .bring-home ol,
+    .bring-home p {
+      margin-top: 5px;
+      max-width: none
+    }
+
+    .bring-home ul,
+    .bring-home ol {
+      margin-left: 14px
+    }
+
+    .learning-obj {
+      background: linear-gradient(135deg, #fff7ed, #fed7aa);
+      border-left: 5px solid #f97316;
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin: 12px 0;
+      font-size: 10.5px
+    }
+
+    .learning-obj .title {
+      font-weight: 900;
+      font-size: 11px;
+      margin-bottom: 5px;
+      color: #c2410c
+    }
+
+    .learning-obj ul {
+      margin: 4px 0 0 14px;
+      line-height: 1.7
+    }
+
+    [data-theme="dark"] .clear-up {
+      background: linear-gradient(135deg, #1e2a3a, #1e3a5f);
+      border-color: #60a5fa
+    }
+
+    [data-theme="dark"] .clear-up .title {
+      color: #93c5fd
+    }
+
+    [data-theme="dark"] .work-it-out {
+      background: linear-gradient(135deg, #1a2e1a, #14432a);
+      border-color: #4ade80
+    }
+
+    [data-theme="dark"] .work-it-out .title {
+      color: #86efac
+    }
+
+    [data-theme="dark"] .bring-home {
+      background: linear-gradient(135deg, #231a33, #2d1c4a);
+      border-color: #c084fc
+    }
+
+    [data-theme="dark"] .bring-home .title {
+      color: #d8b4fe
+    }
+
+    [data-theme="dark"] .learning-obj {
+      background: linear-gradient(135deg, #2a1f12, #3a2a10);
+      border-color: #fb923c
+    }
+
+    [data-theme="dark"] .learning-obj .title {
+      color: #fdba74
+    }
+
+    /* ============ LAYOUT WRAPPER ============ */
+    .app-wrapper {
+      display: flex;
+      min-height: 100vh
+    }
+
+    /* ============ SIDEBAR ============ */
+    .sidebar {
+      width: 280px;
+      min-width: 280px;
+      height: 100vh;
+      position: sticky;
+      top: 0;
+      background: var(--navy-900);
+      color: #94a3b8;
+      overflow-y: auto;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      border-right: 1px solid #1e293b;
+      transition: transform 0.3s ease;
+      scrollbar-width: thin;
+      scrollbar-color: #334155 #0f172a;
+      z-index: 100;
+    }
+
+    .sidebar::-webkit-scrollbar {
+      width: 4px
+    }
+
+    .sidebar::-webkit-scrollbar-track {
+      background: #0f172a
+    }
+
+    .sidebar::-webkit-scrollbar-thumb {
+      background: var(--navy-600);
+      border-radius: 4px
+    }
+
+    .sidebar-header {
+      padding: 16px 18px 12px;
+      border-bottom: 1px solid #1e293b;
+      position: sticky;
+      top: 0;
+      background: var(--navy-900);
+      z-index: 10;
+      flex-shrink: 0;
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px
+    }
+
+    .sidebar-logo svg {
+      flex-shrink: 0
+    }
+
+    .sidebar-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #e2e8f0;
+      letter-spacing: .5px
+    }
+
+    .sidebar-version {
+      font-size: 10px;
+      color: #475569;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase
+    }
+
+    /* Search */
+    .sidebar-search {
+      position: relative;
+      margin-bottom: 4px
+    }
+
+    .sidebar-search input {
+      width: 100%;
+      background: var(--navy-800);
+      border: 1px solid #334155;
+      color: #e2e8f0;
+      border-radius: 8px;
+      padding: 8px 10px 8px 32px;
+      font-size: 11px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .sidebar-search input::placeholder {
+      color: #475569
+    }
+
+    .sidebar-search input:focus {
+      border-color: #00b4d8;
+      background: #1e293b
+    }
+
+    .sidebar-search .search-icon {
+      position: absolute;
+      left: 9px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #475569;
+      pointer-events: none;
+    }
+
+    .search-clear {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #475569;
+      cursor: pointer;
+      padding: 2px;
+      display: none;
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    .search-clear.visible {
+      display: block
+    }
+
+    /* Sidebar navigation */
+    .sidebar-nav {
+      flex: 1;
+      padding: 8px 0 16px
+    }
+
+    .nav-group {
+      margin-bottom: 2px
+    }
+
+    .nav-group-title {
+      padding: 8px 18px 4px;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: 800;
+      color: #475569;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 18px;
+      font-size: 11px;
+      color: #94a3b8;
+      text-decoration: none;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: all 0.15s;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .nav-item:hover {
+      color: #e2e8f0;
+      background: var(--navy-800);
+      border-left-color: #00b4d8;
+      text-decoration: none
+    }
+
+    .nav-item.active {
+      color: #00b4d8;
+      background: var(--navy-800);
+      border-left-color: #00b4d8;
+      font-weight: 700
+    }
+
+    .nav-item.hidden {
+      display: none
+    }
+
+    .nav-item .nav-num {
+      min-width: 28px;
+      font-size: 9px;
+      font-weight: 800;
+      color: #475569;
+      font-family: 'JetBrains Mono', monospace;
+      flex-shrink: 0;
+    }
+
+    .nav-item.active .nav-num {
+      color: #7dd3fc
+    }
+
+    .nav-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      flex-shrink: 0;
+      opacity: .5
+    }
+
+    /* Color-coded nav groups */
+    .nav-item.micro-item:hover,
+    .nav-item.micro-item.active {
+      border-left-color: #00b4d8
+    }
+
+    .nav-item.game-item:hover,
+    .nav-item.game-item.active {
+      border-left-color: #8b5cf6
+    }
+
+    .nav-item.macro-item:hover,
+    .nav-item.macro-item.active {
+      border-left-color: #3b82f6
+    }
+
+    .nav-item.adv-micro-item:hover,
+    .nav-item.adv-micro-item.active {
+      border-left-color: #ec4899
+    }
+
+    .nav-item.adv-macro-item:hover,
+    .nav-item.adv-macro-item.active {
+      border-left-color: #f59e0b
+    }
+
+    /* ============ MAIN CONTENT ============ */
+    .main-content {
+      flex: 1;
+      min-width: 0;
+      position: relative
+    }
+
+    /* ============ TOP BAR ============ */
+    .top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--white);
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      height: 50px;
+    }
+
+    .hamburger {
+      background: none;
+      border: none;
+      padding: 6px;
+      border-radius: 6px;
+      color: #64748b;
+      cursor: pointer;
+      display: none;
+      transition: background 0.15s;
+    }
+
+    .hamburger:hover {
+      background: #f1f5f9
+    }
+
+    .top-bar-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #0f172a;
+      flex: 1
+    }
+
+    .top-bar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    /* Theme toggle */
+    .theme-toggle {
+      background: none;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 6px 8px;
+      cursor: pointer;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.15s;
+    }
+
+    .theme-toggle:hover {
+      background: var(--navy-700);
+      color: #0f172a
+    }
+
+    /* Print button */
+    .print-btn {
+      background: none;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+      color: #64748b;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      transition: all 0.15s;
+    }
+
+    .print-btn:hover {
+      background: var(--navy-700);
+      color: #0f172a
+    }
+
+    /* ============ PROGRESS BAR ============ */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 3px;
+      background: linear-gradient(90deg, #0077b6, #00b4d8);
+      z-index: 1000;
+      transition: width 0.1s linear;
+    }
+
+    /* ============ BACK TO TOP ============ */
+    .back-to-top {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--teal);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0, 119, 182, .4);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.2s;
+      z-index: 200;
+    }
+
+    .back-to-top.visible {
+      opacity: 1;
+      pointer-events: all
+    }
+
+    .back-to-top:hover {
+      background: var(--teal);
+      transform: translateY(-2px)
+    }
+
+    /* ============ MODULE BREADCRUMB ============ */
+    .module-header-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 48px 0;
+      font-size: 10px;
+      color: #94a3b8;
+      margin-bottom: -8px;
+    }
+
+    /* ============ DARK MODE ============ */
+    [data-theme="dark"] {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --border: #334155;
+    }
+
+    [data-theme="dark"] .top-bar {
+      background: #1e293b;
+      border-color: #334155
+    }
+
+    [data-theme="dark"] .top-bar-title {
+      color: #e2e8f0
+    }
+
+    [data-theme="dark"] .theme-toggle {
+      border-color: #334155;
+      color: #94a3b8
+    }
+
+    [data-theme="dark"] .theme-toggle:hover {
+      background: var(--navy-600);
+      color: #e2e8f0
+    }
+
+    [data-theme="dark"] .print-btn {
+      border-color: #334155;
+      color: #94a3b8
+    }
+
+    [data-theme="dark"] .print-btn:hover {
+      background: var(--navy-600);
+      color: #e2e8f0
+    }
+
+    [data-theme="dark"] body {
+      background: var(--navy-900);
+      color: #e2e8f0
+    }
+
+    [data-theme="dark"] .page {
+      background: var(--navy-900)
+    }
+
+    [data-theme="dark"] h3 {
+      color: #e2e8f0;
+      border-bottom-color: #334155
+    }
+
+    [data-theme="dark"] h4 {
+      color: #7dd3fc
+    }
+
+    [data-theme="dark"] a {
+      color: #7dd3fc
+    }
+
+    [data-theme="dark"] .toc-title {
+      color: #7dd3fc;
+      border-bottom-color: #00b4d8
+    }
+
+    [data-theme="dark"] .toc-item {
+      border-bottom-color: #334155
+    }
+
+    [data-theme="dark"] .toc-item a {
+      color: #e2e8f0
+    }
+
+    [data-theme="dark"] .toc-item .num {
+      color: #94a3b8
+    }
+
+    [data-theme="dark"] table {
+      border-color: #334155
+    }
+
+    [data-theme="dark"] tr td {
+      border-bottom-color: #334155
+    }
+
+    [data-theme="dark"] tr:nth-child(even) td {
+      background: var(--navy-800)
+    }
+
+    [data-theme="dark"] td {
+      color: #e2e8f0
+    }
+
+    [data-theme="dark"] .card {
+      background: var(--navy-800);
+      border-color: #334155
+    }
+
+    [data-theme="dark"] .card .label {
+      color: #94a3b8
+    }
+
+    [data-theme="dark"] .card.teal {
+      background: linear-gradient(135deg, #0c4a6e, #075985)
+    }
+
+    [data-theme="dark"] .card.gold {
+      background: linear-gradient(135deg, #422006, #431a03)
+    }
+
+    [data-theme="dark"] .card.green {
+      background: linear-gradient(135deg, #14532d, #052e16)
+    }
+
+    [data-theme="dark"] .card.purple {
+      background: linear-gradient(135deg, #2e1065, #1e1b4b)
+    }
+
+    [data-theme="dark"] .ibox.teal {
+      background: linear-gradient(135deg, #0c4a6e22, #075985aa);
+      border-color: #0077b6;
+      color: #bae6fd
+    }
+
+    [data-theme="dark"] .ibox.teal .title {
+      color: #7dd3fc
+    }
+
+    [data-theme="dark"] .ibox.green {
+      background: linear-gradient(135deg, #052e1622, #14532daa);
+      border-color: #047857;
+      color: #a7f3d0
+    }
+
+    [data-theme="dark"] .ibox.green .title {
+      color: #6ee7b7
+    }
+
+    [data-theme="dark"] .ibox.gold {
+      background: linear-gradient(135deg, #42200622, #431a03aa);
+      border-color: #b45309;
+      color: #fde68a
+    }
+
+    [data-theme="dark"] .ibox.gold .title {
+      color: #fbbf24
+    }
+
+    [data-theme="dark"] .ibox.purple {
+      background: linear-gradient(135deg, #2e106522, #1e1b4baa);
+      border-color: #6d28d9;
+      color: #ddd6fe
+    }
+
+    [data-theme="dark"] .ibox.purple .title {
+      color: #a78bfa
+    }
+
+    [data-theme="dark"] .ibox.red {
+      background: linear-gradient(135deg, #7f1d1d22, #991b1baa);
+      border-color: #b91c1c;
+      color: #fecaca
+    }
+
+    [data-theme="dark"] .ibox.red .title {
+      color: #f87171
+    }
+
+    [data-theme="dark"] .ibox.blue {
+      background: linear-gradient(135deg, #1e3a5f22, #1d4ed8aa);
+      border-color: #1d4ed8;
+      color: #bfdbfe
+    }
+
+    [data-theme="dark"] .ibox.blue .title {
+      color: #93c5fd
+    }
+
+    [data-theme="dark"] .example-box {
+      background: linear-gradient(135deg, #42200622, #431a03aa);
+      border-color: #b45309;
+      color: #fde68a
+    }
+
+    [data-theme="dark"] .example-box .title {
+      color: #fbbf24
+    }
+
+    [data-theme="dark"] .footer {
+      border-top-color: #334155;
+      color: #475569
+    }
+
+    [data-theme="dark"] .module-header-bar {
+      color: #475569
+    }
+
+    [data-theme="dark"] .hamburger {
+      color: #94a3b8
+    }
+
+    [data-theme="dark"] .hamburger:hover {
+      background: var(--navy-600)
+    }
+
+    /* ============ SEARCH HIGHLIGHT ============ */
+    .search-no-results {
+      text-align: center;
+      padding: 60px 20px;
+      color: #94a3b8;
+      display: none;
+    }
+
+    .search-no-results.visible {
+      display: block
+    }
+
+    .page[data-searchable].hidden {
+      display: none
+    }
+
+    /* ============ SIDEBAR OVERLAY (MOBILE) ============ */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .5);
+      z-index: 99;
+    }
+
+    .sidebar-overlay.visible {
+      display: block
+    }
+
+    /* ============ MOBILE ============ */
+    @media (max-width:900px) {
+      .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        transform: translateX(-100%);
+        z-index: 100;
+      }
+
+      .sidebar.open {
+        transform: translateX(0)
+      }
+
+      .hamburger {
+        display: flex
+      }
+
+      .app-wrapper {
+        display: block
+      }
+
+      .main-content {
+        display: block
+      }
+
+      .page {
+        padding: 20px 16px
+      }
+
+      .grid-4 {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .hero-grid {
+        grid-template-columns: repeat(2, 1fr)
+      }
+    }
+
+    /* ============ PRINT OVERRIDE ============ */
+    @media print {
+
+      .sidebar,
+      .top-bar,
+      .progress-bar,
+      .back-to-top,
+      .sidebar-overlay {
+        display: none !important
+      }
+
+      .app-wrapper {
+        display: block
+      }
+
+      .main-content {
+        display: block
+      }
+
+      .page[data-searchable].hidden {
+        display: block !important
+      }
+    }
+
+    /* ============ MODULE JUMP INDICATOR ============ */
+    .module-count-badge {
+      display: inline-block;
+      background: var(--teal);
+      color: #fff;
+      border-radius: 999px;
+      padding: 1px 6px;
+      font-size: 9px;
+      font-weight: 800;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
+    /* ============ SCROLLBAR ============ */
+    .main-content::-webkit-scrollbar {
+      width: 6px
+    }
+
+    .main-content::-webkit-scrollbar-track {
+      background: transparent
+    }
+
+    .main-content::-webkit-scrollbar-thumb {
+      background: var(--navy-700);
+      border-radius: 3px
+    }
+
+    [data-theme="dark"] .main-content::-webkit-scrollbar-thumb {
+      background: #334155
+    }
+
+    /* END ENHANCED ADDITIONS */
+  </style>
+</head>
+
+<body>
+
+  <div class="progress-bar" id="progressBar"></div>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="app-wrapper">
+    <!-- SIDEBAR -->
+    <nav class="sidebar" role="navigation" aria-label="Module navigation">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true">
+            <rect width="32" height="32" rx="8" fill="#0077b6" />
+            <rect x="7" y="20" width="4" height="8" rx="1" fill="#00b4d8" />
+            <rect x="14" y="14" width="4" height="14" rx="1" fill="#90e0ef" />
+            <rect x="21" y="8" width="4" height="20" rx="1" fill="#f59e0b" />
+            <path d="M8 16 L15 10 L22 5" stroke="#22c55e" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+          <div>
+            <div class="sidebar-title">EconSim</div>
+            <div class="sidebar-version">Student Guide</div>
+          </div>
+        </div>
+        <div class="theme-toggle" role="group" aria-label="Theme selection">
+          <button id="lightBtn" class="theme-toggle-btn" aria-label="Light Mode">
+            <i class="fas fa-sun"></i> Light
+          </button>
+          <button id="darkBtn" class="theme-toggle-btn active" aria-label="Dark Mode">
+            <i class="fas fa-moon"></i> Dark
+          </button>
+        </div>
+        <div class="sidebar-search">
+          <span class="search-icon">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </svg>
+          </span>
+          <input type="text" id="navSearch" placeholder="Search modules… (/ or ⌘K)" aria-label="Search modules">
+          <button class="search-clear" id="searchClear" aria-label="Clear search">✕</button>
+        </div>
+      </div>
+      <div class="sidebar-nav">
+        <!-- Getting Started -->
+        <div class="nav-group">
+          <div class="nav-group-title">Getting Started</div>
+          <a class="nav-item" data-target="welcome" href="#welcome"><span class="nav-num">§1</span>Welcome &amp;
+            Requirements</a>
+          <a class="nav-item" data-target="interface" href="#interface"><span class="nav-num">§2</span>Interface &amp;
+            Colors</a>
+          <a class="nav-item" data-target="usage" href="#usage"><span class="nav-num">§3</span>How to Use Simulators</a>
+          <a class="nav-item" href="#pedagogy" onclick="closeMobileMenu()"><span class="nav-num">§4</span>Pedagogical
+            Features</a>
+        </div>
+        <!-- Part I: Core Micro -->
+        <div class="nav-group">
+          <div class="nav-group-title" style="color:#7dd3fc">Part I · Core Microeconomics</div>
+          <a class="nav-item micro-item" data-target="m01" href="#m01"><span class="nav-num">01</span>Supply &amp;
+            Demand</a>
+          <a class="nav-item micro-item" data-target="m02" href="#m02"><span class="nav-num">02</span>Elasticity &amp;
+            Lerner</a>
+          <a class="nav-item micro-item" data-target="m03" href="#m03"><span class="nav-num">03</span>Externalities
+            &amp; Pigouvian Tax</a>
+          <a class="nav-item micro-item" data-target="m04" href="#m04"><span class="nav-num">04</span>Public Goods &amp;
+            Free Rider</a>
+          <a class="nav-item micro-item" data-target="m05" href="#m05"><span class="nav-num">05</span>Monopoly</a>
+          <a class="nav-item micro-item" data-target="m06" href="#m06"><span class="nav-num">06</span>Cournot
+            Duopoly</a>
+          <a class="nav-item micro-item" data-target="m07" href="#m07"><span class="nav-num">07</span>Stackelberg
+            Leader-Follower</a>
+          <a class="nav-item micro-item" data-target="m08" href="#m08"><span class="nav-num">08</span>Collusion &amp;
+            Cartels</a>
+          <a class="nav-item micro-item" data-target="m09" href="#m09"><span class="nav-num">09</span>Entry
+            Deterrence</a>
+          <a class="nav-item micro-item" data-target="m10" href="#m10"><span class="nav-num">10</span>Merger Analysis
+            &amp; HHI</a>
+        </div>
+        <!-- Part II: Game Theory -->
+        <div class="nav-group">
+          <div class="nav-group-title" style="color:#c4b5fd">Part II · Game Theory &amp; Strategy</div>
+          <a class="nav-item game-item" data-target="m11" href="#m11"><span class="nav-num">11</span>Static Games &amp;
+            Nash</a>
+          <a class="nav-item game-item" data-target="m12" href="#m12"><span class="nav-num">12</span>Sequential &amp;
+            Backward Induction</a>
+          <a class="nav-item game-item" data-target="m13" href="#m13"><span class="nav-num">13</span>Repeated Games
+            &amp; Folk Theorem</a>
+          <a class="nav-item game-item" data-target="m14" href="#m14"><span class="nav-num">14</span>Mixed Strategy
+            Equilibrium</a>
+          <a class="nav-item game-item" data-target="m15" href="#m15"><span class="nav-num">15</span>Coordination
+            Games</a>
+          <a class="nav-item game-item" data-target="m16" href="#m16"><span class="nav-num">16</span>Behavioral Game
+            Theory</a>
+          <a class="nav-item game-item" data-target="m17" href="#m17"><span class="nav-num">17</span>Auctions</a>
+          <a class="nav-item game-item" data-target="m18" href="#m18"><span class="nav-num">18</span>Firm
+            Organization</a>
+          <a class="nav-item game-item" data-target="m19" href="#m19"><span class="nav-num">19</span>Price
+            Discrimination</a>
+          <a class="nav-item game-item" data-target="m20" href="#m20"><span class="nav-num">20</span>CSR &amp;
+            Ethics</a>
+        </div>
+        <!-- Part III: Core Macro -->
+        <div class="nav-group">
+          <div class="nav-group-title" style="color:#93c5fd">Part III · Core Macroeconomics</div>
+          <a class="nav-item macro-item" data-target="m21" href="#m21"><span class="nav-num">21</span>AD-AS Model</a>
+          <a class="nav-item macro-item" data-target="m22" href="#m22"><span class="nav-num">22</span>Phillips Curve</a>
+          <a class="nav-item macro-item" data-target="m23" href="#m23"><span class="nav-num">23</span>Solow Growth
+            Model</a>
+          <a class="nav-item macro-item" data-target="m24" href="#m24"><span class="nav-num">24</span>Taylor Rule</a>
+          <a class="nav-item macro-item" data-target="m25" href="#m25"><span class="nav-num">25</span>IS-LM Model</a>
+          <a class="nav-item macro-item" data-target="m26" href="#m26"><span
+              class="nav-num">26</span>Mundell-Fleming</a>
+          <a class="nav-item macro-item" data-target="m27" href="#m27"><span class="nav-num">27</span>Business Cycle
+            Simulator</a>
+          <a class="nav-item macro-item" data-target="m28" href="#m28"><span class="nav-num">28</span>Money
+            Multiplier</a>
+          <a class="nav-item macro-item" data-target="m29" href="#m29"><span class="nav-num">29</span>Fiscal Policy
+            &amp; Multipliers</a>
+          <a class="nav-item macro-item" data-target="m30" href="#m30"><span class="nav-num">30</span>Exchange Rate
+            Determination</a>
+        </div>
+        <!-- Part IV: Advanced Micro -->
+        <div class="nav-group">
+          <div class="nav-group-title" style="color:#f9a8d4">Part IV · Advanced Microeconomics</div>
+          <a class="nav-item adv-micro-item" data-target="me1" href="#me1"><span class="nav-num">E1</span>Demand
+            Shifters</a>
+          <a class="nav-item adv-micro-item" data-target="mp1" href="#mp1"><span class="nav-num">P1</span>Production
+            Possibilities Frontier</a>
+          <a class="nav-item adv-micro-item" data-target="mp2" href="#mp2"><span class="nav-num">P2</span>Production
+            Stages</a>
+          <a class="nav-item adv-micro-item" data-target="mp3" href="#mp3"><span class="nav-num">P3</span>Cost
+            Curves</a>
+          <a class="nav-item adv-micro-item" data-target="mu1" href="#mu1"><span class="nav-num">U1</span>Utility
+            Maximization</a>
+          <a class="nav-item adv-micro-item" data-target="mi1" href="#mi1"><span class="nav-num">I1</span>Asymmetric
+            Information</a>
+          <a class="nav-item adv-micro-item" data-target="mx5" href="#mx5"><span class="nav-num">X5</span>Bertrand Price
+            Competition</a>
+          <a class="nav-item adv-micro-item" data-target="mw1" href="#mw1"><span class="nav-num">W1</span>Poverty
+            Calculator</a>
+        </div>
+        <!-- Part V: Advanced Macro & Finance -->
+        <div class="nav-group">
+          <div class="nav-group-title" style="color:#fde68a">Part V · Advanced Macro &amp; Finance</div>
+          <a class="nav-item adv-macro-item" data-target="mg1" href="#mg1"><span class="nav-num">G1</span>GDP
+            Components</a>
+          <a class="nav-item adv-macro-item" data-target="mk1" href="#mk1"><span class="nav-num">K1</span>Keynesian
+            Cross</a>
+          <a class="nav-item adv-macro-item" data-target="mm1" href="#mm1"><span class="nav-num">M1</span>Money
+            Supply</a>
+          <a class="nav-item adv-macro-item" data-target="mm2" href="#mm2"><span class="nav-num">M2</span>Monetary
+            Policy</a>
+          <a class="nav-item adv-macro-item" data-target="mf1" href="#mf1"><span class="nav-num">F1</span>Live Stock
+            Tracker</a>
+          <a class="nav-item adv-macro-item" data-target="mk5" href="#mk5"><span class="nav-num">K5</span>Balance of
+            Trade</a>
+          <a class="nav-item adv-macro-item" data-target="mt1" href="#mt1"><span class="nav-num">T1</span>Comparative
+            Advantage</a>
+          <a class="nav-item adv-macro-item" data-target="mx4" href="#mx4"><span class="nav-num">X4</span>Globalization
+            &amp; S-I Identity</a>
+        </div>
+        <!-- Appendix -->
+        <div class="nav-group">
+          <div class="nav-group-title">Appendix</div>
+          <a class="nav-item" data-target="references" href="#references"><span class="nav-num">Ref</span>Curriculum
+            References</a>
+        </div>
+        <div class="search-no-results" id="searchNoResults">No modules match your search</div>
+      </div>
+    </nav>
+    <!-- MAIN CONTENT WRAPPER -->
+    <div class="main-content">
+      <!-- TOP BAR -->
+      <div class="top-bar" role="banner">
+        <button class="hamburger" id="hamburger" aria-label="Open navigation" aria-expanded="false">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+        </button>
+        <span class="top-bar-title">EconSim v10.0 — Complete Enhanced Edition</span>
+        <div class="top-bar-actions">
+          <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg> Dark
+          </button>
+          <button class="print-btn" id="printBtn" aria-label="Print this guide">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              style="display:inline;margin-right:4px">
+              <polyline points="6 9 6 2 18 2 18 9" />
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+              <rect x="6" y="14" width="12" height="8" />
+            </svg>Print
+          </button>
+        </div>
+      </div>
+
+      <!-- MASTER COVER -->
+      <div class="cover">
+        <div class="bars"><span class="b1"></span><span class="b2"></span><span class="b3"></span><span
+            class="b4"></span></div>
+        <div class="eyebrow">econsim</div>
+        <h1>Economics Simulator</h1>
+        <h2>Complete Enhanced Edition — Master Technical User Guide</h2>
+        <div class="pill">v10.0 COMPLETE ENHANCED EDITION — 78 CURRICULUM MODULES</div>
+        <div class="hero-grid">
+          <div class="hero-card"><span class="num">78</span><span class="lbl">Modules</span></div>
+          <div class="hero-card"><span class="num">Micro</span><span class="lbl">Core + GT</span></div>
+          <div class="hero-card"><span class="num">Macro</span><span class="lbl">Policy + Trade</span></div>
+          <div class="hero-card"><span class="num">FIN</span><span class="lbl">Live Data</span></div>
+        </div>
+        <div class="meta">EconSim Complete Master Guide · Aligned with OpenStax Micro 3e & Macro 3e · Perloff & Brander
+        </div>
+      </div>
+
+      <!-- MASTER TABLE OF CONTENTS -->
+      <div class="page" data-searchable="true">
+        <div class="toc-title">📋 Master Table of Contents</div>
+
+        <div class="group g-start">
+          <h3>Getting Started</h3>
+        </div>
+        <div class="toc-list" style="columns:1;margin-bottom:12px;">
+          <div class="toc-item"><span class="num">§1</span><a href="#welcome">Welcome & Requirements</a></div>
+          <div class="toc-item"><span class="num">§2</span><a href="#interface">Interface & Color Coding</a></div>
+          <div class="toc-item"><span class="num">§3</span><a href="#usage">How to Use Simulators</a></div>
+          <div class="toc-item"><span class="num">§4</span><a href="#pedagogy">Pedagogical Features</a></div>
+        </div>
+
+        <div class="group g-micro">
+          <h3>Part I: Core Microeconomics (Modules 01–10)</h3>
+        </div>
+        <div class="toc-list">
+          <div class="toc-item"><span class="num">01</span><a href="#m01">Supply & Demand Simulator</a></div>
+          <div class="toc-item"><span class="num">02</span><a href="#m02">Elasticity & Lerner Index</a></div>
+          <div class="toc-item"><span class="num">03</span><a href="#m03">Externalities & Pigouvian Tax</a></div>
+          <div class="toc-item"><span class="num">04</span><a href="#m04">Public Goods & Free Rider</a></div>
+          <div class="toc-item"><span class="num">05</span><a href="#m05">Monopoly</a></div>
+          <div class="toc-item"><span class="num">06</span><a href="#m06">Cournot Duopoly</a></div>
+          <div class="toc-item"><span class="num">07</span><a href="#m07">Stackelberg Leader-Follower</a></div>
+          <div class="toc-item"><span class="num">08</span><a href="#m08">Collusion & Cartels</a></div>
+          <div class="toc-item"><span class="num">09</span><a href="#m09">Entry Deterrence</a></div>
+          <div class="toc-item"><span class="num">10</span><a href="#m10">Merger Analysis & HHI</a></div>
+        </div>
+
+        <div class="group g-game">
+          <h3>Part II: Game Theory & Strategy (Modules 11–20)</h3>
+        </div>
+        <div class="toc-list">
+          <div class="toc-item"><span class="num">11</span><a href="#m11">Static Games & Nash Equilibrium</a></div>
+          <div class="toc-item"><span class="num">12</span><a href="#m12">Sequential Games & Backward Induction</a>
+          </div>
+          <div class="toc-item"><span class="num">13</span><a href="#m13">Repeated Games & Folk Theorem</a></div>
+          <div class="toc-item"><span class="num">14</span><a href="#m14">Mixed Strategy Equilibrium</a></div>
+          <div class="toc-item"><span class="num">15</span><a href="#m15">Coordination Games</a></div>
+          <div class="toc-item"><span class="num">16</span><a href="#m16">Behavioral Game Theory</a></div>
+          <div class="toc-item"><span class="num">17</span><a href="#m17">Auctions</a></div>
+          <div class="toc-item"><span class="num">18</span><a href="#m18">Firm Organization</a></div>
+          <div class="toc-item"><span class="num">19</span><a href="#m19">Price Discrimination</a></div>
+          <div class="toc-item"><span class="num">20</span><a href="#m20">CSR & Ethics</a></div>
+        </div>
+
+        <div class="group g-macro">
+          <h3>Part III: Core Macroeconomics (Modules 21–30)</h3>
+        </div>
+        <div class="toc-list">
+          <div class="toc-item"><span class="num">21</span><a href="#m21">AD-AS Model</a></div>
+          <div class="toc-item"><span class="num">22</span><a href="#m22">Phillips Curve</a></div>
+          <div class="toc-item"><span class="num">23</span><a href="#m23">Solow Growth Model</a></div>
+          <div class="toc-item"><span class="num">24</span><a href="#m24">Taylor Rule</a></div>
+          <div class="toc-item"><span class="num">25</span><a href="#m25">IS-LM Model</a></div>
+          <div class="toc-item"><span class="num">26</span><a href="#m26">Mundell-Fleming Open Economy</a></div>
+          <div class="toc-item"><span class="num">27</span><a href="#m27">Business Cycle Simulator</a></div>
+          <div class="toc-item"><span class="num">28</span><a href="#m28">Money Multiplier</a></div>
+          <div class="toc-item"><span class="num">29</span><a href="#m29">Fiscal Policy & Multipliers</a></div>
+          <div class="toc-item"><span class="num">30</span><a href="#m30">Exchange Rate Determination</a></div>
+        </div>
+
+        <div class="group g-welfare">
+          <h3>Part IV: Advanced Microeconomics</h3>
+        </div>
+        <div class="toc-list">
+          <div class="toc-item"><span class="num">E1</span><a href="#me1">Demand Shifters</a></div>
+          <div class="toc-item"><span class="num">P1</span><a href="#mp1">Production Possibilities Frontier</a></div>
+          <div class="toc-item"><span class="num">P2</span><a href="#mp2">Production Stages</a></div>
+          <div class="toc-item"><span class="num">P3</span><a href="#mp3">Cost Curves</a></div>
+          <div class="toc-item"><span class="num">U1</span><a href="#mu1">Utility Maximization</a></div>
+          <div class="toc-item"><span class="num">I1</span><a href="#mi1">Asymmetric Information</a></div>
+          <div class="toc-item"><span class="num">X5</span><a href="#mx5">Bertrand Price Competition</a></div>
+          <div class="toc-item"><span class="num">W1</span><a href="#mw1">Poverty Calculator</a></div>
+        </div>
+
+        <div class="group g-fin">
+          <h3>Part V: Advanced Macro & Finance</h3>
+        </div>
+        <div class="toc-list">
+          <div class="toc-item"><span class="num">G1</span><a href="#mg1">GDP Components</a></div>
+          <div class="toc-item"><span class="num">K1</span><a href="#mk1">Keynesian Cross</a></div>
+          <div class="toc-item"><span class="num">M1</span><a href="#mm1">Money Supply</a></div>
+          <div class="toc-item"><span class="num">M2</span><a href="#mm2">Monetary Policy</a></div>
+          <div class="toc-item"><span class="num">F1</span><a href="#mf1">Live Stock Tracker</a></div>
+          <div class="toc-item"><span class="num">K5</span><a href="#mk5">Balance of Trade</a></div>
+          <div class="toc-item"><span class="num">T1</span><a href="#mt1">Comparative Advantage</a></div>
+          <div class="toc-item"><span class="num">X4</span><a href="#mx4">Globalization & S-I Identity</a></div>
+        </div>
+
+        <div class="group g-start">
+          <h3>Appendix</h3>
+        </div>
+        <div class="toc-list" style="columns:1;">
+          <div class="toc-item"><span class="num">Ref</span><a href="#references">Curriculum References (APA 7th)</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 1: WELCOME -->
+      <div class="page" data-searchable="true" id="welcome">
+        <div class="banner start">
+          <div class="sid">Section 1</div>
+          <h2>🚀 Welcome to EconSim</h2>
+          <p>This Complete Master Edition integrates all 78 core modules across Microeconomics, Macroeconomics, Game
+            Theory, and Advanced Extensions.</p>
+        </div>
+        <div class="grid-4">
+          <div class="card teal">
+            <div class="label">Total Modules</div>
+            <div class="value">78</div>
+          </div>
+          <div class="card gold">
+            <div class="label">Micro & Game</div>
+            <div class="value">40+</div>
+          </div>
+          <div class="card green">
+            <div class="label">Macro & Fin</div>
+            <div class="value">30+</div>
+          </div>
+          <div class="card purple">
+            <div class="label">Coverage</div>
+            <div class="value">Full</div>
+          </div>
+        </div>
+        <h3>System Requirements</h3>
+        <table class="th-teal">
+          <tr>
+            <th>Requirement</th>
+            <th>Minimum</th>
+            <th>Recommended</th>
+          </tr>
+          <tr>
+            <td><strong>Browser</strong></td>
+            <td>Chrome 90+, Firefox 88+, Safari 14+</td>
+            <td>Latest Chrome</td>
+          </tr>
+          <tr>
+            <td><strong>Screen</strong></td>
+            <td>1280×720</td>
+            <td>1920×1080</td>
+          </tr>
+          <tr>
+            <td><strong>JavaScript</strong></td>
+            <td>Enabled</td>
+            <td>Enabled</td>
+          </tr>
+          <tr>
+            <td><strong>Edge</strong></td>
+            <td>Edge 90+</td>
+            <td>Latest Edge or Chrome</td>
+          </tr>
+          <tr>
+            <td><strong>Memory</strong></td>
+            <td>4GB RAM</td>
+            <td>8GB RAM</td>
+          </tr>
+        </table>
+        <div class="ibox green">
+          <div class="title">💡 What This Enhanced Guide Includes</div>
+          For each module, this guide provides:
+          <ul style="margin:6px 0 0 14px;line-height:1.75">
+            <li><strong>Overview &amp; Learning Objectives</strong> — What you'll learn and why it matters</li>
+            <li><strong>Inputs/Controls Table</strong> — Every adjustable parameter with symbol, range, and real-world
+              example</li>
+            <li><strong>Core Formulas</strong> — Mathematical relationships with full derivations</li>
+            <li><strong>Step-by-Step Instructions</strong> — How to use each simulator effectively</li>
+            <li><strong>Clear It Up Boxes</strong> — Common misconceptions directly addressed</li>
+            <li><strong>Work It Out Examples</strong> — Numerical problems solved step-by-step</li>
+            <li><strong>Bring It Home Cases</strong> — Real-world applications and current events</li>
+            <li><strong>Chart Interpretation</strong> — How to read and analyze every visualization</li>
+            <li><strong>Common Mistakes</strong> — Pitfalls to avoid</li>
+            <li><strong>Textbook Connections</strong> — Direct links to OpenStax chapters</li>
+          </ul>
+        </div>
+        <div class="theory-deep">
+          <div class="title">📘 About OpenStax Curriculum Alignment</div>
+          <p>This simulator is carefully aligned with <strong>OpenStax Principles of Microeconomics 3e</strong> and
+            <strong>Principles of Macroeconomics 3e</strong>, authored by David Shapiro (Pennsylvania State University),
+            Daniel MacDonald (California State University, San Bernardino), and Steven A. Greenlaw (University of Mary
+            Washington).
+          </p>
+          <p style="margin-top:8px">As stated in the OpenStax preface: "The text uses conversational language and ample
+            illustrations to explore economic theories, and provides a wide array of examples using both fictional and
+            real-world scenarios. The third edition has been carefully and thoroughly updated to reflect current data
+            and understanding, as well as to provide a deeper background in diverse contributors and their impacts on
+            economic thought and analysis."</p>
+          <p style="margin-top:8px">OpenStax textbooks are peer-reviewed, openly licensed under CC BY 4.0, and available
+            free at <strong>openstax.org</strong>.</p>
+        </div>
+        <h3>Learning Philosophy</h3>
+        <p style="font-size:11px;line-height:1.65">Economics is fundamentally about understanding how individuals,
+          firms, and governments make decisions in the face of scarcity. This simulator brings abstract economic
+          concepts to life through interactive visualization. As OpenStax notes: "Math is one tool, but it is not the
+          only tool or even always the best tool economists can use." Our approach combines:</p>
+        <ul style="margin:6px 0 0 14px;line-height:1.8;font-size:11px">
+          <li><strong>Visual Learning</strong> — See how curves shift and equilibria change in real-time</li>
+          <li><strong>Active Experimentation</strong> — Manipulate variables and observe consequences</li>
+          <li><strong>Conceptual Understanding</strong> — Build intuition before memorizing formulas</li>
+          <li><strong>Real-World Connection</strong> — Apply theory to current economic events</li>
+        </ul>
+      </div>
+
+      <!-- SECTION 2: INTERFACE -->
+      <div class="page" data-searchable="true" id="interface">
+        <div class="banner start">
+          <div class="sid">Section 2</div>
+          <h2>🎨 Interface & Color Coding</h2>
+          <p>EconSim uses a consistent visual language across all modules.</p>
+        </div>
+        <table class="th-teal">
+          <tr>
+            <th>Color</th>
+            <th>Meaning</th>
+            <th>Used For</th>
+            <th>Examples</th>
+          </tr>
+          <tr>
+            <td><strong>Teal</strong></td>
+            <td>Primary / positive</td>
+            <td>Main series, demand, baseline</td>
+            <td>Demand curve, consumer surplus, equilibrium</td>
+          </tr>
+          <tr>
+            <td><strong>Gold/Orange</strong></td>
+            <td>Secondary / caution</td>
+            <td>Supply, comparison lines, warnings</td>
+            <td>Supply curve, price floors/ceilings</td>
+          </tr>
+          <tr>
+            <td><strong>Green</strong></td>
+            <td>Success / gain</td>
+            <td>Profit, surplus, welfare gains</td>
+            <td>Producer surplus, total surplus, growth</td>
+          </tr>
+          <tr>
+            <td><strong>Red</strong></td>
+            <td>Loss / warning</td>
+            <td>DWL, deficits, losses</td>
+            <td>Deadweight loss, budget deficit, unemployment</td>
+          </tr>
+          <tr>
+            <td><strong>Purple</strong></td>
+            <td>Advanced / strategic</td>
+            <td>Game theory, advanced concepts</td>
+            <td>Nash equilibrium, best response, payoffs</td>
+          </tr>
+          <tr>
+            <td><strong>Blue</strong></td>
+            <td>Macro / policy</td>
+            <td>Aggregate variables, policy tools</td>
+            <td>AD-AS curves, IS-LM, monetary policy</td>
+          </tr>
+        </table>
+        <div class="ibox teal">
+          <div class="title">📗 Standard Module Layout</div>
+          Every module follows a consistent pattern for ease of navigation:
+          <ol style="margin:6px 0 0 14px;line-height:1.75">
+            <li><strong>Banner</strong> — Module ID, chapter reference, brief description, tags</li>
+            <li><strong>Overview Table</strong> — Difficulty, chart type, key concepts, prerequisites</li>
+            <li><strong>Learning Objectives</strong> — What you will be able to do after this module</li>
+            <li><strong>Inputs Table</strong> — All adjustable parameters with symbol, range, and effects</li>
+            <li><strong>Formula Box</strong> — Core mathematical relationships with derivations</li>
+            <li><strong>Steps</strong> — Numbered instructions for using the simulator</li>
+            <li><strong>Clear It Up</strong> — Common misconceptions addressed</li>
+            <li><strong>Work It Out</strong> — Numerical example solved step-by-step</li>
+            <li><strong>Bring It Home</strong> — Real-world application</li>
+            <li><strong>Simulation Parameters</strong> — Quick reference for all controls</li>
+          </ol>
+        </div>
+        <h3>Chart Reading Guide</h3>
+        <table class="th-blue">
+          <tr>
+            <th>Element</th>
+            <th>What It Shows</th>
+            <th>How to Interpret</th>
+          </tr>
+          <tr>
+            <td>Equilibrium Point ★</td>
+            <td>Where supply meets demand</td>
+            <td>Market-clearing price and quantity</td>
+          </tr>
+          <tr>
+            <td>Shaded Areas</td>
+            <td>Surplus or loss regions</td>
+            <td>Green = welfare gain, Red = welfare loss</td>
+          </tr>
+          <tr>
+            <td>Dashed Lines</td>
+            <td>Reference or comparison</td>
+            <td>Original position before change</td>
+          </tr>
+          <tr>
+            <td>Arrows</td>
+            <td>Direction of shift</td>
+            <td>Shows how curves move when parameters change</td>
+          </tr>
+          <tr>
+            <td>KPI Cards</td>
+            <td>Key numerical outputs</td>
+            <td>Real-time calculations based on current inputs</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- SECTION 3: USAGE -->
+      <div class="page" data-searchable="true" id="usage">
+        <div class="banner start">
+          <div class="sid">Section 3</div>
+          <h2>📖 How to Use Simulators</h2>
+          <p>A universal workflow for all simulator modules.</p>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <div><strong>Select the module</strong> from the sidebar or table of contents.</div>
+          </div>
+          <div class="step">
+            <div><strong>Read the overview and formulas</strong> to understand the model.</div>
+          </div>
+          <div class="step">
+            <div><strong>Adjust one slider at a time</strong> to isolate effects (ceteris paribus).</div>
+          </div>
+          <div class="step">
+            <div><strong>Watch KPI cards and charts</strong> for real-time changes.</div>
+          </div>
+          <div class="step">
+            <div><strong>Read interpretation boxes</strong> for economic meaning.</div>
+          </div>
+          <div class="step">
+            <div><strong>Try extreme values</strong> to test the model's limits and understand boundary conditions.
+            </div>
+          </div>
+          <div class="step">
+            <div><strong>Work through the examples</strong> in the Work It Out sections to verify your understanding
+              numerically.</div>
+          </div>
+          <div class="step">
+            <div><strong>Connect to real-world cases</strong> using the Bring It Home applications to see theory in
+              action.</div>
+          </div>
+        </div>
+        <div class="ibox gold">
+          <div class="title">💡 Best Practice: The Ceteris Paribus Method</div>The Latin phrase <em>ceteris paribus</em>
+          means "all else being equal." This is the fundamental method of economic analysis:
+          <ul style="margin:5px 0 0 14px;line-height:1.7">
+            <li>Change only <strong>ONE</strong> variable at a time</li>
+            <li>Observe the effect on equilibrium outcomes</li>
+            <li>Record the direction and magnitude of change</li>
+            <li>Only then move to the next variable</li>
+          </ul>
+          Do NOT change all sliders at once. Economics is easier to learn when you can trace one cause to one effect. As
+          OpenStax notes: "Math is one tool, but it is not the only tool or even always the best tool economists can
+          use."
+        </div>
+        <div class="ibox red">
+          <div class="title">⚠️ Common Beginner Mistakes</div>
+          <ul style="margin:4px 0 0 14px;line-height:1.75">
+            <li><strong>Confusing movement along vs. shift of curves</strong> — Price changes cause movement ALONG;
+              other factors cause SHIFTS</li>
+            <li><strong>Ignoring units</strong> — Always check whether values are dollars, percentages, or index numbers
+            </li>
+            <li><strong>Forgetting time horizons</strong> — Short-run and long-run effects often differ dramatically
+            </li>
+            <li><strong>Assuming linear relationships</strong> — Many economic relationships are non-linear at extremes
+            </li>
+            <li><strong>Confusing correlation with causation</strong> — The simulator shows causal relationships; real
+              data often shows correlation</li>
+          </ul>
+        </div>
+      </div>
+
+
+      <!-- SECTION 4: PEDAGOGICAL FEATURES -->
+      <div class="page" id="pedagogy" data-searchable="true" data-title="Pedagogical Features">
+        <div class="banner start">
+          <div class="sid">Section 4</div>
+          <h2>🎓 Pedagogical Features</h2>
+          <p>Understanding the learning tools embedded throughout this guide.</p>
+        </div>
+        <p style="font-size:11px;line-height:1.65;margin-bottom:12px">This guide incorporates the same pedagogical
+          features found in OpenStax textbooks, adapted for interactive simulation learning. Each feature type is
+          described below so you know what to look for in every module.</p>
+
+        <div class="clear-up">
+          <div class="title">🔵 Clear It Up</div>
+          <p>These boxes address common misconceptions and confusing concepts. Each starts with a question students
+            frequently ask, then provides a clear explanation.</p>
+          <p><em>Example:</em> "Does <em>demand</em> mean the same as <em>quantity demanded</em>?" — No! Demand is the
+            entire curve; quantity demanded is a specific point.</p>
+        </div>
+
+        <div class="work-it-out">
+          <div class="title">🟢 Work It Out</div>
+          <p>These sections walk through analytical or computational problems step-by-step, showing exactly how
+            solutions are derived. They help you verify that you can apply concepts numerically, not just conceptually.
+          </p>
+          <p>Each Work It Out states a problem, then works through it with labeled steps and a final answer you can
+            verify against the simulator.</p>
+        </div>
+
+        <div class="bring-home">
+          <div class="title">🟣 Bring It Home</div>
+          <p>These case studies connect chapter concepts to the real world. Each module includes at least one current or
+            historical example showing how the economic model applies to actual markets, policies, or events.</p>
+          <p>Use the simulator parameters listed in the case study to replicate the scenario interactively.</p>
+        </div>
+
+        <div class="theory-deep">
+          <div class="title">📘 Theory Deep Dive</div>
+          <p>These boxes provide deeper theoretical background for advanced students, including connections to economic
+            research, historical development of ideas, and extensions beyond the introductory level.</p>
+        </div>
+
+        <div class="learning-obj">
+          <div class="title">🟠 Learning Objectives</div>
+          <p>Each module opens with explicit learning objectives structured around Bloom's Taxonomy. After completing a
+            module you should be able to meet every listed objective.</p>
+        </div>
+
+        <h3>Learning Objectives Framework — Bloom's Taxonomy</h3>
+        <table class="th-green">
+          <tr>
+            <th>Level</th>
+            <th>Skill</th>
+            <th>Example Activity</th>
+          </tr>
+          <tr>
+            <td><strong>Remember</strong></td>
+            <td>Recall facts and concepts</td>
+            <td>Define equilibrium, list demand shifters</td>
+          </tr>
+          <tr>
+            <td><strong>Understand</strong></td>
+            <td>Explain ideas</td>
+            <td>Explain why demand curves slope downward</td>
+          </tr>
+          <tr>
+            <td><strong>Apply</strong></td>
+            <td>Use information in new situations</td>
+            <td>Calculate equilibrium price given supply and demand equations</td>
+          </tr>
+          <tr>
+            <td><strong>Analyze</strong></td>
+            <td>Draw connections</td>
+            <td>Determine which curve shifts when input costs rise</td>
+          </tr>
+          <tr>
+            <td><strong>Evaluate</strong></td>
+            <td>Justify decisions</td>
+            <td>Assess whether a policy improves welfare</td>
+          </tr>
+          <tr>
+            <td><strong>Create</strong></td>
+            <td>Produce new work</td>
+            <td>Design a tax policy to correct an externality</td>
+          </tr>
+        </table>
+
+        <div class="ibox teal">
+          <div class="title">📖 How Boxes Relate to Textbook Sections</div>
+          Each <em>Clear It Up</em> box corresponds to a "Think It Through" or "Bring It Home" feature in the OpenStax
+          textbook. Each <em>Work It Out</em> mirrors the step-by-step problem-solving sections. When you encounter a
+          concept in lecture, look up the corresponding module in this guide to find the matching textbook box.
+        </div>
+
+        <div class="ibox gold">
+          <div class="title">🎛️ Using This Guide Alongside a Course</div>
+          <ul style="margin:4px 0 0 14px;line-height:1.75">
+            <li>Before lecture: read the module overview and learning objectives</li>
+            <li>During lecture: use the simulator to visualize what the instructor is explaining</li>
+            <li>After lecture: work through the Work It Out examples without looking at the answer</li>
+            <li>Before exams: review Clear It Up boxes — they target the most common exam mistakes</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- MODULE 01: SUPPLY & DEMAND -->
+      <div class="page" data-searchable="true" id="m01">
+        <div class="banner micro">
+          <div class="sid">Module 01 · OpenStax Micro Ch.3</div>
+          <h2>📈 Supply & Demand Simulator</h2>
+          <p>Find equilibrium, consumer surplus, producer surplus, and total surplus.</p>
+          <div class="tags"><span class="tag">OpenStax Micro 3e Ch.3</span></div>
+        </div>
+        <table class="th-teal">
+          <tr>
+            <th>Property</th>
+            <th>Details</th>
+          </tr>
+          <tr>
+            <td><strong>Difficulty</strong></td>
+            <td>Introductory</td>
+          </tr>
+          <tr>
+            <td><strong>Chart Type</strong></td>
+            <td>Supply (green), demand (red), equilibrium (gold star)</td>
+          </tr>
+          <tr>
+            <td><strong>Key Concepts</strong></td>
+            <td>Equilibrium price and quantity, surplus, shortage, welfare</td>
+          </tr>
+        </table>
+        <h3>Inputs / Controls</h3>
+        <table class="th-blue">
+          <tr>
+            <th>Input</th>
+            <th>Meaning</th>
+            <th>Typical Effect</th>
+          </tr>
+          <tr>
+            <td>Demand Intercept (a)</td>
+            <td>Maximum willingness to pay</td>
+            <td>Higher a shifts demand right</td>
+          </tr>
+          <tr>
+            <td>Demand Slope (b)</td>
+            <td>Demand sensitivity to price</td>
+            <td>Higher b means steeper demand</td>
+          </tr>
+          <tr>
+            <td>Supply Intercept (c)</td>
+            <td>Minimum supply threshold</td>
+            <td>Higher c shifts supply left/up</td>
+          </tr>
+          <tr>
+            <td>Supply Slope (d)</td>
+            <td>Supply sensitivity</td>
+            <td>Higher d means flatter supply</td>
+          </tr>
+        </table>
+        <div class="formula">
+          <div class="title">Core Formulas</div>Demand: Qd = a - b×P Supply: Qs = c + d×P<br>P* = (a − c) / (b +
+          d)<br>Q* = a − b×P*<br>CS = ½ × (a/b − P*) × Q*<br>PS = ½ × (P* − c/d) × Q*
+        </div>
+        <div class="steps">
+          <div class="step">
+            <div><strong>Start at default values</strong> and identify the equilibrium star.</div>
+          </div>
+          <div class="step">
+            <div><strong>Raise demand intercept</strong> to simulate higher income or stronger tastes.</div>
+          </div>
+          <div class="step">
+            <div><strong>Raise supply intercept</strong> to simulate higher production costs.</div>
+          </div>
+          <div class="step">
+            <div><strong>Compare CS and PS</strong> as equilibrium shifts.</div>
+          </div>
+        </div>
+        <div class="ibox red">
+          <div class="title">⚠️ Common Mistake</div>Changing price causes movement <em>along</em> a curve. Changing any
+          determinant causes the entire curve to <em>shift</em>. As OpenStax emphasizes: "Demand refers to the entire
+          relationship between price and quantity — the whole curve."
+        </div>
+        <div class="ibox teal">
+          <div class="title">📗 CLEAR IT UP: Demand vs. Quantity Demanded</div><strong>Demand</strong> = the entire
+          curve (relationship). <strong>Quantity demanded</strong> = a specific point on that curve at a given price.
+          When we say "demand increases," the entire curve shifts right.
+        </div>
+        <div class="ibox teal">
+          <div class="title">🔗 Five Demand Shifters</div>1. <strong>Income</strong> (normal vs inferior goods)<br>2.
+          <strong>Tastes/Preferences</strong><br>3. <strong>Price of Related Goods</strong> (substitutes &
+          complements)<br>4. <strong>Expectations</strong> of future prices<br>5. <strong>Number of Buyers</strong>
+        </div>
+        <div class="ibox teal">
+          <div class="title">🔗 Six Supply Shifters</div>1. <strong>Input Costs</strong><br>2.
+          <strong>Technology</strong><br>3. <strong>Expectations</strong><br>4. <strong>Number of Sellers</strong><br>5.
+          <strong>Natural Conditions</strong><br>6. <strong>Government Policies</strong> (taxes/subsidies)
+        </div>
+        <div class="example-box">
+          <div class="title">🏠 Bring It Home: Gasoline Markets</div>When oil prices rise (supply shifts left),
+          equilibrium price increases and quantity decreases. When electric vehicles gain popularity (demand shifts
+          left), both price and quantity fall.
+        </div>
+        <div class="ibox gold">
+          <div class="title">🎛️ Simulation Parameters</div>⚙️ Intercept (a) · ⚙️ Slope (b) · ⚙️ Intercept (c) · ⚙️
+          Slope (d)
+        </div>
+      </div>
+
+
+      <div class="learning-obj">
+        <div class="title">🎯 Learning Objectives — Module 01</div>
+        <ul>
+          <li>Explain the laws of demand and supply</li>
+          <li>Identify factors that shift demand and supply curves</li>
+          <li>Calculate equilibrium price and quantity algebraically</li>
+          <li>Measure consumer surplus, producer surplus, and total surplus</li>
+          <li>Analyze how changes in market conditions affect equilibrium</li>
+          <li>Distinguish between movements along curves and shifts of curves</li>
+        </ul>
+      </div>
+
+      <div class="clear-up">
+        <div class="title">🔵 Clear It Up: Does "Demand" Mean the Same as "Quantity Demanded"?</div>
+        <p><strong>No!</strong> This is the #1 most common mistake in introductory economics:</p>
+        <ul>
+          <li><strong>Demand</strong> refers to the <em>entire relationship</em> between price and quantity — the whole
+            curve. When we say "demand increases," we mean the entire curve shifts right: at every price, consumers want
+            more.</li>
+          <li><strong>Quantity demanded</strong> is a specific point on that curve at a given price. When price changes,
+            we move along the existing curve — that's a change in <em>quantity demanded</em>, not a change in
+            <em>demand</em>.
+          </li>
+        </ul>
+        <p><em>Test yourself:</em> If the price of coffee rises, does demand for coffee decrease? <strong>No!</strong>
+          The quantity demanded decreases (movement along the curve), but demand itself — the curve — hasn't moved.</p>
+      </div>
+
+      <div class="clear-up">
+        <div class="title">🔵 Clear It Up: Is Supply the Same as Quantity Supplied?</div>
+        <p>Same distinction applies! <strong>Supply</strong> is the entire curve showing the relationship between price
+          and quantity supplied. <strong>Quantity supplied</strong> is a specific amount at a specific price.</p>
+        <p><strong>Key insight:</strong> A change in the good's own price causes movement <em>along</em> the curve. A
+          change in anything else (income, tastes, input costs, technology) causes the curve to <em>shift</em>.</p>
+      </div>
+
+      <div class="work-it-out">
+        <div class="title">🟢 Work It Out: Finding Equilibrium Step-by-Step</div>
+        <p><strong>Problem:</strong> Given Qd = 100 − 2P and Qs = 10 + 3P, find equilibrium price and quantity.</p>
+        <p><strong>Step 1:</strong> Set Qd = Qs (equilibrium condition)<br>100 − 2P = 10 + 3P</p>
+        <p><strong>Step 2:</strong> Solve for P<br>100 − 10 = 3P + 2P → 90 = 5P → <strong>P* = 18</strong></p>
+        <p><strong>Step 3:</strong> Substitute P back to find Q<br>Q = 100 − 2(18) = 100 − 36 =
+          <strong>64</strong><br><em>Check:</em> Q = 10 + 3(18) = 10 + 54 = 64 ✓
+        </p>
+        <p><strong>Step 4:</strong> Calculate Consumer Surplus<br>P<sub>max</sub> (demand intercept) = 100/2 = 50<br>CS
+          = ½ × (50 − 18) × 64 = ½ × 32 × 64 = <strong>$1,024</strong></p>
+        <p><strong>Step 5:</strong> Calculate Producer Surplus<br>P<sub>min</sub> (supply intercept) = −10/3 ≈ 0 (floor
+          at 0)<br>PS = ½ × (18 − 0) × 64 = <strong>$576</strong></p>
+        <p><strong>Answer:</strong> P* = $18, Q* = 64 units, CS = $1,024, PS = $576, TS = $1,600</p>
+      </div>
+
+      <div class="bring-home">
+        <div class="title">🟣 Bring It Home: Gasoline Price Fluctuations</div>
+        <p>Gasoline prices fluctuate due to both supply and demand shifts. Use the simulator to model these scenarios:
+        </p>
+        <ul>
+          <li><strong>Summer driving season:</strong> Demand shifts right → P↑, Q↑ (raise <em>a</em> slider)</li>
+          <li><strong>Hurricane disrupts refineries:</strong> Supply shifts left → P↑, Q↓ (raise <em>c</em> slider)</li>
+          <li><strong>Electric vehicle adoption:</strong> Demand shifts left → P↓, Q↓ (lower <em>a</em> slider)</li>
+          <li><strong>New fracking technology:</strong> Supply shifts right → P↓, Q↑ (lower <em>c</em> slider)</li>
+        </ul>
+        <p>Notice that supply shifts and demand shifts have opposite effects on quantity but the same effect on price
+          when shifting in the same direction.</p>
+      </div>
+
+      <div class="bring-home">
+        <div class="title">🟣 Bring It Home: The Organic Food Market</div>
+        <p>From OpenStax: Organic food sales have grown dramatically as consumer preferences shifted toward healthier
+          options — a rightward shift in demand. Meanwhile, more farmers converted to organic production — a rightward
+          shift in supply.</p>
+        <p><strong>Simulate it:</strong> Start with a=80, c=20. Then increase <em>a</em> to 120 (demand shift) and
+          decrease <em>c</em> to 5 (supply shift). Notice Q rises dramatically while P changes modestly — matching real
+          organic market data where quantity grew faster than prices.</p>
+      </div>
+
+      <!-- MODULE 02: ELASTICITY -->
+      <div class="page" data-searchable="true" id="m02">
+        <div class="banner elast">
+          <div class="sid">Module 02 · OpenStax Micro Ch.5</div>
+          <h2>📐 Elasticity & Lerner Index</h2>
+          <p>Measure responsiveness and connect elasticity to monopoly pricing power.</p>
+          <div class="tags"><span class="tag">OpenStax Micro 3e Ch.5</span></div>
+        </div>
+        <table class="th-gold">
+          <tr>
+            <th>Elasticity Zone</th>
+            <th>Condition</th>
+            <th>Total Revenue Rule</th>
+            <th>Examples</th>
+          </tr>
+          <tr>
+            <td>Elastic</td>
+            <td>|Ed| > 1</td>
+            <td>P↑ → TR↓</td>
+            <td>Luxury goods, dining out</td>
+          </tr>
+          <tr>
+            <td>Unit Elastic</td>
+            <td>|Ed| = 1</td>
+            <td>TR unchanged</td>
+            <td>Midpoint benchmark</td>
+          </tr>
+          <tr>
+            <td>Inelastic</td>
+            <td>|Ed| < 1</td>
+            <td>P↑ → TR↑</td>
+            <td>Gasoline, insulin</td>
+          </tr>
+        </table>
+        <div class="formula">
+          <div class="title">Formulas</div>Ed = (%ΔQd) / (%ΔP)
+          Midpoint: Ed = [(Q2-Q1)/((Q2+Q1)/2)] / [(P2-P1)/((P2+P1)/2)]
+          Lerner Index: L = (P − MC)/P = 1/|ε|
+          Optimal Markup: P* = MC × |ε|/(|ε| - 1)
+        </div>
+        <div class="ibox teal">
+          <div class="title">📗 CLEAR IT UP: Elasticity ≠ Slope</div>Slope measures absolute change (ΔQ/ΔP). Elasticity
+          measures percentage change (%ΔQ/%ΔP). Elasticity is unit-free — you can compare across different markets.
+        </div>
+        <div class="ibox teal">
+          <div class="title">📗 Five Determinants of Elasticity</div>1. <strong>Availability of Substitutes</strong> —
+          more substitutes = more elastic<br>2. <strong>Necessities vs. Luxuries</strong> — necessities =
+          inelastic<br>3. <strong>Share of Budget</strong> — small share = inelastic<br>4. <strong>Time Horizon</strong>
+          — short run = inelastic<br>5. <strong>Market Definition</strong> — narrow = elastic
+        </div>
+        <div class="example-box">
+          <div class="title">💊 Pharma vs Commodities</div>Pharmaceuticals: |ε| ≈ 1.3 → Lerner = 0.77, markup =
+          333%<br>Wheat: |ε| ≈ 4 → Lerner = 0.25, markup = 33%
+        </div>
+        <div class="ibox gold">
+          <div class="title">🎛️ Simulation Parameters</div>⚙️ Elasticity |ε| · ⚙️ Marginal Cost
+        </div>
+      </div>
+
+
+      <div class="learning-obj">
+        <div class="title">🎯 Learning Objectives — Module 02</div>
+        <ul>
+          <li>Calculate price elasticity of demand using the midpoint method</li>
+          <li>Classify demand as elastic, inelastic, or unit elastic</li>
+          <li>Apply the total revenue test to determine elasticity</li>
+          <li>Identify the five determinants of elasticity</li>
+          <li>Connect elasticity to monopoly pricing through the Lerner Index</li>
+          <li>Calculate optimal markup for a firm with market power</li>
+        </ul>
+      </div>
+
+      <div class="ibox gold">
+        <div class="title">📊 Extended Elasticity Classification Table</div>
+        <table class="th-gold" style="margin-top:8px">
+          <tr>
+            <th>Zone</th>
+            <th>Condition</th>
+            <th>TR Rule</th>
+            <th>Business Strategy</th>
+            <th>Examples</th>
+          </tr>
+          <tr>
+            <td>Perfectly Elastic</td>
+            <td>|Ed| = ∞</td>
+            <td>Any P↑ → Q=0</td>
+            <td>Cannot raise price at all</td>
+            <td>Commodities in perfect competition</td>
+          </tr>
+          <tr>
+            <td>Elastic</td>
+            <td>|Ed| &gt; 1</td>
+            <td>P↑ → TR↓</td>
+            <td>Cut prices to increase revenue</td>
+            <td>Luxury goods, restaurant meals, airline tickets</td>
+          </tr>
+          <tr>
+            <td>Unit Elastic</td>
+            <td>|Ed| = 1</td>
+            <td>TR unchanged</td>
+            <td>Price changes don't affect revenue</td>
+            <td>Theoretical midpoint</td>
+          </tr>
+          <tr>
+            <td>Inelastic</td>
+            <td>|Ed| &lt; 1</td>
+            <td>P↑ → TR↑</td>
+            <td>Raise prices to increase revenue</td>
+            <td>Gasoline, insulin, cigarettes, utilities</td>
+          </tr>
+          <tr>
+            <td>Perfectly Inelastic</td>
+            <td>|Ed| = 0</td>
+            <td>Q unchanged</td>
+            <td>Charge any price</td>
+            <td>Life-saving medications with no substitutes</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="clear-up">
+        <div class="title">🔵 Clear It Up: Is Elasticity the Same as Slope?</div>
+        <p><strong>No!</strong> This is a crucial distinction:</p>
+        <ul>
+          <li><strong>Slope</strong> measures absolute change (ΔQ/ΔP) — depends on the units used</li>
+          <li><strong>Elasticity</strong> measures percentage change (%ΔQ/%ΔP) — unit-free ratio</li>
+        </ul>
+        <p><strong>Why this matters:</strong> Elasticity is unit-free, so you can compare across completely different
+          markets (gasoline vs. healthcare vs. smartphones), while slopes depend on the units used and cannot be
+          compared across markets.</p>
+        <p><strong>Key insight:</strong> Along a linear demand curve with constant slope, elasticity <em>varies</em> —
+          from infinite at the price intercept to zero at the quantity intercept. The midpoint has unit elasticity.</p>
+      </div>
+
+      <div class="work-it-out">
+        <div class="title">🟢 Work It Out: The Total Revenue Test</div>
+        <p><strong>Problem:</strong> A movie theater raises ticket prices from $10 to $12. Attendance falls from 500 to
+          400 per week. Is demand elastic or inelastic? What happened to total revenue?</p>
+        <p><strong>Step 1:</strong> Calculate elasticity using midpoint method<br>
+          %ΔQ = (400−500)/[(400+500)/2] = −100/450 = −22.2%<br>
+          %ΔP = (12−10)/[(12+10)/2] = 2/11 = 18.2%<br>
+          |Ed| = 22.2% / 18.2% = <strong>1.22</strong></p>
+        <p><strong>Step 2:</strong> Interpret<br>|Ed| = 1.22 &gt; 1, so demand is <strong>elastic</strong></p>
+        <p><strong>Step 3:</strong> Check total revenue<br>
+          Before: TR = $10 × 500 = $5,000<br>
+          After: TR = $12 × 400 = $4,800<br>
+          TR <strong>fell by $200</strong></p>
+        <p><strong>Conclusion:</strong> Because demand is elastic, the price increase reduced total revenue. The theater
+          should consider lowering prices instead.</p>
+      </div>
+
+      <div class="bring-home">
+        <div class="title">🟣 Bring It Home: Pharma vs. Commodities</div>
+        <p>The Lerner Index explains why some industries have enormous profit margins while others barely break even:
+        </p>
+        <ul>
+          <li><strong>Pharmaceuticals:</strong> |ε| ≈ 1.3 → Lerner = 0.77 → Markup = 333% over MC<br><em>Why?</em> Few
+            substitutes, life-saving necessity, patent protection</li>
+          <li><strong>Wheat (commodity):</strong> |ε| ≈ 4 → Lerner = 0.25 → Markup = 33% over MC<br><em>Why?</em> Many
+            substitutes, homogeneous product, many sellers</li>
+        </ul>
+        <p>This is why drug companies earn high margins while farmers earn thin ones — it's all about elasticity.</p>
+      </div>
+
+      <div class="bring-home">
+        <div class="title">🟣 Bring It Home: That Yoga Class</div>
+        <p>A yoga studio considers raising class prices from $10 to $15. Currently 30 students attend per class.</p>
+        <ul>
+          <li><strong>If demand is inelastic (|ε|=0.5):</strong> Attendance drops to ~23. Revenue = $345 (up from $300).
+            Raise price ✓</li>
+          <li><strong>If demand is elastic (|ε|=2.0):</strong> Attendance drops to ~15. Revenue = $225 (down from $300).
+            Don't raise price ✗</li>
+        </ul>
+        <p>The studio's decision depends entirely on elasticity — which is why businesses invest heavily in market
+          research before changing prices.</p>
+      </div>
+
+      <div class="ibox purple">
+        <div class="title">🔗 Connection to Monopoly Pricing (Module 05)</div>
+        The Lerner Index directly connects elasticity to market power. A monopolist facing inelastic demand can charge a
+        much higher markup over marginal cost. The formula P* = MC × |ε|/(|ε|−1) shows that as elasticity approaches 1,
+        the optimal price approaches infinity — which is why monopolists never operate on the inelastic portion of the
+        demand curve.
+      </div>
+
+      <!-- MODULE 03: EXTERNALITIES -->
+      <div class="page" data-searchable="true" id="m03">
+        <div class="banner micro">
+          <div class="sid">Module 03 · OpenStax Micro Ch.12</div>
+          <h2>🏭 Externalities & Pigouvian Tax</h2>
+          <p>Compare private and social costs/benefits and correct market failure.</p>
+          <div class="tags"><span class="tag">OpenStax Micro 3e Ch.12</span></div>
+        </div>
+        <table class="th-teal">
+          <tr>
+            <th>Concept</th>
+            <th>Meaning</th>
+            <th>Solution</th>
+          </tr>
+          <tr>
+            <td>Negative Externality</td>
+            <td>MSC > MPC (pollution)</td>
+            <td>Pigouvian Tax = MEC</td>
+          </tr>
+          <tr>
+            <td>Positive Externality</td>
+            <td>MSB > MPB (education)</td>
+            <td>Pigouvian Subsidy = MEB</td>
+          </tr>
+        </table>
+        <div class="formula">
+          <div class="title">Social Cost Framework</div>MSC = MPC + MEC
+          Optimal Pigouvian Tax = MEC at Q_social
+          DWL = ½ × (Qmarket - Qoptimal) × MEC
+        </div>
+        <div class="ibox teal">
+          <div class="title">📗 Four Policy Approaches</div>1. <strong>Pigouvian Tax</strong> — Tax = MEC, internalizes
+          externality<br>2. <strong>Cap-and-Trade</strong> — Set cap, issue tradeable permits<br>3.
+          <strong>Command-and-Control</strong> — Direct regulation<br>4. <strong>Coase Bargaining</strong> — Private
+          negotiation (low transaction costs)
+        </div>
+        <div class="ibox teal">
+          <div class="title">⚖️ Coase Theorem</div>If property rights are well-defined and transaction costs are low,
+          private bargaining can achieve efficiency regardless of initial allocation.
+        </div>
+        <div class="example-box">
+          <div class="title">🏭 Factory Pollution Example</div>Steel mill emits SO₂ damaging crops ($15/ton external
+          cost). Without intervention: 80 tons produced. With $15/ton Pigouvian tax: 65 tons (optimal). DWL eliminated =
+          ½ × 15 × 15 = $112.50
+        </div>
+        <div class="ibox gold">
+          <div class="title">🎛️ Simulation Parameters</div>⚙️ Private Marginal Cost (PMC) · ⚙️ External Cost (EC)
+        </div>
+      </div>
+
+      <!-- MODULE 04: PUBLIC GOODS -->
+      <div class="page" data-searchable="true" id="m04">
+        <div class="banner micro">
+          <div class="sid">Module 04 · OpenStax Micro Ch.13</div>
+          <h2>🏛️ Public Goods & Free Rider</h2>
+          <p>Why private markets underprovide public goods and how governments respond.</p>
+          <div class="tags"><span class="tag">OpenStax Micro 3e Ch.13</span></div>
+        </div>
+        <table class="th-teal">
+          <tr>
+            <th>Good Type</th>
+            <th>Excludable</th>
+            <th>Rival</th>
+            <th>Example</th>
+          </tr>
+          <tr>
+            <td>Private Good</td>
+            <td>Yes</td>
+            <td>Yes</td>
+            <td>Food, shoes</td>
+          </tr>
+          <tr>
+            <td>Public Good</td>
+            <td>No</td>
+            <td>No</td>
+            <td>National defense, lighthouse</td>
+          </tr>
+          <tr>
+            <td>Club Good</td>
+            <td>Yes</td>
+            <td>No</td>
+            <td>Netflix, toll road</td>
+          </tr>
+          <tr>
+            <td>Common Resource</td>
+            <td>No</td>
+            <td>Yes</td>
+            <td>Fish stocks, groundwater</td>
+          </tr>
+        </table>
+        <div class="ibox red">
+          <div class="title">⚠️ Free Rider Problem</div>If people can benefit without paying, each individual has an
+          incentive to withhold payment — so the market underprovides or fails entirely. This is why governments
+          typically provide public goods.
+        </div>
+        <div class="ibox teal">
+          <div class="title">📗 Tragedy of the Commons</div>Common resources face overuse because no one owns them. Each
+          user captures full benefit but bears only a fraction of depletion cost. Solutions: property rights, quotas,
+          community management.
+        </div>
+      </div>
+
+      <!-- MODULE 05: MONOPOLY -->
+      <div class="page" data-searchable="true" id="m05">
+        <div class="banner micro">
+          <div class="sid">Module 05 · OpenStax Micro Ch.9</div>
+          <h2>🏢 Monopoly</h2>
+          <p>Single-firm market power, MR=MC output, and deadweight loss.</p>
+          <div class="tags"><span class="tag">OpenStax Micro 3e Ch.9</span></div>
+        </div>
+        <div class="formula">
+          <div class="title">Monopoly Logic</div>Demand: P = a − bQ
+          MR = a − 2bQ (twice as steep as demand)
+          Set MR = MC → find Q*
+          Use demand curve to find monopoly price P*
+          DWL = ½ × (Pm - MC) × (Qc - Qm)
+        </div>
+        <div class="steps">
+          <div class="step">
+            <div><strong>Locate MR=MC</strong> to find profit-maximizing quantity.</div>
+          </div>
+          <div class="step">
+            <div><strong>Move up to demand</strong> to read monopoly price.</div>
+          </div>
+          <div class="step">
+            <div><strong>Compare with competitive output</strong> where P=MC.</div>
+          </div>
+          <div class="step">
+            <div><strong>Identify DWL</strong> between monopoly and competitive quantities.</div>
+          </div>
+        </div>
+        <div class="ibox gold">
+          <div class="title">📗 Key Insight</div>MR lies below demand because the monopolist must lower price on all
+          units to sell one more unit.
+        </div>
+        <div class="ibox teal">
+          <div class="title">📗 CLEAR IT UP: Zero Economic Profit ≠ Going Broke</div>Zero economic profit includes
+          opportunity cost. The firm earns a normal return — exactly what the owner could earn elsewhere. This is the
+          long-run competitive equilibrium.
+        </div>
+        <div class="ibox gold">
+          <div class="title">🎛️ Simulation Parameters</div>⚙️ Demand Intercept (a) · ⚙️ Demand Slope (b) · ⚙️ Marginal
+          Cost
+        </div>
+      </div>
+
+
+      <div class="learning-obj">
+        <div class="title">🎯 Learning Objectives — Module 05</div>
+        <ul>
+          <li>Explain why MR &lt; P for a monopolist</li>
+          <li>Apply the MR = MC rule to find profit-maximizing output</li>
+          <li>Calculate monopoly profit, consumer surplus, and deadweight loss</li>
+          <li>Compare monopoly outcomes to perfect competition</li>
+          <li>Identify sources of monopoly power (barriers to entry)</li>
+          <li>Evaluate regulatory responses to monopoly</li>
+        </ul>
+      </div>
+
+      <div class="clear-up">
+        <div class="title">🔵 Clear It Up: Why Is MR Below Demand?</div>
+        <p>For a monopolist, MR &lt; P because to sell one more unit, the firm must lower the price on
+          <strong>all</strong> units, not just the marginal one.
+        </p>
+        <p><strong>Example:</strong> Currently selling 10 units at $50 each → TR = $500. To sell 11 units, must lower
+          price to $48. New TR = $48 × 11 = $528. MR of 11th unit = $528 − $500 = $28, which is less than the $48 price.
+        </p>
+        <p>The MR has two components: (1) gain from selling one more unit at the new price, <em>minus</em> (2) loss from
+          selling all previous units at the lower price.</p>
+      </div>
+
+      <div class="clear-up">
+        <div class="title">🔵 Clear It Up: Zero Economic Profit ≠ Going Broke</div>
+        <p>This confuses many students! Zero <em>economic</em> profit ≠ zero <em>accounting</em> profit.</p>
+        <p><strong>Economic profit</strong> includes the opportunity cost of the owner's time and capital. When economic
+          profit = 0, the firm is earning a <strong>normal return</strong> — exactly what the owner could earn in their
+          next best alternative.</p>
+        <p><strong>Example:</strong> A restaurant owner earns $80,000/year in accounting profit. If they could earn
+          $80,000 as a corporate chef, their economic profit is $0. They're indifferent between running the restaurant
+          and being a chef — which is exactly the long-run competitive equilibrium.</p>
+      </div>
+
+      <div class="work-it-out">
+        <div class="title">🟢 Work It Out: Monopoly vs. Perfect Competition</div>
+        <p><strong>Given:</strong> Demand P = 100 − Q, MC = ATC = $20 (constant)</p>
+        <p><strong>Find Monopoly Outcomes:</strong><br>
+          MR = 100 − 2Q<br>
+          Set MR = MC: 100 − 2Q = 20 → Q<sub>m</sub> = 40<br>
+          P<sub>m</sub> = 100 − 40 = <strong>$60</strong><br>
+          Profit = (60 − 20) × 40 = <strong>$1,600</strong></p>
+        <p><strong>Find Competitive Outcomes:</strong><br>
+          Set P = MC: 100 − Q = 20 → Q<sub>c</sub> = 80<br>
+          P<sub>c</sub> = <strong>$20</strong> | Profit = <strong>$0</strong> (normal return)</p>
+        <p><strong>Calculate DWL:</strong><br>
+          DWL = ½ × (P<sub>m</sub> − MC) × (Q<sub>c</sub> − Q<sub>m</sub>) = ½ × 40 × 40 = <strong>$800</strong></p>
+        <p><strong>Interpretation:</strong> Monopoly produces half the competitive quantity, charges triple the
+          competitive markup, earns $1,600 profit, and destroys $800 of potential surplus.</p>
+      </div>
+
+      <div class="ibox teal">
+        <div class="title">🚧 Barriers to Entry: Sources of Monopoly Power</div>
+        <ol style="margin:4px 0 0 14px;line-height:1.75">
+          <li><strong>Legal barriers</strong> — Patents, copyrights, licenses, franchises</li>
+          <li><strong>Control of essential resources</strong> — De Beers and diamonds (historically)</li>
+          <li><strong>Economies of scale</strong> — Natural monopoly: one firm can serve the market at lower cost than
+            multiple firms</li>
+          <li><strong>Network effects</strong> — Value increases with users (Facebook, Windows)</li>
+          <li><strong>Strategic barriers</strong> — Predatory pricing, excess capacity, brand loyalty</li>
+        </ol>
+      </div>
+
+      <div class="bring-home">
+        <div class="title">🟣 Bring It Home: The Pharmaceutical Industry</div>
+        <p>Drug patents create temporary monopolies, allowing companies to charge prices far above marginal cost. A pill
+          that costs $0.10 to produce might sell for $10 — a 10,000% markup.</p>
+        <p><strong>The tradeoff:</strong> Without patent protection, firms wouldn't invest billions in R&amp;D. But
+          during the patent period, patients face high prices and some are priced out of the market (DWL).</p>
+        <p><strong>Simulate it:</strong> Set MC = 10, demand intercept = 200. Compare monopoly price (~$105) to
+          competitive price ($10). The DWL triangle represents patients who would benefit from the drug but can't afford
+          it at the monopoly price.</p>
+      </div>
+
+      <!-- MODULE 06: COURNOT -->
+      <div class="page" data-searchable="true" id="m06">
+        <div class="banner micro">
+          <div class="sid">Module 06 · Perloff & Brander Ch.13</div>
+          <h2>🤝 Cournot Duopoly</h2>
+          <p>Two firms simultaneously choose quantities in an oligopoly.</p>
+          <div class="tags"><span class="tag">Perloff Ch.13</span></div>
+        </div>
+        <div class="formula">
+          <div class="title">Symmetric Cournot</div>Best Response: q₁ = (a-c)/2b - q₂/2
+          Nash Equilibrium: q* = (a − c)/(3b)
+          Total Output: Q* = 2(a − c)/(3b)
+          Price: P* = a − bQ*
+        </div>
+        <div class="ibox teal">
+          <div class="title">📗 Interpretation</div>Each firm restricts output relative to competition but produces more
+          than a monopolist would allow. Output is between monopoly and perfect competition.
+        </div>
+        <div class="ibox gold">
+          <div class="title">🎛️ Simulation Parameters</div>⚙️ Demand Intercept (a) · ⚙️ Marginal Cost (c)
+        </div>
+      </div>
+
+      <!-- MODULE 07: STACKELBERG -->
+      <div class="page" data-searchable="true" id="m07">
+        <div class="banner micro">
+          <div class="sid">Module 07 · Perloff & Brander Ch.13</div>
+          <h2>👑 Stackelberg Leader-Follower</h2>
+          <p>Sequential quantity competition with first-mover advantage.</p>
+          <div class="tags"><span class="tag">Perloff Ch.13</span></div>
+        </div>
+        <div class="formula">
+          <div class="title">Stackelberg Equilibrium</div>Leader chooses first: qL = (a − c)/(2b)
+          Follower best-responds: qF = (a − c)/(4b)
+          Total: Q = 3(a-c)/(4b) > Cournot output
+        </div>
+        <div class="ibox green">
+          <div class="title">📗 First-Mover Advantage</div>The leader commits to larger output, forcing the follower to
+          back down. Credible commitment is everything — the investment must be irreversible and observable.
+        </div>
+        <div class="example-box">
+          <div class="title">🏭 Airbus vs Boeing</div>When Airbus committed to the A380 superjumbo (massive irreversible
+          investment), Boeing responded by NOT building a competing superjumbo — the follower's best response.
+        </div>
+        <div class="ibox gold">
+          <div class="title">🎛️ Simulation Parameters</div>⚙️ Demand Intercept (a) · ⚙️ Marginal Cost (c)
+        </div>
+      </div>
+
+      <!-- MODULE 08: COLLUSION -->
+      <div class="page" data-searchable="true" id="m08">
+        <div class="banner micro">
+          <div class="sid">Module 08 · OpenStax Micro Ch.10</div>
+          <h2>🤫 Collusion & Cartels</h2>
+          <p>When oligopolists collude, they replicate monopoly. But cartels are inherently unstable due to the
+            temptation to cheat.</p>
+          <div class="tags"><span class="tag">OpenStax Micro 3e Ch.10</span></div>
+        </div>
+        <div class="formula">
+          <div class="title">Incentive Compatibility Constraint</div>δ* = (πdefect − πcoop)/(πdefect − πpunish)
+          If δ ≥ δ* → cartel stable
+          If δ < δ* → cheating dominates</div>
+            <div class="ibox red">
+              <div class="title">⚠️ Why Cartels Break</div>Each firm wants the cartel price to stay high — but also
+              wants to secretly undercut rivals and steal market share. The Prisoner's Dilemma structure makes
+              cooperation difficult.
+            </div>
+            <div class="ibox teal">
+              <div class="title">💡 Factors Facilitating Collusion</div>✓ Few firms · ✓ Homogeneous products · ✓
+              Transparent pricing · ✓ Frequent interaction · ✓ High barriers to entry · ✓ Stable demand · ✓ Similar cost
+              structures
+            </div>
+            <div class="example-box">
+              <div class="title">🛢️ OPEC Cartel Dynamics</div>Members agree to production quotas, but individual
+              countries have strong incentives to cheat by overproducing. When cheating becomes widespread (2014-2016),
+              the cartel collapses and prices crash.
+            </div>
+            <div class="ibox gold">
+              <div class="title">🎛️ Simulation Parameters</div>⚙️ Cartel Profit (πc) · ⚙️ Defection Profit (πd) · ⚙️
+              Nash Profit (πp) · ⚙️ Discount Factor (δ)
+            </div>
+        </div>
+
+        <!-- MODULE 09: ENTRY DETERRENCE -->
+        <div class="page" data-searchable="true" id="m09">
+          <div class="banner micro">
+            <div class="sid">Module 09 · Perloff & Brander Ch.13</div>
+            <h2>🚧 Entry Deterrence</h2>
+            <p>Incumbents weaponize cost structures and capacity to deter potential entrants.</p>
+            <div class="tags"><span class="tag">Perloff Ch.13</span></div>
+          </div>
+          <div class="formula">
+            <div class="title">Entry Condition</div>π_entrant = Market Size - Capacity×Price Impact - Fixed Cost
+            Enter if π_entrant > 0
+            Stay out if π_entrant ≤ 0
+          </div>
+          <div class="ibox teal">
+            <div class="title">📗 Entry Deterrence Strategies</div><strong>Capacity Commitment:</strong> Build excess
+            capacity before entrant decides (sunk cost = credible threat)<br><strong>Limit Pricing:</strong> Set price
+            low enough to make entry unprofitable<br><strong>Predatory Pricing:</strong> Below-cost pricing to drive out
+            rivals (illegal under antitrust law)
+          </div>
+          <div class="ibox teal">
+            <div class="title">📘 Credible vs Non-Credible Threats</div>An incumbent's threat to "fight" entry is only
+            credible if it has committed resources that make fighting the rational response. Without capacity
+            commitment, the threat is an empty bluff.
+          </div>
+          <div class="ibox gold">
+            <div class="title">🎛️ Simulation Parameters</div>⚙️ Entry Fixed Cost · ⚙️ Incumbent Capacity
+          </div>
+        </div>
+
+        <!-- MODULE 10: MERGER ANALYSIS -->
+        <div class="page" data-searchable="true" id="m10">
+          <div class="banner micro">
+            <div class="sid">Module 10 · OpenStax Micro Ch.11</div>
+            <h2>📊 Merger Analysis & HHI</h2>
+            <p>Evaluate mergers using market concentration measures.</p>
+            <div class="tags"><span class="tag">OpenStax Micro 3e Ch.11</span></div>
+          </div>
+          <div class="formula">
+            <div class="title">HHI & Delta HHI</div>HHI = Σ(si²) where si = market share in %
+            ΔHHI = 2 × s₁ × s₂ (merger shortcut)
+          </div>
+          <div class="ibox purple">
+            <div class="title">📋 DOJ/FTC Merger Guidelines</div>HHI < 1,500: Unconcentrated — mergers unlikely
+              challenged<br>1,500–2,500: Moderately Concentrated — ΔHHI > 200 raises concerns<br>≥ 2,500: Highly
+              Concentrated — ΔHHI > 100 presumed anticompetitive
+          </div>
+          <div class="example-box">
+            <div class="title">📱 T-Mobile/Sprint Merger (2020)</div>Pre-merger wireless HHI ≈ 2,800. Merger increased
+            HHI by ~600 points. DOJ approved only after requiring divestiture to Dish Network to create a fourth
+            competitor.
+          </div>
+        </div>
+
+        <!-- MODULE 11: STATIC GAMES -->
+        <div class="page" data-searchable="true" id="m11">
+          <div class="banner game">
+            <div class="sid">Module 11 · OpenStax Micro Ch.10</div>
+            <h2>🎯 Static Games & Nash Equilibrium</h2>
+            <p>Best responses, dominant strategies, and Nash equilibrium in 2×2 games.</p>
+            <div class="tags"><span class="tag">OpenStax Micro 3e Ch.10</span></div>
+          </div>
+          <table class="th-purple">
+            <tr>
+              <th>Preset</th>
+              <th>NE</th>
+              <th>Lesson</th>
+            </tr>
+            <tr>
+              <td>Prisoner's Dilemma</td>
+              <td>(Defect, Defect)</td>
+              <td>Cooperation breaks down</td>
+            </tr>
+            <tr>
+              <td>Stag Hunt</td>
+              <td>Two NE</td>
+              <td>Trust matters</td>
+            </tr>
+            <tr>
+              <td>Battle of Sexes</td>
+              <td>Two NE</td>
+              <td>Coordination with conflict</td>
+            </tr>
+          </table>
+          <div class="steps">
+            <div class="step">
+              <div><strong>For each column</strong>, mark Player 1's best response.</div>
+            </div>
+            <div class="step">
+              <div><strong>For each row</strong>, mark Player 2's best response.</div>
+            </div>
+            <div class="step">
+              <div><strong>Intersection of best responses</strong> = Nash equilibrium.</div>
+            </div>
+          </div>
+          <div class="ibox teal">
+            <div class="title">📗 CLEAR IT UP: What IS a Nash Equilibrium?</div>A Nash Equilibrium is a set of
+            strategies where no player can improve their payoff by unilaterally changing their strategy. It does NOT
+            mean the best outcome for everyone — just a stable resting point.
+          </div>
+          <div class="example-box">
+            <div class="title">📗 OpenStax Table 10.3: Oligopoly Prisoner's Dilemma</div>Firm A and B choose "Hold Down
+            Output" (cooperate) or "Increase Output" (defect). Both cooperate: $500 each. Both defect: $400 each. One
+            defects: defector gets $550, cooperator gets $200. Dominant strategy: Defect.
+          </div>
+        </div>
+
+        <!-- MODULE 12: SEQUENTIAL GAMES -->
+        <div class="page" data-searchable="true" id="m12">
+          <div class="banner game">
+            <div class="sid">Module 12 · Perloff Ch.13</div>
+            <h2>🌳 Sequential Games & Backward Induction</h2>
+            <p>Solve game trees by reasoning backward from terminal nodes.</p>
+            <div class="tags"><span class="tag">Perloff Ch.13</span></div>
+          </div>
+          <div class="ibox dark">
+            <div class="title">📘 Backward Induction Method</div>Step 1: Start at terminal nodes<br>Step 2: Determine
+            optimal choice at each decision node<br>Step 3: Work backward to the root<br>Step 4: The path of optimal
+            choices = Subgame Perfect Nash Equilibrium (SPNE)
+          </div>
+          <div class="ibox teal">
+            <div class="title">✓ Credible Threats</div>Fighting is not credible if the incumbent gets -1 from fighting
+            vs +2 from accommodating. Rational entrants see through the bluff. Commitment devices (sunk costs) make
+            threats credible.
+          </div>
+          <div class="ibox teal">
+            <div class="title">📘 Finite Repeated Games Unravel</div>When a game is repeated a known finite number of
+            times T, backward induction unravels cooperation completely. Both firms know there's no punishment in period
+            T, so they defect. Working backwards, they defect in every period.
+          </div>
+        </div>
+
+        <!-- MODULE 13: REPEATED GAMES -->
+        <div class="page" data-searchable="true" id="m13">
+          <div class="banner game">
+            <div class="sid">Module 13 · Caltech</div>
+            <h2>🔄 Repeated Games & Folk Theorem</h2>
+            <p>Cooperation can be sustained when players care enough about the future.</p>
+            <div class="tags"><span class="tag">Advanced Game Theory</span></div>
+          </div>
+          <div class="formula">
+            <div class="title">Sustainability Threshold</div>δ* = (πdefect − πcoop)/(πdefect − πpunish)
+            Cooperation sustainable if δ ≥ δ*
+            PV(Coop) = πc/(1-δ)
+            PV(Defect) = πd + δ·πp/(1-δ)
+          </div>
+          <div class="ibox green">
+            <div class="title">📗 Interpretation</div>More patient firms (higher δ) can sustain collusion more easily.
+            The Folk Theorem: any payoff above the minmax can be sustained as NE in infinitely repeated games if δ is
+            high enough.
+          </div>
+          <div class="ibox teal">
+            <div class="title">📘 Punishment Strategies</div><strong>Tit-for-Tat:</strong> Match rival's last move.
+            Simple but punishes for only one period.<br><strong>Grim Trigger:</strong> Punish forever after any
+            defection. Strongest deterrent but least forgiving.
+          </div>
+          <div class="ibox gold">
+            <div class="title">🎛️ Simulation Parameters</div>⚙️ Cooperation Profit (πc) · ⚙️ Defection Profit (πd) · ⚙️
+            Punishment Profit (πp) · ⚙️ Discount Factor (δ)
+          </div>
+        </div>
+
+        <!-- MODULE 14: MIXED STRATEGY -->
+        <div class="page" data-searchable="true" id="m14">
+          <div class="banner game">
+            <div class="sid">Module 14 · MIT OCW</div>
+            <h2>🎲 Mixed Strategy Equilibrium</h2>
+            <p>Randomization when no pure strategy equilibrium exists.</p>
+            <div class="tags"><span class="tag">Advanced Game Theory</span></div>
+          </div>
+          <div class="formula">
+            <div class="title">Indifference Condition</div>Each player mixes so the other is indifferent between pure
+            actions.
+            Nash's Theorem: Every finite game has at least one NE (possibly mixed).
+          </div>
+          <div class="ibox blue">
+            <div class="title">⚽ Penalty Kicks</div>Kickers randomize left/right/center so goalkeepers cannot predict.
+            Empirical data matches mixed strategy NE predictions — scoring rates approximately equal across directions.
+          </div>
+        </div>
+
+        <!-- MODULE 15: COORDINATION GAMES -->
+        <div class="page" data-searchable="true" id="m15">
+          <div class="banner game">
+            <div class="sid">Module 15 · OpenStax Micro Ch.10</div>
+            <h2>🤝 Coordination Games</h2>
+            <p>Multiple equilibria, focal points, and standard-setting.</p>
+            <div class="tags"><span class="tag">OpenStax Micro 3e Ch.10</span></div>
+          </div>
+          <div class="ibox purple">
+            <div class="title">📗 Examples</div>Bluetooth, USB-C, driving side, social media networks, bank runs — all
+            are coordination problems with multiple equilibria.
+          </div>
+          <div class="ibox teal">
+            <div class="title">🎯 Focal Points (Schelling)</div>Cultural, historical, or salient features make some
+            equilibria "focal." Meeting at noon, driving on the right — conventions emerge without explicit
+            coordination.
+          </div>
+          <div class="example-box">
+            <div class="title">📘 Bluetooth SSO Case</div>"How did so many companies agree to coordinate on Bluetooth?"
+            Answer: The Bluetooth Special Interest Group (33,000+ member companies) — a Standard Setting Organization
+            that solves coordination games.
+          </div>
+        </div>
+
+        <!-- MODULE 16: BEHAVIORAL GAME THEORY -->
+        <div class="page" data-searchable="true" id="m16">
+          <div class="banner micro">
+            <div class="sid">Module 16 · Caltech</div>
+            <h2>🧠 Behavioral Game Theory</h2>
+            <p>K-level reasoning and bounded rationality in strategic environments.</p>
+            <div class="tags"><span class="tag">Behavioral Economics</span></div>
+          </div>
+          <table class="th-purple">
+            <tr>
+              <th>Level</th>
+              <th>Meaning</th>
+              <th>Typical Guess (Beauty Contest)</th>
+            </tr>
+            <tr>
+              <td>L0</td>
+              <td>Random</td>
+              <td>~50</td>
+            </tr>
+            <tr>
+              <td>L1</td>
+              <td>Best response to L0</td>
+              <td>~33</td>
+            </tr>
+            <tr>
+              <td>L2</td>
+              <td>Best response to L1</td>
+              <td>~22</td>
+            </tr>
+            <tr>
+              <td>Nash</td>
+              <td>Infinite iteration</td>
+              <td>0</td>
+            </tr>
+          </table>
+          <div class="ibox teal">
+            <div class="title">🎯 Beauty Contest Game</div>Choose a number 0-100. Closest to 2/3 of the average wins.
+            Most real players choose 20-35 (L1-L2 thinking). Very few reach Nash (0).
+          </div>
+          <div class="ibox teal">
+            <div class="title">📘 Why Behavioral Matters</div>If your competitors are Level-1 thinkers, the optimal
+            response is Level-2 — not Nash. Playing Nash against bounded-rational opponents can be suboptimal.
+          </div>
+        </div>
+
+        <!-- MODULE 17: AUCTIONS -->
+        <div class="page" data-searchable="true" id="m17">
+          <div class="banner micro">
+            <div class="sid">Module 17 · Perloff Ch.12</div>
+            <h2>🔨 Auctions</h2>
+            <p>English, Dutch, sealed bid, Vickrey, and winner's curse.</p>
+            <div class="tags"><span class="tag">Perloff Ch.12</span></div>
+          </div>
+          <div class="formula">
+            <div class="title">First-Price Sealed Bid</div>Optimal bid: b* = v × (n − 1)/n
+            Shading = v/n (bid below true value)
+            As n → ∞, bid → v (no shading)
+          </div>
+          <div class="ibox red">
+            <div class="title">⚠️ Winner's Curse</div>In common-value auctions, the winner is often the bidder who
+            overestimated the most. Sophisticated bidders shade their bids more to avoid overpaying.
+          </div>
+          <div class="ibox teal">
+            <div class="title">📊 Revenue Equivalence Theorem</div>Under independent private values, risk-neutral
+            bidders, and symmetric information: all four auction formats (English, Dutch, first-price, Vickrey) yield
+            the same expected revenue.
+          </div>
+          <div class="ibox gold">
+            <div class="title">🎛️ Simulation Parameters</div>⚙️ Your Valuation (v) · ⚙️ Number of Bidders (n)
+          </div>
+        </div>
+
+        <!-- MODULE 18: FIRM ORGANIZATION -->
+        <div class="page" data-searchable="true" id="m18">
+          <div class="banner micro">
+            <div class="sid">Module 18 · Perloff Ch.7</div>
+            <h2>🏗️ Firm Organization</h2>
+            <p>Why firms exist and where firm boundaries are drawn.</p>
+            <div class="tags"><span class="tag">Perloff Ch.7</span></div>
+          </div>
+          <table class="th-purple">
+            <tr>
+              <th>Stage</th>
+              <th>Activity</th>
+              <th>Apple Example</th>
+            </tr>
+            <tr>
+              <td>Raw Materials</td>
+              <td>Extraction</td>
+              <td>Rare earths outsourced</td>
+            </tr>
+            <tr>
+              <td>Components</td>
+              <td>Chip manufacture</td>
+              <td>TSMC makes Apple-designed chips</td>
+            </tr>
+            <tr>
+              <td>Assembly</td>
+              <td>Final assembly</td>
+              <td>Foxconn</td>
+            </tr>
+            <tr>
+              <td>Retail</td>
+              <td>Final sale</td>
+              <td>Apple Stores (integrated)</td>
+            </tr>
+          </table>
+          <div class="ibox teal">
+            <div class="title">📘 Williamson's TCE Framework</div>High Asset Specificity → MAKE (integrate)<br>High
+            Uncertainty → MAKE (control)<br>Low on all → BUY (market)<br>Intermediate → HYBRID (contract)
+          </div>
+          <div class="ibox teal">
+            <div class="title">⚠️ The Hold-Up Problem</div>Relationship-specific investments create bilateral
+            dependence. Once you've built a specialized factory for one customer, they can renegotiate terms. Vertical
+            integration eliminates this opportunism.
+          </div>
+          <div class="ibox gold">
+            <div class="title">🎛️ Simulation Parameters</div>⚙️ Asset Specificity · ⚙️ Uncertainty · ⚙️ Frequency
+          </div>
+        </div>
+
+        <!-- MODULE 19: PRICE DISCRIMINATION -->
+        <div class="page" data-searchable="true" id="m19">
+          <div class="banner micro">
+            <div class="sid">Module 19 · OpenStax Micro Ch.9</div>
+            <h2>💰 Price Discrimination</h2>
+            <p>Charge different prices across units or groups.</p>
+            <div class="tags"><span class="tag">OpenStax Micro 3e Ch.9</span></div>
+          </div>
+          <table class="th-purple">
+            <tr>
+              <th>Degree</th>
+              <th>Method</th>
+              <th>Example</th>
+            </tr>
+            <tr>
+              <td>1st Degree</td>
+              <td>Each buyer's max WTP</td>
+              <td>Car bargaining, personalized pricing</td>
+            </tr>
+            <tr>
+              <td>2nd Degree</td>
+              <td>Quantity discounts</td>
+              <td>Bulk pricing, versioning</td>
+            </tr>
+            <tr>
+              <td>3rd Degree</td>
+              <td>Group pricing</td>
+              <td>Student discounts, senior pricing</td>
+            </tr>
+          </table>
+          <div class="ibox teal">
+            <div class="title">📗 Requirements for Price Discrimination</div>1. Market power (not a price-taker)<br>2.
+            Ability to identify groups with different elasticities<br>3. Ability to prevent arbitrage (resale)
+          </div>
+          <div class="ibox gold">
+            <div class="title">🎛️ Simulation Parameters</div>⚙️ Demand Intercept · ⚙️ Marginal Cost · ⚙️ Segment 1
+            Elasticity · ⚙️ Segment 2 Elasticity
+          </div>
+        </div>
+
+        <!-- MODULE 20: CSR & ETHICS -->
+        <div class="page" data-searchable="true" id="m20">
+          <div class="banner micro">
+            <div class="sid">Module 20 · OpenStax Micro Ch.12–13</div>
+            <h2>🌱 CSR & Ethics</h2>
+            <p>CSR as a public goods and externalities problem.</p>
+            <div class="tags"><span class="tag">OpenStax Micro 3e Ch.12-13</span></div>
+          </div>
+          <div class="ibox green">
+            <div class="title">📗 Key Insight</div>CSR is difficult to sustain voluntarily because firms can free-ride
+            on the good behavior of others. Clean air, ethical supply chains are public goods.
+          </div>
+          <div class="ibox teal">
+            <div class="title">📘 Three Perspectives</div><strong>Shareholder Primacy (Friedman):</strong> "The social
+            responsibility of business is to increase its profits."<br><strong>Stakeholder Theory (Freeman):</strong>
+            Consider all stakeholders: employees, customers, communities.<br><strong>Strategic CSR (Porter):</strong>
+            CSR creates competitive advantage through brand, talent, innovation.
+          </div>
+          <div class="formula">
+            <div class="title">ESG Scoring</div>Score = (E + S + G) × 10/3
+            A ≥ 90 | B ≥ 80 | C ≥ 70 | D ≥ 60 | F < 60</div>
+              <div class="ibox gold">
+                <div class="title">🎛️ Simulation Parameters</div>⚙️ Environmental (E) · ⚙️ Social (S) · ⚙️ Governance
+                (G)
+              </div>
+          </div>
+
+          <!-- MODULE 21: AD-AS MODEL -->
+          <div class="page" data-searchable="true" id="m21">
+            <div class="banner macro">
+              <div class="sid">Module 21 · OpenStax Macro Ch.11</div>
+              <h2>📊 AD-AS Model</h2>
+              <p>Aggregate Demand–Aggregate Supply: the workhorse short-run macro model.</p>
+              <div class="tags"><span class="tag">OpenStax Macro 3e Ch.11</span></div>
+            </div>
+            <table class="th-green">
+              <tr>
+                <th>Input</th>
+                <th>Meaning</th>
+                <th>Effect of Increase</th>
+              </tr>
+              <tr>
+                <td>Autonomous Spending</td>
+                <td>Baseline planned spending</td>
+                <td>AD shifts right</td>
+              </tr>
+              <tr>
+                <td>Government Spending</td>
+                <td>Fiscal stimulus</td>
+                <td>AD shifts right</td>
+              </tr>
+              <tr>
+                <td>Money Supply</td>
+                <td>Nominal money stock</td>
+                <td>AD shifts right via lower rates</td>
+              </tr>
+              <tr>
+                <td>Input Cost</td>
+                <td>Production cost</td>
+                <td>SRAS shifts left</td>
+              </tr>
+              <tr>
+                <td>Supply Shock</td>
+                <td>Temporary shock</td>
+                <td>Positive → SRAS left</td>
+              </tr>
+              <tr>
+                <td>Potential Output (Yp)</td>
+                <td>Full-employment GDP</td>
+                <td>Moves LRAS</td>
+              </tr>
+            </table>
+            <div class="formula">
+              <div class="title">Conceptual Logic</div>AD: total planned spending at each price level (slopes down)
+              SRAS: output firms produce at each price level (slopes up)
+              LRAS: full-employment output (vertical at Yp)
+              Recessionary gap: Y < Yp Inflationary gap: Y> Yp
+            </div>
+            <div class="ibox teal">
+              <div class="title">📗 Why AD Slopes Downward</div>1. <strong>Wealth Effect:</strong> Higher P → lower real
+              wealth → less spending<br>2. <strong>Interest Rate Effect:</strong> Higher P → higher money demand →
+              higher rates → less investment<br>3. <strong>Exchange Rate Effect:</strong> Higher P → less competitive
+              exports
+            </div>
+            <div class="ibox red">
+              <div class="title">⚠️ Stagflation Warning</div>A negative supply shock causes both higher inflation AND
+              lower output. Demand-side policy alone cannot fix both simultaneously.
+            </div>
+            <div class="example-box">
+              <div class="title">🏠 COVID-19 Dual Shock</div>The pandemic was both a negative demand shock (lockdowns)
+              AND a negative supply shock (factory closures). Try increasing Supply Shock while decreasing Autonomous
+              Spending to simulate.
+            </div>
+            <div class="ibox gold">
+              <div class="title">🎛️ Simulation Parameters</div>⚙️ Autonomous Spending · ⚙️ Gov. Spending · ⚙️ Money
+              Supply · ⚙️ Input Cost · ⚙️ Supply Shock · ⚙️ Potential Output (Yp)
+            </div>
+          </div>
+
+
+          <div class="learning-obj">
+            <div class="title">🎯 Learning Objectives — Module 21</div>
+            <ul>
+              <li>Explain why the AD curve slopes downward (three effects)</li>
+              <li>Distinguish between SRAS and LRAS</li>
+              <li>Identify factors that shift AD, SRAS, and LRAS</li>
+              <li>Analyze recessionary and inflationary gaps</li>
+              <li>Explain the self-correcting mechanism</li>
+              <li>Evaluate fiscal and monetary policy responses</li>
+            </ul>
+          </div>
+
+          <div class="clear-up">
+            <div class="title">🔵 Clear It Up: Why Does AD Slope Downward?</div>
+            <p>The AD curve slopes downward for three distinct reasons — <strong>NOT</strong> the same as why individual
+              demand curves slope down!</p>
+            <ol style="margin:5px 0 0 14px;line-height:1.75">
+              <li><strong>Wealth Effect (Pigou Effect):</strong> Higher price level → real value of savings falls →
+                consumers feel poorer → spend less</li>
+              <li><strong>Interest Rate Effect (Keynes Effect):</strong> Higher price level → need more money for
+                transactions → interest rates rise → investment falls</li>
+              <li><strong>Exchange Rate Effect:</strong> Higher price level → domestic goods more expensive relative to
+                foreign → exports fall, imports rise → net exports fall</li>
+            </ol>
+            <p>All three effects mean: higher price level → lower real GDP demanded.</p>
+          </div>
+
+          <div class="ibox teal">
+            <div class="title">📊 Three Zones of SRAS (from OpenStax)</div>
+            <ul style="margin:4px 0 0 14px;line-height:1.75">
+              <li><strong>Keynesian Zone (far left):</strong> Economy well below potential. SRAS nearly horizontal —
+                increases in AD raise output with little inflation. Fiscal/monetary stimulus is highly effective.</li>
+              <li><strong>Intermediate Zone (middle):</strong> Economy approaching potential. AD increases raise both
+                output and prices. Policy tradeoffs emerge.</li>
+              <li><strong>Neoclassical Zone (far right):</strong> Economy at or above potential. SRAS nearly vertical —
+                AD increases mainly raise prices with little output gain. Stimulus causes inflation, not growth.</li>
+            </ul>
+          </div>
+
+          <div class="ibox red">
+            <div class="title">⚠️ Stagflation Warning</div>
+            A <strong>negative supply shock</strong> (SRAS shifts left) causes <strong>both</strong> higher inflation
+            AND lower output simultaneously — this is called <strong>stagflation</strong>, the worst of both worlds.
+            Demand-side policy alone cannot fix both problems:
+            <ul style="margin:4px 0 0 14px;line-height:1.7">
+              <li>Expansionary policy fixes output but <em>worsens</em> inflation</li>
+              <li>Contractionary policy fixes inflation but <em>worsens</em> output</li>
+            </ul>
+            This is why the 1970s oil shocks were so devastating — policymakers faced an impossible tradeoff.
+          </div>
+
+          <div class="work-it-out">
+            <div class="title">🟢 Work It Out: Analyzing a Recessionary Gap</div>
+            <p><strong>Scenario:</strong> The economy is at Y = $18 trillion, but potential GDP Y<sub>p</sub> = $20
+              trillion. Price level = 100.</p>
+            <p><strong>Step 1:</strong> Identify the gap<br>
+              Output gap = Y − Y<sub>p</sub> = $18T − $20T = <strong>−$2 trillion (recessionary gap)</strong></p>
+            <p><strong>Step 2:</strong> Policy options<br>
+              <em>Fiscal:</em> Increase G or cut T to shift AD right by $2T<br>
+              <em>Monetary:</em> Increase money supply to lower interest rates → shift AD right
+            </p>
+            <p><strong>Step 3:</strong> Self-correction (without policy)<br>
+              High unemployment → workers accept lower wages → SRAS shifts right → output rises back to
+              Y<sub>p</sub><br>
+              <em>But:</em> This process can take years — the "long run" Keynes warned about
+            </p>
+            <p><strong>Policy conclusion:</strong> If the gap is large and unemployment is causing hardship, active
+              stabilization policy may be preferred over waiting for self-correction.</p>
+          </div>
+
+          <div class="bring-home">
+            <div class="title">🟣 Bring It Home: The COVID-19 Dual Shock (2020)</div>
+            <p>The COVID-19 pandemic was both a <strong>negative demand shock</strong> (lockdowns reduced consumer
+              spending, investment, and services demand) AND a <strong>negative supply shock</strong> (factory closures,
+              supply chain disruptions, worker illness).</p>
+            <p><strong>Simulate it:</strong> Simultaneously decrease Autonomous Spending (AD shifts left) and increase
+              Input Cost (SRAS shifts left). Notice the economy experiences a severe output drop with possible
+              stagflationary pressure.</p>
+            <p>The government responded with massive fiscal stimulus ($2.2 trillion CARES Act) to shift AD right, while
+              the Fed cut rates to near zero. This explains why inflation surged in 2021-2022 as supply remained
+              constrained but demand recovered rapidly.</p>
+          </div>
+
+          <div class="bring-home">
+            <div class="title">🟣 Bring It Home: Historical Recessionary Episodes</div>
+            <ul style="line-height:1.75">
+              <li><strong>2008-09 Financial Crisis:</strong> AD collapsed (demand shock) → recessionary gap of ~$1T →
+                Fed/Treasury responded with QE + TARP</li>
+              <li><strong>1970s Stagflation:</strong> Oil price shocks → SRAS shifted left → stagflation. Fed's
+                contractionary response caused deep 1981-82 recession but broke inflation expectations</li>
+              <li><strong>1990s "Great Moderation":</strong> Stable AD growth + positive supply shocks (technology) →
+                output above trend with low inflation (inflationary zone, managed well)</li>
+            </ul>
+          </div>
+
+          <!-- MODULE 22: PHILLIPS CURVE -->
+          <div class="page" data-searchable="true" id="m22">
+            <div class="banner macro">
+              <div class="sid">Module 22 · OpenStax Macro Ch.13</div>
+              <h2>📉 Phillips Curve</h2>
+              <p>The short-run inflation–unemployment tradeoff and the long-run natural rate.</p>
+              <div class="tags"><span class="tag">OpenStax Macro 3e Ch.13</span></div>
+            </div>
+            <div class="formula">
+              <div class="title">Expectations-Augmented Phillips Curve</div>π = πe − β(u − u*)
+              Short run: downward sloping (tradeoff exists)
+              Long run: vertical at u* (no tradeoff)
+            </div>
+            <div class="ibox teal">
+              <div class="title">📗 Historical Episodes</div><strong>1960s:</strong> Clear negative relationship —
+              policymakers believed they could "choose" a point.<br><strong>1970s Stagflation:</strong> Oil shocks
+              shifted SRPC up — both inflation AND unemployment rose.<br><strong>1980s Volcker:</strong> Fed raised
+              rates to 20%, causing recession but breaking inflation expectations.<br><strong>2010s:</strong> Phillips
+              Curve appeared to "flatten" — low unemployment without inflation.
+            </div>
+            <div class="ibox teal">
+              <div class="title">📗 CLEAR IT UP: Is There Really a Tradeoff?</div><strong>Short run:</strong> Yes.
+              Expansionary policy can temporarily reduce unemployment below natural rate, but at cost of higher
+              inflation.<br><strong>Long run:</strong> No. The LRPC is vertical. Attempts to permanently reduce
+              unemployment only produce accelerating inflation.
+            </div>
+            <div class="ibox gold">
+              <div class="title">🎛️ Simulation Parameters</div>⚙️ Natural Rate (un) · ⚙️ Expected Inflation (πe) · ⚙️
+              Supply Shock · ⚙️ Sacrifice Ratio (α) · ⚙️ Actual Unemployment (u)
+            </div>
+          </div>
+
+          <!-- MODULE 23: SOLOW GROWTH -->
+          <div class="page" data-searchable="true" id="m23">
+            <div class="banner macro">
+              <div class="sid">Module 23 · OpenStax Macro Ch.7</div>
+              <h2>📈 Solow Growth Model</h2>
+              <p>Capital accumulation, depreciation, savings, population growth, and technology.</p>
+              <div class="tags"><span class="tag">OpenStax Macro 3e Ch.7</span></div>
+            </div>
+            <div class="formula">
+              <div class="title">Core Solow Relationships</div>Y = A·K^α·L^(1−α)
+              Δk = s·f(k) − (n+δ)k
+              Steady state: s·f(k*) = (n+δ)k*
+              k* = (s·A/(δ+n))^(1/(1−α))
+            </div>
+            <table class="th-green">
+              <tr>
+                <th>Driver</th>
+                <th>Long-Run Effect</th>
+              </tr>
+              <tr>
+                <td>Higher savings rate</td>
+                <td>Raises level of output, not long-run growth rate</td>
+              </tr>
+              <tr>
+                <td>Higher population growth</td>
+                <td>Lowers steady-state capital per worker</td>
+              </tr>
+              <tr>
+                <td>Higher depreciation</td>
+                <td>Lowers steady-state capital</td>
+              </tr>
+              <tr>
+                <td>Higher technology (A)</td>
+                <td>Raises output and long-run per-capita growth</td>
+              </tr>
+            </table>
+            <div class="ibox gold">
+              <div class="title">📗 Key Insight</div>Only technological progress can sustain permanent increases in
+              output per worker over time. Savings rate changes affect the level but not the long-run growth rate.
+            </div>
+            <div class="ibox teal">
+              <div class="title">📗 The Golden Rule</div>The Golden Rule savings rate maximizes steady-state
+              consumption: s* = α (savings rate equals capital's share). Below Golden Rule = under-saving. Above =
+              over-saving (dynamically inefficient).
+            </div>
+            <div class="ibox gold">
+              <div class="title">🎛️ Simulation Parameters</div>⚙️ Savings Rate (s) · ⚙️ Depreciation (δ) · ⚙️
+              Population Growth (n) · ⚙️ Technology Level (A) · ⚙️ Capital Share (α)
+            </div>
+          </div>
+
+          <!-- MODULE 24: TAYLOR RULE -->
+          <div class="page" data-searchable="true" id="m24">
+            <div class="banner macro">
+              <div class="sid">Module 24 · OpenStax Macro Ch.18</div>
+              <h2>🎯 Taylor Rule</h2>
+              <p>A simple benchmark for central bank interest rate decisions.</p>
+              <div class="tags"><span class="tag">OpenStax Macro 3e Ch.18</span></div>
+            </div>
+            <div class="formula">
+              <div class="title">Taylor Rule</div>i = r* + π + 0.5(π − π*) + 0.5(Y − Yp)/Yp
+              where r* = neutral real rate (~2%)
+              π* = inflation target (~2%)
+              (Y-Yp)/Yp = output gap
+            </div>
+            <div class="ibox teal">
+              <div class="title">📗 How to Use</div>Raise inflation above target → recommended rate rises. Increase
+              negative output gap → recommended rate falls. The Taylor Rule provides a systematic, rules-based approach
+              to monetary policy.
+            </div>
+          </div>
+
+          <!-- MODULE 25: IS-LM -->
+          <div class="page" data-searchable="true" id="m25">
+            <div class="banner macro">
+              <div class="sid">Module 25 · OpenStax Macro Ch.12</div>
+              <h2>📐 IS-LM Model</h2>
+              <p>Joint equilibrium of goods and money markets.</p>
+              <div class="tags"><span class="tag">OpenStax Macro 3e Ch.12</span></div>
+            </div>
+            <table class="th-green">
+              <tr>
+                <th>Curve</th>
+                <th>Meaning</th>
+                <th>Shift Drivers</th>
+              </tr>
+              <tr>
+                <td>IS</td>
+                <td>Goods-market equilibrium</td>
+                <td>G, T, confidence, investment demand</td>
+              </tr>
+              <tr>
+                <td>LM</td>
+                <td>Money-market equilibrium</td>
+                <td>M, P, liquidity preference</td>
+              </tr>
+            </table>
+            <div class="formula">
+              <div class="title">Policy Logic</div>Fiscal expansion → IS right → Y↑ and r↑
+              Monetary expansion → LM right → Y↑ and r↓
+            </div>
+            <div class="ibox purple">
+              <div class="title">🔗 Connect to AD-AS</div>IS-LM explains WHY fiscal and monetary policy shift AD. Fiscal
+              policy shifts IS; monetary policy shifts LM. Both affect equilibrium Y, which is the AD curve.
+            </div>
+          </div>
+
+          <!-- MODULE 26: MUNDELL-FLEMING -->
+          <div class="page" data-searchable="true" id="m26">
+            <div class="banner macro">
+              <div class="sid">Module 26 · Open Economy Macro</div>
+              <h2>🌐 Mundell-Fleming Open Economy</h2>
+              <p>Open-economy IS-LM under fixed vs floating exchange rates.</p>
+              <div class="tags"><span class="tag">International Macro</span></div>
+            </div>
+            <table class="th-green">
+              <tr>
+                <th>Regime</th>
+                <th>Fiscal Policy</th>
+                <th>Monetary Policy</th>
+              </tr>
+              <tr>
+                <td>Fixed exchange rate</td>
+                <td>More effective</td>
+                <td>Less effective</td>
+              </tr>
+              <tr>
+                <td>Floating exchange rate</td>
+                <td>Less effective</td>
+                <td>More effective</td>
+              </tr>
+            </table>
+            <div class="ibox red">
+              <div class="title">⚠️ Impossible Trinity</div>A country cannot simultaneously have: (1) Fixed exchange
+              rate, (2) Perfect capital mobility, and (3) Independent monetary policy. Must sacrifice one.
+            </div>
+          </div>
+
+          <!-- MODULE 27: BUSINESS CYCLE -->
+          <div class="page" data-searchable="true" id="m27">
+            <div class="banner macro">
+              <div class="sid">Module 27 · OpenStax Macro Ch.7</div>
+              <h2>🔄 Business Cycle Simulator</h2>
+              <p>Expansion, peak, recession, trough, and recovery dynamics.</p>
+              <div class="tags"><span class="tag">OpenStax Macro 3e Ch.7</span></div>
+            </div>
+            <table class="th-green">
+              <tr>
+                <th>Phase</th>
+                <th>GDP</th>
+                <th>Unemployment</th>
+                <th>Inflation</th>
+              </tr>
+              <tr>
+                <td>Expansion</td>
+                <td>Rising</td>
+                <td>Falling</td>
+                <td>Moderately rising</td>
+              </tr>
+              <tr>
+                <td>Peak</td>
+                <td>High</td>
+                <td>Low</td>
+                <td>High</td>
+              </tr>
+              <tr>
+                <td>Recession</td>
+                <td>Falling</td>
+                <td>Rising</td>
+                <td>Falling</td>
+              </tr>
+              <tr>
+                <td>Trough</td>
+                <td>Low</td>
+                <td>High</td>
+                <td>Low</td>
+              </tr>
+            </table>
+            <div class="ibox teal">
+              <div class="title">📗 NBER Definition</div>A recession is "a significant decline in economic activity
+              spread across the economy, lasting more than a few months." The NBER Business Cycle Dating Committee
+              officially declares recessions.
+            </div>
+          </div>
+
+          <!-- MODULE 28: MONEY MULTIPLIER -->
+          <div class="page" data-searchable="true" id="m28">
+            <div class="banner macro">
+              <div class="sid">Module 28 · OpenStax Macro Ch.14</div>
+              <h2>💵 Money Multiplier</h2>
+              <p>How bank lending expands deposits and the money supply.</p>
+              <div class="tags"><span class="tag">OpenStax Macro 3e Ch.14</span></div>
+            </div>
+            <div class="formula">
+              <div class="title">Money Multiplier</div>m = 1 / RR
+              Total money = initial deposit × m
+              Example: RR = 10% → m = 10
+              $1,000 deposit → $10,000 total money supply
+            </div>
+            <div class="ibox teal">
+              <div class="title">📗 Interpretation</div>The lower the reserve requirement, the larger the theoretical
+              money multiplier. Banks "create" money through lending — but they create liquidity, not wealth.
+            </div>
+            <div class="ibox teal">
+              <div class="title">🏠 Fed's 0% Reserve Requirement (2020)</div>In March 2020, the Fed reduced RR to 0%.
+              Theoretical multiplier = infinite. In practice, banks still hold voluntary reserves due to operational
+              needs and interest on reserves (IOR).
+            </div>
+            <div class="ibox gold">
+              <div class="title">🎛️ Simulation Parameters</div>⚙️ Initial Deposit ($) · ⚙️ Reserve Requirement (%)
+            </div>
+          </div>
+
+          <!-- MODULE 29: FISCAL POLICY -->
+          <div class="page" data-searchable="true" id="m29">
+            <div class="banner macro">
+              <div class="sid">Module 29 · OpenStax Macro Ch.12</div>
+              <h2>🏛️ Fiscal Policy & Multipliers</h2>
+              <p>Government spending and taxation as macroeconomic stabilization tools.</p>
+              <div class="tags"><span class="tag">OpenStax Macro 3e Ch.12</span></div>
+            </div>
+            <div class="formula">
+              <div class="title">Multiplier Formulas</div>Spending Multiplier = 1/(1−MPC)
+              Tax Multiplier = −MPC/(1−MPC)
+              Transfer Multiplier = MPC/(1−MPC)
+              Balanced Budget Multiplier = 1
+            </div>
+            <div class="ibox teal">
+              <div class="title">📗 Why Tax Multiplier < Spending Multiplier</div>When government spends $1, the entire
+                  dollar enters spending stream. When government cuts taxes by $1, consumers only spend MPC×$1 (they
+                  save the rest). With MPC=0.8: Spending mult=5, Tax mult=4.</div>
+              <div class="ibox teal">
+                <div class="title">⚠️ Why Real Multiplier Is Smaller</div>Textbook multiplier overstates because it
+                ignores: (1) Taxes on each round, (2) Import leakage, (3) Crowding out, (4) Time lags, (5) Ricardian
+                equivalence.
+              </div>
+              <div class="example-box">
+                <div class="title">🏛️ ARRA 2009</div>$831B stimulus (ΔG≈$500B, ΔT≈-$200B). With MPC≈0.8 and crowding
+                out, actual multiplier was 1.5-2.5x, not theoretical 5x.
+              </div>
+              <div class="ibox gold">
+                <div class="title">🎛️ Simulation Parameters</div>⚙️ MPC · ⚙️ ΔG ($B) · ⚙️ ΔT ($B) · ⚙️ ΔTR ($B) · ⚙️
+                Crowding-Out Factor
+              </div>
+            </div>
+
+            <!-- MODULE 30: EXCHANGE RATES -->
+            <div class="page" data-searchable="true" id="m30">
+              <div class="banner micro">
+                <div class="sid">Module 30 · OpenStax Macro Ch.15</div>
+                <h2>💱 Exchange Rate Determination</h2>
+                <p>Demand and supply for foreign exchange, capital mobility, and macro consequences.</p>
+                <div class="tags"><span class="tag">OpenStax Macro 3e Ch.15</span></div>
+              </div>
+              <table class="th-green">
+                <tr>
+                  <th>Factor</th>
+                  <th>Domestic Currency Effect</th>
+                </tr>
+                <tr>
+                  <td>Higher domestic interest rate</td>
+                  <td>Appreciation pressure</td>
+                </tr>
+                <tr>
+                  <td>Higher domestic inflation</td>
+                  <td>Depreciation pressure</td>
+                </tr>
+                <tr>
+                  <td>Trade surplus</td>
+                  <td>Appreciation pressure</td>
+                </tr>
+                <tr>
+                  <td>Capital flight</td>
+                  <td>Depreciation pressure</td>
+                </tr>
+              </table>
+              <div class="ibox teal">
+                <div class="title">📗 Purchasing Power Parity (PPP)</div>In the long run, exchange rates adjust so that
+                identical goods cost the same in different countries. Short-run deviations occur due to capital flows,
+                speculation, and sticky prices.
+              </div>
+            </div>
+
+            <!-- PART IV: ADVANCED MICROECONOMICS -->
+            <div class="page" data-searchable="true">
+              <div class="banner welfare">
+                <h2>🔍 Part IV: Advanced Microeconomics</h2>
+                <p>Extensions covering demand/supply shifters, production, consumer theory, and market failures.</p>
+              </div>
+            </div>
+
+            <!-- MODULE E1: DEMAND SHIFTERS -->
+            <div class="page" data-searchable="true" id="me1">
+              <div class="banner micro">
+                <div class="sid">Module E1 · OpenStax Micro Ch.3</div>
+                <h2>📊 Demand Shifters</h2>
+                <p>Income, tastes, expectations, and related-goods prices shift demand.</p>
+                <div class="tags"><span class="tag">OpenStax Micro 3e Ch.3</span></div>
+              </div>
+              <table class="th-teal">
+                <tr>
+                  <th>Shifter</th>
+                  <th>Increase Causes</th>
+                </tr>
+                <tr>
+                  <td>Income (normal good)</td>
+                  <td>Demand shifts right</td>
+                </tr>
+                <tr>
+                  <td>Income (inferior good)</td>
+                  <td>Demand shifts left</td>
+                </tr>
+                <tr>
+                  <td>Substitute price</td>
+                  <td>Demand shifts right</td>
+                </tr>
+                <tr>
+                  <td>Complement price</td>
+                  <td>Demand shifts left</td>
+                </tr>
+                <tr>
+                  <td>Tastes/preferences</td>
+                  <td>Favorable → right</td>
+                </tr>
+                <tr>
+                  <td>Number of buyers</td>
+                  <td>More → right</td>
+                </tr>
+              </table>
+              <div class="ibox teal">
+                <div class="title">📗 CLEAR IT UP: Movement vs. Shift</div>Change in PRICE of the good itself: Movement
+                along curve. Change in ANYTHING ELSE: Entire curve shifts.
+              </div>
+              <div class="ibox gold">
+                <div class="title">🎛️ Simulation Parameters</div>⚙️ Income Change (%) · ⚙️ Taste Index · ⚙️ Substitute
+                Price Change (%) · ⚙️ Complement Price Change (%) · ⚙️ Buyer Growth (%)
+              </div>
+            </div>
+
+            <!-- MODULE P1: PPF -->
+            <div class="page" data-searchable="true" id="mp1">
+              <div class="banner prod">
+                <div class="sid">Module P1 · OpenStax Micro Ch.2</div>
+                <h2>📐 Production Possibilities Frontier</h2>
+                <p>Tradeoffs, efficiency, opportunity cost, and growth.</p>
+                <div class="tags"><span class="tag">OpenStax Micro 3e Ch.2</span></div>
+              </div>
+              <div class="formula">
+                <div class="title">PPF Equation</div>(A/MaxA)² + (B/MaxB)² = 1 (concave PPF)
+                Opportunity Cost of A = ΔB/ΔA
+              </div>
+              <div class="ibox teal">
+                <div class="title">📗 Interpretation</div>Points ON the PPF are efficient. Points INSIDE are inefficient
+                (unused resources). Points OUTSIDE are unattainable without growth or trade.
+              </div>
+              <div class="ibox teal">
+                <div class="title">📗 Why Is the PPF Curved?</div>A bowed-out (concave) PPF reflects increasing
+                opportunity cost: resources are NOT equally suited to producing both goods. As you produce more of Good
+                A, you must give up increasingly larger amounts of Good B.
+              </div>
+              <div class="ibox gold">
+                <div class="title">🎛️ Simulation Parameters</div>⚙️ Max Good A · ⚙️ Max Good B · ⚙️ Produce Good A · ⚙️
+                Technology Boost (%)
+              </div>
+            </div>
+
+            <!-- MODULE P2: PRODUCTION STAGES -->
+            <div class="page" data-searchable="true" id="mp2">
+              <div class="banner micro">
+                <div class="sid">Module P2 · OpenStax Micro Ch.7</div>
+                <h2>🏭 Production Stages</h2>
+                <p>Total product, marginal product, and the three stages of production.</p>
+                <div class="tags"><span class="tag">OpenStax Micro 3e Ch.7</span></div>
+              </div>
+              <div class="ibox teal">
+                <div class="title">📗 Three Stages of Production</div><strong>Stage I:</strong> MP > AP, AP rising.
+                Adding workers increases average productivity.<br><strong>Stage II:</strong> MP < AP but MP> 0. Rational
+                  production zone.<br><strong>Stage III:</strong> MP < 0. Adding workers reduces total output
+                    (overcrowding).</div>
+                    <div class="example-box">
+                      <div class="title">🏠 The Kitchen Analogy</div>1 chef: Does everything alone — slow but functional
+                      (Stage I)<br>2-3 chefs: Specialization kicks in (Stage I → II)<br>4-6 chefs: Still productive but
+                      bumping into each other (Stage II)<br>10+ chefs: Kitchen overcrowded, total output may fall (Stage
+                      III)
+                    </div>
+                    <div class="ibox gold">
+                      <div class="title">🎛️ Simulation Parameters</div>⚙️ Number of Workers · ⚙️ Technology Factor
+                    </div>
+              </div>
+
+              <!-- MODULE P3: COST CURVES -->
+              <div class="page" data-searchable="true" id="mp3">
+                <div class="banner prod">
+                  <div class="sid">Module P3 · OpenStax Micro Ch.7</div>
+                  <h2>💲 Cost Curves (TC, MC, ATC, AVC)</h2>
+                  <p>Understand the relationship between average and marginal costs.</p>
+                  <div class="tags"><span class="tag">OpenStax Micro 3e Ch.7</span></div>
+                </div>
+                <div class="formula">
+                  <div class="title">Cost Relationships</div>TC = FC + VC
+                  ATC = TC/Q = AFC + AVC
+                  AFC = FC/Q (always declining)
+                  AVC = VC/Q
+                  MC = ΔTC/ΔQ
+                </div>
+                <div class="ibox gold">
+                  <div class="title">📗 Key Insight</div>MC intersects AVC and ATC at their minimum points. When MC <
+                    ATC, ATC is falling. When MC> ATC, ATC is rising. This is the "marginal pulls average" rule.
+                </div>
+                <div class="ibox teal">
+                  <div class="title">📗 Economies of Scale</div><strong>Economies of scale:</strong> LRAC falls as
+                  output increases (specialization, bulk purchasing)<br><strong>Constant returns:</strong> LRAC
+                  flat<br><strong>Diseconomies of scale:</strong> LRAC rises (coordination problems, bureaucracy)
+                </div>
+                <div class="ibox gold">
+                  <div class="title">🎛️ Simulation Parameters</div>⚙️ Fixed Cost · ⚙️ Variable Cost/Unit · ⚙️ Quadratic
+                  Factor · ⚙️ Output (Q)
+                </div>
+              </div>
+
+              <!-- MODULE U1: UTILITY -->
+              <div class="page" data-searchable="true" id="mu1">
+                <div class="banner welfare">
+                  <div class="sid">Module U1 · OpenStax Micro Ch.6</div>
+                  <h2>⚖️ Utility Maximization</h2>
+                  <p>Choose the bundle that equalizes marginal utility per dollar across goods.</p>
+                  <div class="tags"><span class="tag">OpenStax Micro 3e Ch.6</span></div>
+                </div>
+                <div class="formula">
+                  <div class="title">Consumer Optimum</div>MUx/Px = MUy/Py
+                  Spend on X until MU per dollar equals MU per dollar of Y.
+                </div>
+                <div class="example-box">
+                  <div class="title">🏠 The Diamond-Water Paradox</div>Water is essential but cheap. Diamonds are
+                  useless for survival but expensive. Why? Price reflects MARGINAL utility, not TOTAL utility. Water has
+                  enormous total utility but very low marginal utility (we have so much).
+                </div>
+                <div class="ibox gold">
+                  <div class="title">🎛️ Simulation Parameters</div>⚙️ Budget ($) · ⚙️ Price of X ($) · ⚙️ Price of Y
+                  ($) · ⚙️ Quantity of X · ⚙️ Quantity of Y
+                </div>
+              </div>
+
+              <!-- MODULE I1: ASYMMETRIC INFO -->
+              <div class="page" data-searchable="true" id="mi1">
+                <div class="banner welfare">
+                  <div class="sid">Module I1 · OpenStax Micro Ch.16</div>
+                  <h2>🔍 Asymmetric Information</h2>
+                  <p>Lemons, adverse selection, moral hazard, and signaling.</p>
+                  <div class="tags"><span class="tag">OpenStax Micro 3e Ch.16</span></div>
+                </div>
+                <div class="ibox teal">
+                  <div class="title">📗 Market for Lemons (Akerlof)</div>Buyers can't distinguish quality. They offer
+                  average-quality price. High-quality sellers exit. Average quality falls. Price falls. More sellers
+                  exit. Market collapses to only "lemons."
+                </div>
+                <div class="ibox teal">
+                  <div class="title">📗 Adverse Selection vs. Moral Hazard</div><strong>Adverse Selection:</strong>
+                  Hidden information BEFORE transaction (insurance attracts high-risk buyers)<br><strong>Moral
+                    Hazard:</strong> Hidden action AFTER transaction (insured people take more risks)
+                </div>
+                <div class="ibox teal">
+                  <div class="title">📗 Solutions</div><strong>Signaling:</strong> Informed party sends costly signal
+                  (education, warranties)<br><strong>Screening:</strong> Uninformed party designs menu to separate types
+                  (deductibles)
+                </div>
+                <div class="ibox gold">
+                  <div class="title">🎛️ Simulation Parameters</div>⚙️ Prob. of Good Quality · ⚙️ Value (Good) · ⚙️
+                  Value (Lemon)
+                </div>
+              </div>
+
+              <!-- MODULE X5: BERTRAND -->
+              <div class="page" data-searchable="true" id="mx5">
+                <div class="banner game">
+                  <div class="sid">Module X5 · Perloff Ch.13</div>
+                  <h2>⚔️ Bertrand Price Competition</h2>
+                  <p>Price warfare with identical products drives prices to marginal cost.</p>
+                  <div class="tags"><span class="tag">Perloff Ch.13</span></div>
+                </div>
+                <div class="ibox teal">
+                  <div class="title">⚠️ Bertrand Paradox</div>2 firms + identical products → P = MC, π = 0! With just
+                  two firms, price competition is so fierce that the outcome mimics perfect competition. This is why
+                  firms desperately seek differentiation.
+                </div>
+                <div class="example-box">
+                  <div class="title">📱 Smartphone Differentiation</div>Apple and Samsung avoid Bertrand-style price
+                  wars by heavily differentiating — iOS vs Android, design, cameras, brand. Despite selling
+                  "smartphones," they maintain substantial markups.
+                </div>
+                <div class="ibox gold">
+                  <div class="title">🎛️ Simulation Parameters</div>⚙️ Marginal Cost (c)
+                </div>
+              </div>
+
+              <!-- MODULE W1: POVERTY -->
+              <div class="page" data-searchable="true" id="mw1">
+                <div class="banner welfare">
+                  <div class="sid">Module W1 · OpenStax Micro Ch.15</div>
+                  <h2>📊 Poverty Calculator</h2>
+                  <p>Estimate poverty thresholds, poverty rates, and the depth of poverty.</p>
+                  <div class="tags"><span class="tag">OpenStax Micro 3e Ch.15</span></div>
+                </div>
+                <div class="formula">
+                  <div class="title">Core Concepts</div>Poverty Status = Income < Poverty Threshold Poverty
+                    Gap=Threshold − Income Poverty Rate=% of population below threshold</div>
+                    <div class="ibox teal">
+                      <div class="title">📗 Poverty Depth vs. Poverty Rate</div>Poverty rate tells you what percentage
+                      are below the line — but not how far below. Poverty depth measures the average shortfall. Both
+                      metrics matter for policy design.
+                    </div>
+                    <div class="ibox gold">
+                      <div class="title">🎛️ Simulation Parameters</div>⚙️ Annual Income ($) · ⚙️ Family Size
+                    </div>
+                </div>
+
+                <!-- PART V: ADVANCED MACRO & FINANCE -->
+                <div class="page" data-searchable="true">
+                  <div class="banner fin">
+                    <h2>🔍 Part V: Advanced Macro & Finance</h2>
+                    <p>GDP components, Keynesian cross, central banking, and international trade.</p>
+                  </div>
+                </div>
+
+                <!-- MODULE G1: GDP -->
+                <div class="page" data-searchable="true" id="mg1">
+                  <div class="banner macro">
+                    <div class="sid">Module G1 · OpenStax Macro Ch.6</div>
+                    <h2>📊 GDP Components</h2>
+                    <p>Break GDP into consumption, investment, government spending, and net exports.</p>
+                    <div class="tags"><span class="tag">OpenStax Macro 3e Ch.6</span></div>
+                  </div>
+                  <div class="formula">
+                    <div class="title">Expenditure Approach</div>Y = C + I + G + (X − M)
+                    C ≈ 68% | I ≈ 18% | G ≈ 17% | NX ≈ -3% (US typical)
+                  </div>
+                  <div class="ibox teal">
+                    <div class="title">📗 Three Approaches to GDP</div>1. <strong>Expenditure:</strong> Sum of all
+                    spending (C+I+G+NX)<br>2. <strong>Income:</strong> Sum of all income
+                    (wages+rent+interest+profit)<br>3. <strong>Production:</strong> Sum of value added at each stage
+                  </div>
+                  <div class="ibox gold">
+                    <div class="title">🎛️ Simulation Parameters</div>⚙️ Consumption (C) · ⚙️ Investment (I) · ⚙️
+                    Government (G) · ⚙️ Exports (X) · ⚙️ Imports (M)
+                  </div>
+                </div>
+
+                <!-- MODULE K1: KEYNESIAN CROSS -->
+                <div class="page" data-searchable="true" id="mk1">
+                  <div class="banner keynes">
+                    <div class="sid">Module K1 · OpenStax Macro Ch.12</div>
+                    <h2>✖️ Keynesian Cross</h2>
+                    <p>45-degree line model of aggregate expenditure and equilibrium output.</p>
+                    <div class="tags"><span class="tag">OpenStax Macro 3e Ch.12</span></div>
+                  </div>
+                  <div class="formula">
+                    <div class="title">Keynesian Cross</div>AE = C₀ + MPC·Y + I + G
+                    Equilibrium: Y* = (C₀ + I + G)/(1−MPC)
+                    Multiplier = 1/(1-MPC)
+                  </div>
+                  <div class="steps">
+                    <div class="step">
+                      <div><strong>Find AE</strong> at each level of Y.</div>
+                    </div>
+                    <div class="step">
+                      <div><strong>Locate 45-degree line</strong> where AE = Y.</div>
+                    </div>
+                    <div class="step">
+                      <div><strong>Identify equilibrium</strong> at the intersection.</div>
+                    </div>
+                  </div>
+                  <div class="ibox teal">
+                    <div class="title">📗 Why the 45° Line Matters</div>The 45° line represents all points where planned
+                    expenditure equals actual output (AE = Y). Above the line: inventories fall → firms increase
+                    production. Below: inventories pile up → firms cut production.
+                  </div>
+                  <div class="ibox gold">
+                    <div class="title">🎛️ Simulation Parameters</div>⚙️ Autonomous Consumption (C₀) · ⚙️ MPC · ⚙️
+                    Investment (I) · ⚙️ Government (G)
+                  </div>
+                </div>
+
+                <!-- MODULE M1: MONEY SUPPLY -->
+                <div class="page" data-searchable="true" id="mm1">
+                  <div class="banner money">
+                    <div class="sid">Module M1 · OpenStax Macro Ch.14</div>
+                    <h2>💵 Money Supply</h2>
+                    <p>Track M1, M2, the monetary base, and how central bank actions affect liquidity.</p>
+                    <div class="tags"><span class="tag">OpenStax Macro 3e Ch.14</span></div>
+                  </div>
+                  <div class="ibox teal">
+                    <div class="title">📗 Money Aggregates</div><strong>M1:</strong> Currency + checkable deposits (most
+                    liquid)<br><strong>M2:</strong> M1 + savings deposits + small time deposits + money market
+                    funds<br><strong>Monetary Base:</strong> Currency + bank reserves (what Fed controls directly)
+                  </div>
+                  <div class="ibox teal">
+                    <div class="title">📗 Do Banks "Create" Money?</div>Yes! Banks create money through lending. Deposit
+                    $1,000 → bank keeps $100 reserves → lends $900 → deposited elsewhere → process repeats. Total money
+                    created = Initial deposit × (1/RR).
+                  </div>
+                  <div class="ibox gold">
+                    <div class="title">🎛️ Simulation Parameters</div>⚙️ Initial Deposit ($) · ⚙️ Reserve Requirement
+                    (%)
+                  </div>
+                </div>
+
+                <!-- MODULE M2: MONETARY POLICY -->
+                <div class="page" data-searchable="true" id="mm2">
+                  <div class="banner macro">
+                    <div class="sid">Module M2 · OpenStax Macro Ch.15</div>
+                    <h2>🏦 Monetary Policy</h2>
+                    <p>Central bank tools: open market operations, discount rate, reserve requirements.</p>
+                    <div class="tags"><span class="tag">OpenStax Macro 3e Ch.15</span></div>
+                  </div>
+                  <div class="ibox teal">
+                    <div class="title">📗 The Fed's Three Traditional Tools</div>1. <strong>Open Market
+                      Operations:</strong> Buy bonds = expansionary. Sell bonds = contractionary. (Primary tool)<br>2.
+                    <strong>Discount Rate:</strong> Rate Fed charges banks for emergency loans.<br>3. <strong>Reserve
+                      Requirements:</strong> Fraction of deposits banks must hold.
+                  </div>
+                  <div class="ibox teal">
+                    <div class="title">📉 Quantitative Easing (QE)</div>When short-term rates hit zero (zero lower
+                    bound), Fed buys long-term bonds and MBS to lower long-term rates directly. Fed balance sheet grew
+                    from $900B (2008) to $8.9T (2022).
+                  </div>
+                  <div class="ibox gold">
+                    <div class="title">🎛️ Simulation Parameters</div>⚙️ Money Supply (Ms) · ⚙️ Interest Sensitivity (h)
+                    · ⚙️ Real GDP (Y) · ⚙️ Reserve Requirement (%) · ⚙️ Investment Sensitivity (b)
+                  </div>
+                </div>
+
+                <!-- MODULE F1: STOCK TRACKER -->
+                <div class="page" data-searchable="true" id="mf1">
+                  <div class="banner fin">
+                    <div class="sid">Module F1 · Live Market Data</div>
+                    <h2>📈 Live Stock Tracker</h2>
+                    <p>Track stock prices, daily changes, valuation metrics, and relative performance.</p>
+                    <div class="tags"><span class="tag">Finance</span></div>
+                  </div>
+                  <div class="ibox teal">
+                    <div class="title">📘 Present Value of the Firm</div>A firm's value equals the present value of its
+                    future profit stream: PV = π₁/(1+i) + π₂/(1+i)² + ... For constant growing dividends (Gordon Growth
+                    Model): PV = D₀(1+g)/(r-g)
+                  </div>
+                  <div class="ibox teal">
+                    <div class="title">📘 CAPM & Beta</div>E[R] = Rf + β(Rm - Rf). Beta measures sensitivity to market
+                    movements. High-beta stocks (tech) are more volatile; low-beta stocks (utilities) are defensive.
+                  </div>
+                  <div class="ibox gold">
+                    <div class="title">🎛️ Simulation Parameters</div>⚙️ Discount Rate (r) · ⚙️ Investment Horizon · ⚙️
+                    Dividend Growth (g)
+                  </div>
+                </div>
+
+                <!-- MODULE K5: BALANCE OF TRADE -->
+                <div class="page" data-searchable="true" id="mk5">
+                  <div class="banner trade">
+                    <div class="sid">Module K5 · OpenStax Macro Ch.10</div>
+                    <h2>⚖️ Balance of Trade & Payments</h2>
+                    <p>Compute trade balance, capital account, and overall balance of payments.</p>
+                    <div class="tags"><span class="tag">OpenStax Macro 3e Ch.10</span></div>
+                  </div>
+                  <div class="formula">
+                    <div class="title">Balance of Payments</div>Current Account + Capital Account + Financial Account =
+                    0
+                    Trade Balance = Exports - Imports
+                    Current Account ≈ Trade Balance + Net Income + Transfers
+                  </div>
+                  <div class="ibox teal">
+                    <div class="title">📗 Is a Trade Deficit Bad?</div>Not necessarily! A trade deficit means imports >
+                    exports — but this is balanced by a capital account surplus (foreigners investing in your country).
+                    The US has run trade deficits since the 1970s yet remains the world's largest economy.
+                  </div>
+                  <div class="ibox gold">
+                    <div class="title">🎛️ Simulation Parameters</div>⚙️ Exports · ⚙️ Imports · ⚙️ Capital Inflows · ⚙️
+                    Capital Outflows
+                  </div>
+                </div>
+
+                <!-- MODULE T1: COMPARATIVE ADVANTAGE -->
+                <div class="page" data-searchable="true" id="mt1">
+                  <div class="banner micro">
+                    <div class="sid">Module T1 · OpenStax Micro Ch.19</div>
+                    <h2>🌍 Comparative Advantage</h2>
+                    <p>Specialize according to opportunity cost, not absolute productivity alone.</p>
+                    <div class="tags"><span class="tag">OpenStax Micro 3e Ch.19</span></div>
+                  </div>
+                  <div class="ibox teal">
+                    <div class="title">📗 Absolute vs. Comparative Advantage</div><strong>Absolute advantage:</strong>
+                    Can produce MORE of a good with same resources.<br><strong>Comparative advantage:</strong> Can
+                    produce a good at LOWER OPPORTUNITY COST.<br>Even if Country A is better at producing BOTH goods,
+                    trade still benefits both if they specialize where their opportunity cost is lowest.
+                  </div>
+                  <div class="example-box">
+                    <div class="title">🍷 Ricardo's Wine & Cloth</div>England: 1 wine = 1.2 cloth (opportunity
+                    cost)<br>Portugal: 1 wine = 0.9 cloth<br>Portugal has comparative advantage in wine (lower
+                    opportunity cost). England has comparative advantage in cloth. Both gain from trade!
+                  </div>
+                  <div class="ibox gold">
+                    <div class="title">🎛️ Simulation Parameters</div>⚙️ Country A: Wine · ⚙️ Country A: Cloth · ⚙️
+                    Country B: Wine · ⚙️ Country B: Cloth
+                  </div>
+                </div>
+
+                <!-- MODULE X4: GLOBALIZATION -->
+                <div class="page" data-searchable="true" id="mx4">
+                  <div class="banner trade">
+                    <div class="sid">Module X4 · OpenStax Macro Ch.21</div>
+                    <h2>🌐 Globalization & S-I Identity</h2>
+                    <p>Understand why savings-investment gaps show up as trade imbalances.</p>
+                    <div class="tags"><span class="tag">OpenStax Macro 3e Ch.21</span></div>
+                  </div>
+                  <div class="formula">
+                    <div class="title">Savings-Investment Identity</div>S − I = X − M = NX
+                    If S > I → Trade surplus (net lender to world)
+                    If S < I → Trade deficit (net borrower from world)</div>
+                      <div class="ibox teal">
+                        <div class="title">📗 The Twin Deficits</div>Government budget deficit (G > T) reduces national
+                        saving. If private saving doesn't rise to compensate, the trade deficit widens. This is the
+                        "twin deficits" hypothesis.
+                      </div>
+                      <div class="ibox gold">
+                        <div class="title">🎛️ Simulation Parameters</div>⚙️ Trade Openness (% GDP) · ⚙️ Capital
+                        Mobility · ⚙️ National Savings (S) · ⚙️ Domestic Investment (I)
+                      </div>
+                  </div>
+
+                  <!-- REFERENCES -->
+                  <div class="page" data-searchable="true" id="references">
+                    <div class="banner start">
+                      <div class="sid">Appendix</div>
+                      <h2>📚 References</h2>
+                    </div>
+
+                    <div style="padding-left:2em;text-indent:-2em;margin-bottom:1em;line-height:1.6;font-size:11px;">
+                      Greenlaw, S. A., Shapiro, D., & MacDonald, D. (2022). <em>Principles of macroeconomics</em> (3rd
+                      ed.). OpenStax, Rice University. https://openstax.org/details/books/principles-macroeconomics-3e
+                    </div>
+                    <div style="padding-left:2em;text-indent:-2em;margin-bottom:1em;line-height:1.6;font-size:11px;">
+                      Greenlaw, S. A., Shapiro, D., & MacDonald, D. (2022). <em>Principles of microeconomics</em> (3rd
+                      ed.). OpenStax, Rice University. https://openstax.org/details/books/principles-microeconomics-3e
+                    </div>
+                    <div style="padding-left:2em;text-indent:-2em;margin-bottom:1em;line-height:1.6;font-size:11px;">
+                      Perloff, J. M., & Brander, J. A. (2020). <em>Managerial economics and strategy</em> (3rd ed.).
+                      Pearson.
+                    </div>
+
+                    <div class="footer"><span>Economics Simulator Student Guide</span></div>
+                  </div>
+
+                  <button class="back-to-top" id="backToTop" aria-label="Back to top">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2.5">
+                      <polyline points="18 15 12 9 6 15" />
+                    </svg>
+                  </button>
+                </div><!-- end main-content -->
+              </div><!-- end app-wrapper -->
+
+
+              <script>
+                (function () {
+                  // ============ THEME ============
+                  const html = document.documentElement;
+                  const themeBtn = document.getElementById('themeToggle');
+                  let dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+                  function applyTheme(d) {
+                    dark = d;
+                    html.setAttribute('data-theme', d ? 'dark' : 'light');
+                    if (themeBtn) themeBtn.innerHTML = d
+                      ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg> Light'
+                      : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg> Dark';
+                  }
+                  applyTheme(dark);
+                  if (themeBtn) themeBtn.addEventListener('click', () => applyTheme(!dark));
+
+                  // ============ PROGRESS BAR ============
+                  const progressBar = document.getElementById('progressBar');
+                  function updateProgress() {
+                    if (!progressBar) return;
+                    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+                    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                    const pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+                    progressBar.style.width = pct + '%';
+                  }
+
+                  // ============ BACK TO TOP ============
+                  const backToTop = document.getElementById('backToTop');
+                  function updateBackToTop() {
+                    if (!backToTop) return;
+                    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+                    backToTop.classList.toggle('visible', scrollTop > 400);
+                  }
+                  if (backToTop) backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+                  // ============ ACTIVE NAV HIGHLIGHT ============
+                  const navItems = document.querySelectorAll('.nav-item[data-target]');
+                  const pages = document.querySelectorAll('.page[id], .cover[id]');
+
+                  function updateActiveNav() {
+                    const scrollTop = window.scrollY;
+                    let currentId = '';
+                    pages.forEach(page => {
+                      if (page.getBoundingClientRect().top <= 80) currentId = page.id;
+                    });
+                    navItems.forEach(item => {
+                      item.classList.toggle('active', item.dataset.target === currentId);
+                    });
+                    // Auto-scroll sidebar to keep active item visible
+                    const activeItem = document.querySelector('.nav-item.active');
+                    if (activeItem) {
+                      const sidebar = document.querySelector('.sidebar');
+                      const sidebarRect = sidebar.getBoundingClientRect();
+                      const itemRect = activeItem.getBoundingClientRect();
+                      if (itemRect.top < sidebarRect.top + 100 || itemRect.bottom > sidebarRect.bottom - 40) {
+                        activeItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                      }
+                    }
+                  }
+
+                  // Scroll handler (throttled)
+                  let ticking = false;
+                  window.addEventListener('scroll', () => {
+                    if (!ticking) {
+                      requestAnimationFrame(() => {
+                        updateProgress();
+                        updateBackToTop();
+                        updateActiveNav();
+                        ticking = false;
+                      });
+                      ticking = true;
+                    }
+                  }, { passive: true });
+
+                  // Nav item click
+                  navItems.forEach(item => {
+                    item.addEventListener('click', (e) => {
+                      const target = document.getElementById(item.dataset.target);
+                      if (target) {
+                        e.preventDefault();
+                        target.scrollIntoView({ behavior: 'smooth' });
+                        // Close sidebar on mobile
+                        if (window.innerWidth <= 900) {
+                          closeSidebar();
+                        }
+                      }
+                    });
+                  });
+
+                  // ============ MOBILE SIDEBAR ============
+                  const sidebar = document.querySelector('.sidebar');
+                  const overlay = document.getElementById('sidebarOverlay');
+                  const hamburger = document.getElementById('hamburger');
+
+                  function openSidebar() {
+                    sidebar.classList.add('open');
+                    overlay.classList.add('visible');
+                    document.body.style.overflow = 'hidden';
+                  }
+                  function closeSidebar() {
+                    sidebar.classList.remove('open');
+                    overlay.classList.remove('visible');
+                    document.body.style.overflow = '';
+                  }
+                  if (hamburger) hamburger.addEventListener('click', openSidebar);
+                  if (overlay) overlay.addEventListener('click', closeSidebar);
+
+                  // ============ SEARCH ============
+                  const searchInput = document.getElementById('navSearch');
+                  const searchClear = document.getElementById('searchClear');
+                  const noResults = document.getElementById('searchNoResults');
+                  const allPages = document.querySelectorAll('.page[data-searchable]');
+
+                  function runSearch() {
+                    const q = (searchInput.value || '').trim().toLowerCase();
+                    searchClear.classList.toggle('visible', q.length > 0);
+
+                    if (!q) {
+                      navItems.forEach(i => i.classList.remove('hidden'));
+                      allPages.forEach(p => p.classList.remove('hidden'));
+                      if (noResults) noResults.classList.remove('visible');
+                      return;
+                    }
+
+                    let anyVisible = false;
+                    navItems.forEach(item => {
+                      const text = item.textContent.toLowerCase();
+                      const show = text.includes(q);
+                      item.classList.toggle('hidden', !show);
+                      if (show) anyVisible = true;
+                    });
+
+                    // Also hide/show page sections
+                    allPages.forEach(page => {
+                      const text = page.textContent.toLowerCase();
+                      page.classList.toggle('hidden', !text.includes(q));
+                    });
+
+                    if (noResults) noResults.classList.toggle('visible', !anyVisible);
+                  }
+
+                  if (searchInput) {
+                    searchInput.addEventListener('input', runSearch);
+                    searchClear.addEventListener('click', () => {
+                      searchInput.value = '';
+                      runSearch();
+                      searchInput.focus();
+                    });
+                  }
+
+                  // ============ KEYBOARD SHORTCUTS ============
+                  document.addEventListener('keydown', e => {
+                    // / or Ctrl+K to focus search
+                    if ((e.key === '/' || (e.ctrlKey && e.key === 'k')) && document.activeElement !== searchInput) {
+                      e.preventDefault();
+                      if (window.innerWidth <= 900) openSidebar();
+                      if (searchInput) searchInput.focus();
+                    }
+                    // Escape to blur search
+                    if (e.key === 'Escape') {
+                      if (document.activeElement === searchInput) searchInput.blur();
+                      if (window.innerWidth <= 900) closeSidebar();
+                    }
+                  });
+
+                  // ============ PRINT ============
+                  const printBtn = document.getElementById('printBtn');
+                  if (printBtn) printBtn.addEventListener('click', () => window.print());
+
+                  // Init
+                  updateProgress();
+                  updateBackToTop();
+                  updateActiveNav();
+
+                  // ============ THEME SWITCHER ============
+                  function setTheme(d) {
+                    const html = document.documentElement;
+                    html.setAttribute('data-theme', d);
+                    localStorage.setItem('theme', d);
+                    const darkBtn = document.getElementById('darkBtn');
+                    const lightBtn = document.getElementById('lightBtn');
+                    if (darkBtn) darkBtn.classList.toggle('active', d === 'dark');
+                    if (lightBtn) lightBtn.classList.toggle('active', d === 'light');
+                  }
+
+                  // Initial load
+                  const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                  setTheme(savedTheme);
+
+                  // Wiring up buttons
+                  const darkBtn = document.getElementById('darkBtn');
+                  const lightBtn = document.getElementById('lightBtn');
+                  if (darkBtn) darkBtn.onclick = () => setTheme('dark');
+                  if (lightBtn) lightBtn.onclick = () => setTheme('light');
+                })();
+              </script>
+
+</body>
+
+</html>
