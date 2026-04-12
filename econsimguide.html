@@ -5,9 +5,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EconSim — Student Guide</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
-
     :root {
       --navy-900: #040d1a;
       --navy-800: #0a1628;
@@ -35,34 +37,67 @@
       --border-accent: rgba(0, 180, 216, 0.4);
       --surface: rgba(15, 31, 61, 0.8);
       --surface2: rgba(22, 37, 64, 0.9);
-      --radius: 8px;
-      --radius-lg: 12px;
+      --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.6);
       --font-body: 'Inter', system-ui, sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
 
-      /* Legacy compatibility variables */
-      --teal-dark: #0077b6;
-      --teal-light: #90e0ef;
-      --gold-dark: #b45309;
-      --gold-light: #fde68a;
-      --green-dark: #047857;
-      --green-light: #d1fae5;
-      --red-dark: #b91c1c;
-      --red-light: #fee2e2;
-      --purple-dark: #6d28d9;
-      --purple-light: #ede9fe;
-      --blue-dark: #1d4ed8;
-      --blue-light: #dbeafe;
-      --slate-900: #0f172a;
+      /* Legacy Mappings for Guide Compatibility */
+      --slate-900: var(--navy-900);
+      --slate-800: var(--navy-800);
+      --slate-700: var(--navy-700);
+      --slate-600: var(--navy-600);
+      --slate-500: var(--gray-400);
+      --slate-400: var(--gray-400);
+      --slate-300: var(--gray-300);
+      --teal-dark: var(--teal-dim);
+      --blue-dark: var(--blue-accent);
+      --blue: #00b4d8;
+      --purple-dark: #7c3aed;
+      --pink: #ff4d6d;
+    }
+
+    [data-theme="light"] {
+      --navy-900: #ffffff;
+      --navy-800: #f8fafc;
+      --navy-700: #f1f5f9;
+      --navy-600: #e2e8f0;
+      --navy-500: #cbd5e1;
+      --navy-400: #94a3b8;
+      --blue-accent: #1d4ed8;
+      --teal: #0891b2;
+      --teal-dim: #0e7490;
+      --teal-glow: rgba(8, 145, 178, 0.1);
+      --gold: #ca8a04;
+      --gold-dim: #a16207;
+      --gold-glow: rgba(202, 138, 4, 0.1);
+      --green: #059669;
+      --red: #dc2626;
+      --orange: #d97706;
+      --purple: #7c3aed;
+      --white: #000000;
+      --gray-100: #0f172a;
+      --gray-200: #1e293b;
+      --gray-300: #334155;
+      --gray-400: #475569;
+      --border: rgba(0, 0, 0, 0.15);
+      --border-accent: rgba(8, 145, 178, 0.4);
+      --surface: rgba(255, 255, 255, 0.9);
+      --surface2: rgba(248, 250, 252, 0.95);
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+      /* Legacy Mappings for Guide Compatibility */
+      --slate-900: #ffffff;
       --slate-800: #1e293b;
-      --slate-700: #334155;
-      --slate-600: #475569;
+      --slate-700: #f1f5f9;
+      --slate-600: #e2e8f0;
       --slate-500: #64748b;
       --slate-400: #94a3b8;
       --slate-300: #cbd5e1;
-      --slate-200: #e2e8f0;
-      --slate-100: #f1f5f9;
-      --slate-50: #f8fafc;
+      --teal-dark: #0e7490;
+      --blue-dark: #1d4ed8;
+      --purple-dark: #6b21a8;
     }
 
     * {
@@ -119,7 +154,7 @@
     .cover:before {
       width: 380px;
       height: 380px;
-      background: #ffd166;
+      background: var(--gold);
       top: -100px;
       right: -100px
     }
@@ -127,7 +162,7 @@
     .cover:after {
       width: 320px;
       height: 320px;
-      background: #a855f7;
+      background: var(--purple);
       bottom: -100px;
       left: -80px
     }
@@ -147,19 +182,19 @@
     }
 
     .b1 {
-      background: #22c55e
+      background: var(--green);
     }
 
     .b2 {
-      background: #f97316
+      background: var(--orange)
     }
 
     .b3 {
-      background: #94a3b8
+      background: var(--gray-300)
     }
 
     .b4 {
-      background: #facc15
+      background: var(--gold)
     }
 
     .eyebrow {
@@ -244,8 +279,8 @@
 
     .toc-title {
       font-size: 32px;
-      font-weight: 900;
-      color: var(--teal-dark);
+      font-weight: 800;
+      color: var(--teal);
       border-bottom: 4px solid var(--teal);
       padding-bottom: 10px;
       margin-bottom: 18px
@@ -513,6 +548,47 @@
 
     tr td {
       border-bottom: 1px solid var(--slate-100)
+    }
+
+    .sidebar-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface2);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .theme-toggle {
+      display: flex;
+      background: var(--navy-600);
+      padding: 4px;
+      border-radius: 8px;
+      width: fit-content;
+    }
+
+    .theme-toggle-btn {
+      border: none;
+      background: none;
+      color: var(--gray-300);
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .theme-toggle-btn:hover {
+      color: var(--white);
+    }
+
+    .theme-toggle-btn.active {
+      background: var(--blue-accent);
+      color: var(--white);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
 
     .formula {
@@ -935,7 +1011,7 @@
       height: 100vh;
       position: sticky;
       top: 0;
-      background: #0f172a;
+      background: var(--navy-900);
       color: #94a3b8;
       overflow-y: auto;
       overflow-x: hidden;
@@ -958,7 +1034,7 @@
     }
 
     .sidebar::-webkit-scrollbar-thumb {
-      background: #334155;
+      background: var(--navy-600);
       border-radius: 4px
     }
 
@@ -967,7 +1043,7 @@
       border-bottom: 1px solid #1e293b;
       position: sticky;
       top: 0;
-      background: #0f172a;
+      background: var(--navy-900);
       z-index: 10;
       flex-shrink: 0;
     }
@@ -1006,7 +1082,7 @@
 
     .sidebar-search input {
       width: 100%;
-      background: #1e293b;
+      background: var(--navy-800);
       border: 1px solid #334155;
       color: #e2e8f0;
       border-radius: 8px;
@@ -1091,14 +1167,14 @@
 
     .nav-item:hover {
       color: #e2e8f0;
-      background: #1e293b;
+      background: var(--navy-800);
       border-left-color: #00b4d8;
       text-decoration: none
     }
 
     .nav-item.active {
       color: #00b4d8;
-      background: #1e293b;
+      background: var(--navy-800);
       border-left-color: #00b4d8;
       font-weight: 700
     }
@@ -1167,7 +1243,7 @@
       position: sticky;
       top: 0;
       z-index: 50;
-      background: #fff;
+      background: var(--white);
       border-bottom: 1px solid #e2e8f0;
       display: flex;
       align-items: center;
@@ -1222,7 +1298,7 @@
     }
 
     .theme-toggle:hover {
-      background: #f1f5f9;
+      background: var(--navy-700);
       color: #0f172a
     }
 
@@ -1241,7 +1317,7 @@
     }
 
     .print-btn:hover {
-      background: #f1f5f9;
+      background: var(--navy-700);
       color: #0f172a
     }
 
@@ -1265,7 +1341,7 @@
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      background: #0077b6;
+      background: var(--teal);
       color: #fff;
       border: none;
       cursor: pointer;
@@ -1285,7 +1361,7 @@
     }
 
     .back-to-top:hover {
-      background: #0077b6;
+      background: var(--teal);
       transform: translateY(-2px)
     }
 
@@ -1324,7 +1400,7 @@
     }
 
     [data-theme="dark"] .theme-toggle:hover {
-      background: #334155;
+      background: var(--navy-600);
       color: #e2e8f0
     }
 
@@ -1334,17 +1410,17 @@
     }
 
     [data-theme="dark"] .print-btn:hover {
-      background: #334155;
+      background: var(--navy-600);
       color: #e2e8f0
     }
 
     [data-theme="dark"] body {
-      background: #0f172a;
+      background: var(--navy-900);
       color: #e2e8f0
     }
 
     [data-theme="dark"] .page {
-      background: #0f172a
+      background: var(--navy-900)
     }
 
     [data-theme="dark"] h3 {
@@ -1386,7 +1462,7 @@
     }
 
     [data-theme="dark"] tr:nth-child(even) td {
-      background: #1e293b
+      background: var(--navy-800)
     }
 
     [data-theme="dark"] td {
@@ -1394,7 +1470,7 @@
     }
 
     [data-theme="dark"] .card {
-      background: #1e293b;
+      background: var(--navy-800);
       border-color: #334155
     }
 
@@ -1502,7 +1578,7 @@
     }
 
     [data-theme="dark"] .hamburger:hover {
-      background: #334155
+      background: var(--navy-600)
     }
 
     /* ============ SEARCH HIGHLIGHT ============ */
@@ -1601,7 +1677,7 @@
     /* ============ MODULE JUMP INDICATOR ============ */
     .module-count-badge {
       display: inline-block;
-      background: #00b4d8;
+      background: var(--teal);
       color: #fff;
       border-radius: 999px;
       padding: 1px 6px;
@@ -1621,7 +1697,7 @@
     }
 
     .main-content::-webkit-scrollbar-thumb {
-      background: #e2e8f0;
+      background: var(--navy-700);
       border-radius: 3px
     }
 
@@ -1656,6 +1732,14 @@
             <div class="sidebar-title">EconSim</div>
             <div class="sidebar-version">Student Guide</div>
           </div>
+        </div>
+        <div class="theme-toggle" role="group" aria-label="Theme selection">
+          <button id="lightBtn" class="theme-toggle-btn" aria-label="Light Mode">
+            <i class="fas fa-sun"></i> Light
+          </button>
+          <button id="darkBtn" class="theme-toggle-btn active" aria-label="Dark Mode">
+            <i class="fas fa-moon"></i> Dark
+          </button>
         </div>
         <div class="sidebar-search">
           <span class="search-icon">
@@ -2023,7 +2107,8 @@
           <p>This simulator is carefully aligned with <strong>OpenStax Principles of Microeconomics 3e</strong> and
             <strong>Principles of Macroeconomics 3e</strong>, authored by David Shapiro (Pennsylvania State University),
             Daniel MacDonald (California State University, San Bernardino), and Steven A. Greenlaw (University of Mary
-            Washington).</p>
+            Washington).
+          </p>
           <p style="margin-top:8px">As stated in the OpenStax preface: "The text uses conversational language and ample
             illustrations to explore economic theories, and provides a wide array of examples using both fictional and
             real-world scenarios. The third edition has been carefully and thoroughly updated to reflect current data
@@ -2443,7 +2528,8 @@
             more.</li>
           <li><strong>Quantity demanded</strong> is a specific point on that curve at a given price. When price changes,
             we move along the existing curve — that's a change in <em>quantity demanded</em>, not a change in
-            <em>demand</em>.</li>
+            <em>demand</em>.
+          </li>
         </ul>
         <p><em>Test yourself:</em> If the price of coffee rises, does demand for coffee decrease? <strong>No!</strong>
           The quantity demanded decreases (movement along the curve), but demand itself — the curve — hasn't moved.</p>
@@ -2463,7 +2549,8 @@
         <p><strong>Step 1:</strong> Set Qd = Qs (equilibrium condition)<br>100 − 2P = 10 + 3P</p>
         <p><strong>Step 2:</strong> Solve for P<br>100 − 10 = 3P + 2P → 90 = 5P → <strong>P* = 18</strong></p>
         <p><strong>Step 3:</strong> Substitute P back to find Q<br>Q = 100 − 2(18) = 100 − 36 =
-          <strong>64</strong><br><em>Check:</em> Q = 10 + 3(18) = 10 + 54 = 64 ✓</p>
+          <strong>64</strong><br><em>Check:</em> Q = 10 + 3(18) = 10 + 54 = 64 ✓
+        </p>
         <p><strong>Step 4:</strong> Calculate Consumer Surplus<br>P<sub>max</sub> (demand intercept) = 100/2 = 50<br>CS
           = ½ × (50 − 18) × 64 = ½ × 32 × 64 = <strong>$1,024</strong></p>
         <p><strong>Step 5:</strong> Calculate Producer Surplus<br>P<sub>min</sub> (supply intercept) = −10/3 ≈ 0 (floor
@@ -2842,7 +2929,8 @@
       <div class="clear-up">
         <div class="title">🔵 Clear It Up: Why Is MR Below Demand?</div>
         <p>For a monopolist, MR &lt; P because to sell one more unit, the firm must lower the price on
-          <strong>all</strong> units, not just the marginal one.</p>
+          <strong>all</strong> units, not just the marginal one.
+        </p>
         <p><strong>Example:</strong> Currently selling 10 units at $50 each → TR = $500. To sell 11 units, must lower
           price to $48. New TR = $48 × 11 = $528. MR of 11th unit = $528 − $500 = $28, which is less than the $48 price.
         </p>
@@ -4308,10 +4396,8 @@
                     <div class="banner start">
                       <div class="sid">Appendix</div>
                       <h2>📚 References</h2>
-                      <p>Curriculum sources formatted in APA 7th Edition.</p>
                     </div>
 
-                    <h3>Primary Textbook Sources</h3>
                     <div style="padding-left:2em;text-indent:-2em;margin-bottom:1em;line-height:1.6;font-size:11px;">
                       Greenlaw, S. A., Shapiro, D., & MacDonald, D. (2022). <em>Principles of macroeconomics</em> (3rd
                       ed.). OpenStax, Rice University. https://openstax.org/details/books/principles-macroeconomics-3e
@@ -4512,6 +4598,27 @@
                   updateProgress();
                   updateBackToTop();
                   updateActiveNav();
+
+                  // ============ THEME SWITCHER ============
+                  function setTheme(d) {
+                    const html = document.documentElement;
+                    html.setAttribute('data-theme', d);
+                    localStorage.setItem('theme', d);
+                    const darkBtn = document.getElementById('darkBtn');
+                    const lightBtn = document.getElementById('lightBtn');
+                    if (darkBtn) darkBtn.classList.toggle('active', d === 'dark');
+                    if (lightBtn) lightBtn.classList.toggle('active', d === 'light');
+                  }
+
+                  // Initial load
+                  const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                  setTheme(savedTheme);
+
+                  // Wiring up buttons
+                  const darkBtn = document.getElementById('darkBtn');
+                  const lightBtn = document.getElementById('lightBtn');
+                  if (darkBtn) darkBtn.onclick = () => setTheme('dark');
+                  if (lightBtn) lightBtn.onclick = () => setTheme('light');
                 })();
               </script>
 
