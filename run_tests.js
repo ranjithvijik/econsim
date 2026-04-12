@@ -9,7 +9,7 @@
  * Usage:
  *   node run_tests.js                          # run all tests, write QA-REPORT.md
  *   node run_tests.js --fast                   # skip live-data tests
- *   node run_tests.js --module financial_values # run only that module
+ *   node run_tests.js --module guide_structure  # run only that module
  *   node run_tests.js --out my_report.md        # custom output path
  *   node run_tests.js --no-report              # run but don't write file
  */
@@ -23,7 +23,9 @@ const path = require('path');
 const TEST_MODULES = {
   html_structure:         'tests/unit/test_html_structure.js',
   simulator_modules:      'tests/unit/test_modules.js',
-  interactive_components: 'tests/unit/test_components.js'
+  interactive_components: 'tests/unit/test_components.js',
+  guide_structure:        'tests/unit/test_guide_structure.js',
+  deploy_config:          'tests/unit/test_deploy_config.js',
 };
 
 // ─── CLI args ──────────────────────────────────────────────────────────────────
@@ -199,7 +201,7 @@ function generateReport(moduleResults, totalMs) {
     '### Options',
     '```bash',
     'node run_tests.js --fast                   # skip live-data tests',
-    'node run_tests.js --module financial_values # run only that module',
+    'node run_tests.js --module guide_structure  # run only that module',
     'node run_tests.js --out my_qa.md            # custom output path',
     'node run_tests.js --no-report              # run without writing file',
     '```',
@@ -210,9 +212,8 @@ function generateReport(moduleResults, totalMs) {
     'make test            # verbose run',
     'make fast            # skip live-data',
     'make t-html          # HTML structure only',
-    'make t-data          # financial values only',
-    'make t-exports       # export functions only',
-    'make t-sections      # section coverage only',
+    'make t-guide         # Student Guide HTML only',
+    'make t-deploy        # Amplify + package wiring only',
     'make clean           # remove QA-REPORT.md',
     '```',
     '',
@@ -227,10 +228,11 @@ function generateReport(moduleResults, totalMs) {
     '├── helpers.js                         # Shared utilities (getHTML, assert, etc.)',
     '│',
     '└── unit/',
-    '    ├── test_html_structure.js         # General DOM structure, CDNs, scripts',
-    '    ├── test_modules.js                # All 78 functional economics modules',
-    '    └── test_components.js             # Interactive sliders, KPIs, Canvas elements',
-    '                                       # CORS proxies, static fallback',
+    '    ├── test_html_structure.js         # index.html shell, sections, links',
+    '    ├── test_modules.js                # All 78 module section ids',
+    '    ├── test_components.js             # Sliders, charts, key JS handlers',
+    '    ├── test_guide_structure.js        # econsimguide.html layout & theme',
+    '    └── test_deploy_config.js          # amplify.yml artifacts, npm scripts',
     '```',
     '',
     'All tests run **fully offline** — no network calls, no browser, no server.',

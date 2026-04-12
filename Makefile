@@ -25,7 +25,7 @@ help:
 	@echo "  make clean       Remove generated test artifacts"
 	@echo ""
 	@echo "  Per-module shortcuts:"
-	@echo "  make t-html       make t-modules   make t-components"
+	@echo "  make t-html  t-modules  t-components  t-guide  t-deploy"
 	@echo ""
 
 # ── Setup ────────────────────────────────────────────────────────────────────
@@ -69,6 +69,14 @@ t-modules:
 .PHONY: t-components
 t-components:
 	$(RUNNER) --module interactive_components
+
+.PHONY: t-guide
+t-guide:
+	$(RUNNER) --module guide_structure
+
+.PHONY: t-deploy
+t-deploy:
+	$(RUNNER) --module deploy_config
 
 # ── Cleanup ───────────────────────────────────────────────────────────────────
 

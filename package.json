@@ -9,6 +9,8 @@
     "test:html": "node run_tests.js --module html_structure",
     "test:modules": "node run_tests.js --module simulator_modules",
     "test:components": "node run_tests.js --module interactive_components",
+    "test:guide": "node run_tests.js --module guide_structure",
+    "test:deploy": "node run_tests.js --module deploy_config",
     "qa": "node run_tests.js --out QA-REPORT.md"
   },
   "devDependencies": {

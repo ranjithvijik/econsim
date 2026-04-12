@@ -62,6 +62,23 @@ module.exports = {
       fn: () => {
         assert(contains('Apply to All Modules'), 'Missing Apply to All Modules button');
       }
+    },
+    {
+      name: 'Navigation and theme controllers',
+      fn: () => {
+        assert(contains('function showSection'), 'Missing showSection');
+        assert(contains('function initTheme'), 'Missing initTheme');
+        assert(contains('function setTheme'), 'Missing setTheme');
+        assert(contains('function refreshAllCharts'), 'Missing refreshAllCharts');
+      }
+    },
+    {
+      name: 'Macro update functions present',
+      fn: () => {
+        ['updateADAS', 'updateMonetary', 'updatePhillips', 'updateNationalDebt', 'updatePublicChoice'].forEach(fn => {
+          assert(contains('function ' + fn), 'Missing JS function: ' + fn);
+        });
+      }
     }
   ]
 };

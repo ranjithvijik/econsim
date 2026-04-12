@@ -1,6 +1,6 @@
 'use strict';
 
-const { countOccurrences, contains, assert, assertEqual, assertAtLeast } = require('../helpers');
+const { countOccurrences, contains, assert, assertEqual, sectionTagCounts } = require('../helpers');
 
 module.exports = {
   name: 'HTML Structure & Health',
@@ -39,6 +39,20 @@ module.exports = {
       name: 'Light mode defaults',
       fn: () => {
         assert(contains('data-theme="light"'), 'Should default to data-theme="light"');
+      }
+    },
+    {
+      name: 'Section tags balanced in index.html',
+      fn: () => {
+        const { open, close } = sectionTagCounts('index.html');
+        assertEqual(open, close, `<section> (${open}) must equal </section> (${close})`);
+      }
+    },
+    {
+      name: 'Student Guide href from simulator',
+      fn: () => {
+        assert(contains('econsimguide.html'), 'index should reference econsimguide.html');
+        assert(contains('student-guide-link'), 'index should use student-guide-link class');
       }
     }
   ]
