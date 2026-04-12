@@ -33,4 +33,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: site
-          path: index.html
+          path: |
+            index.html
+            econsimguide.html

@@ -5,10 +5,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Economics Simulator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
     rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
       --navy-900: #040d1a;
@@ -1407,6 +1409,7 @@
       <div id="sectionContainer"></div>
     </main>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" crossorigin="anonymous"></script>
   <script>
     const demoStockData = { AAPL: { name: 'Apple Inc.', sector: 'Technology', price: 178.72, change: 2.34, changePercent: 1.33, open: 176.38, high: 179.12, low: 175.89, volume: 52300000, pe: 28.5, marketCap: 2780000000000, dividend: 0.96, dividendYield: 0.52, high52: 199.62, low52: 164.08, beta: 1.28 }, MSFT: { name: 'Microsoft Corp.', sector: 'Technology', price: 415.28, change: 5.12, changePercent: 1.25, open: 410.50, high: 416.80, low: 409.20, volume: 21500000, pe: 36.2, marketCap: 3090000000000, dividend: 3.00, dividendYield: 0.72, high52: 420.82, low52: 309.45, beta: 0.89 }, GOOGL: { name: 'Alphabet Inc.', sector: 'Technology', price: 141.80, change: -0.95, changePercent: -0.67, open: 142.50, high: 143.20, low: 140.80, volume: 18200000, pe: 24.8, marketCap: 1780000000000, dividend: 0, dividendYield: 0, high52: 153.78, low52: 115.83, beta: 1.05 }, AMZN: { name: 'Amazon.com Inc.', sector: 'Consumer', price: 178.25, change: 3.45, changePercent: 1.97, open: 175.00, high: 179.50, low: 174.80, volume: 45600000, pe: 58.2, marketCap: 1850000000000, dividend: 0, dividendYield: 0, high52: 189.77, low52: 118.35, beta: 1.16 }, NVDA: { name: 'NVIDIA Corp.', sector: 'Technology', price: 875.28, change: 25.67, changePercent: 3.02, open: 850.00, high: 882.50, low: 848.20, volume: 42100000, pe: 65.4, marketCap: 2160000000000, dividend: 0.16, dividendYield: 0.02, high52: 974.00, low52: 373.56, beta: 1.68 }, META: { name: 'Meta Platforms', sector: 'Technology', price: 485.58, change: 8.92, changePercent: 1.87, open: 478.00, high: 488.50, low: 476.20, volume: 12800000, pe: 32.1, marketCap: 1240000000000, dividend: 2.00, dividendYield: 0.41, high52: 531.49, low52: 274.38, beta: 1.22 }, TSLA: { name: 'Tesla Inc.', sector: 'Consumer', price: 175.45, change: -4.28, changePercent: -2.38, open: 180.00, high: 181.50, low: 174.20, volume: 98500000, pe: 42.8, marketCap: 558000000000, dividend: 0, dividendYield: 0, high52: 299.29, low52: 152.37, beta: 2.05 }, JPM: { name: 'JPMorgan Chase', sector: 'Financials', price: 198.45, change: 1.85, changePercent: 0.94, open: 196.80, high: 199.20, low: 196.20, volume: 8500000, pe: 11.2, marketCap: 571000000000, dividend: 4.60, dividendYield: 2.32, high52: 200.94, low52: 135.19, beta: 1.08 }, V: { name: 'Visa Inc.', sector: 'Financials', price: 279.85, change: 2.15, changePercent: 0.77, open: 278.00, high: 280.50, low: 277.20, volume: 5200000, pe: 29.8, marketCap: 560000000000, dividend: 2.08, dividendYield: 0.74, high52: 290.96, low52: 227.68, beta: 0.94 }, JNJ: { name: 'Johnson & Johnson', sector: 'Healthcare', price: 156.28, change: -0.45, changePercent: -0.29, open: 156.50, high: 157.20, low: 155.80, volume: 6800000, pe: 22.5, marketCap: 376000000000, dividend: 4.76, dividendYield: 3.05, high52: 175.97, low52: 143.13, beta: 0.52 }, XOM: { name: 'Exxon Mobil', sector: 'Energy', price: 108.45, change: -1.25, changePercent: -1.14, open: 109.50, high: 110.20, low: 107.80, volume: 14200000, pe: 12.8, marketCap: 432000000000, dividend: 3.80, dividendYield: 3.50, high52: 120.70, low52: 95.77, beta: 0.92 } };
     const sectorData = { tech: ['AAPL', 'MSFT', 'GOOGL', 'NVDA', 'META'], finance: ['JPM', 'V'], healthcare: ['JNJ'], energy: ['XOM'], consumer: ['AMZN', 'TSLA'] };

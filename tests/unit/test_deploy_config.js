@@ -12,6 +12,7 @@ module.exports = {
         const yml = readProjectFile('amplify.yml');
         assert(yml.includes('index.html'), 'amplify.yml should list index.html');
         assert(yml.includes('econsimguide.html'), 'amplify.yml should list econsimguide.html');
+        assert(yml.includes('customHeaders'), 'amplify.yml should set customHeaders for caching and security');
       },
     },
     {
