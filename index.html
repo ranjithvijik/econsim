@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 
 <head>
   <meta charset="UTF-8">
@@ -45,6 +45,10 @@
       --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.6);
       --font-body: 'Inter', system-ui, sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
+      --text-primary: #f8fafc;
+      --text-muted: #94a3b8;
+      --font-weight-body: 500;
+      --font-weight-heading: 650;
     }
 
     [data-theme="light"] {
@@ -76,6 +80,8 @@
       --surface2: rgba(248, 250, 252, 0.95);
       --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
       --shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --text-primary: #0f172a;
+      --text-muted: #334155;
     }
 
     *,
@@ -94,10 +100,13 @@
     body {
       font-family: var(--font-body);
       background: var(--navy-900);
-      color: var(--white);
+      color: var(--text-primary);
+      font-weight: var(--font-weight-body);
       line-height: 1.6;
       overflow-x: hidden;
       transition: background .3s, color .3s;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     a {
@@ -434,14 +443,14 @@
 
     .section-title {
       font-size: 28px;
-      font-weight: 700;
-      color: var(--white);
+      font-weight: var(--font-weight-heading);
+      color: var(--text-primary);
       margin-top: 12px;
     }
 
     .section-subtitle {
       font-size: 16px;
-      color: var(--gray-200);
+      color: var(--text-muted);
       margin-top: 8px;
       max-width: 800px;
       line-height: 1.7;
@@ -1384,8 +1393,8 @@
             Modules</span></div>
         <div class="top-bar-right">
           <a href="econsimguide.html" class="student-guide-link">Student Guide</a>
-          <div class="theme-toggle"><button class="theme-toggle-btn active" id="darkBtn"
-              onclick="setTheme('dark')">🌙</button><button class="theme-toggle-btn" id="lightBtn"
+          <div class="theme-toggle"><button class="theme-toggle-btn" id="darkBtn"
+              onclick="setTheme('dark')">🌙</button><button class="theme-toggle-btn active" id="lightBtn"
               onclick="setTheme('light')">☀️</button></div>
           <div class="status-dot"></div>
           <div style="display:flex; flex-direction:column; align-items:flex-end; line-height: 1.2;">
@@ -1832,7 +1841,7 @@
     function resetMacroTouchState() { const p = document.getElementById('pv-rate'); if (p) delete p.dataset.userTouched; refreshMacroLinkedExperience(); }
     function setupMacroListeners() { const p = document.getElementById('pv-rate'); if (p) p.addEventListener('input', e => { e.target.dataset.userTouched = '1'; }); }
     function setTheme(t) { document.documentElement.setAttribute('data-theme', t); localStorage.setItem('theme', t); document.getElementById('darkBtn').classList.toggle('active', t === 'dark'); document.getElementById('lightBtn').classList.toggle('active', t === 'light'); refreshAllCharts(); }
-    function initTheme() { setTheme(localStorage.getItem('theme') || 'dark'); }
+    function initTheme() { setTheme(localStorage.getItem('theme') || 'light'); }
     function showSection(id) { document.querySelectorAll('.section').forEach(s => s.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); const sec = document.getElementById(id); if (sec) sec.classList.add('active'); if (typeof event !== 'undefined' && event && event.target) event.target.closest('.nav-item')?.classList.add('active'); if (window.innerWidth <= 900) document.getElementById('sidebar').classList.remove('show'); }
     function toggleSidebar() { document.getElementById('sidebar').classList.toggle('show'); }
     function updateTicker() { const tc = document.getElementById('tickerContent'); let h = ''; Object.keys(demoStockData).forEach(s => { const st = demoStockData[s]; const cc = st.change >= 0 ? 'up' : 'down'; const cs = st.change >= 0 ? '+' : ''; h += `<div class="ticker-item"><span class="ticker-symbol">${s}</span><span class="ticker-price">$${st.price.toFixed(2)}</span><span class="ticker-change ${cc}">${cs}${st.changePercent.toFixed(2)}%</span></div>`; }); tc.innerHTML = h + h; }

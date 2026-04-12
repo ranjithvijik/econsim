@@ -15,5 +15,6 @@ frontend:
     baseDirectory: /
     files:
       - index.html
+      - econsimguide.html
   cache:
     paths: []

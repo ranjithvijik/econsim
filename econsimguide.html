@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 
 <head>
   <meta charset="UTF-8">
@@ -41,6 +41,10 @@
       --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.6);
       --font-body: 'Inter', system-ui, sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
+      --text-primary: #f8fafc;
+      --text-muted: #94a3b8;
+      --font-weight-body: 500;
+      --font-weight-heading: 650;
 
       /* Legacy Mappings for Guide Compatibility */
       --slate-900: var(--navy-900);
@@ -98,6 +102,8 @@
       --teal-dark: #0e7490;
       --blue-dark: #1d4ed8;
       --purple-dark: #6b21a8;
+      --text-primary: #0f172a;
+      --text-muted: #334155;
     }
 
     * {
@@ -114,9 +120,12 @@
     body {
       font-family: var(--font-body);
       background: var(--navy-900);
-      color: var(--white);
+      color: var(--text-primary);
+      font-weight: var(--font-weight-body);
       line-height: 1.6;
       overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     a {
@@ -1416,7 +1425,7 @@
 
     [data-theme="dark"] body {
       background: var(--navy-900);
-      color: #e2e8f0
+      color: var(--text-primary)
     }
 
     [data-theme="dark"] .page {
@@ -1424,7 +1433,7 @@
     }
 
     [data-theme="dark"] h3 {
-      color: #e2e8f0;
+      color: var(--text-primary);
       border-bottom-color: #334155
     }
 
@@ -1734,10 +1743,10 @@
           </div>
         </div>
         <div class="theme-toggle" role="group" aria-label="Theme selection">
-          <button id="lightBtn" class="theme-toggle-btn" aria-label="Light Mode">
+          <button id="lightBtn" class="theme-toggle-btn active" aria-label="Light Mode">
             <i class="fas fa-sun"></i> Light
           </button>
-          <button id="darkBtn" class="theme-toggle-btn active" aria-label="Dark Mode">
+          <button id="darkBtn" class="theme-toggle-btn" aria-label="Dark Mode">
             <i class="fas fa-moon"></i> Dark
           </button>
         </div>
@@ -4426,20 +4435,35 @@
 
               <script>
                 (function () {
-                  // ============ THEME ============
                   const html = document.documentElement;
                   const themeBtn = document.getElementById('themeToggle');
-                  let dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-                  function applyTheme(d) {
-                    dark = d;
-                    html.setAttribute('data-theme', d ? 'dark' : 'light');
-                    if (themeBtn) themeBtn.innerHTML = d
-                      ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg> Light'
-                      : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg> Dark';
+                  function setTheme(d) {
+                    html.setAttribute('data-theme', d);
+                    localStorage.setItem('theme', d);
+                    const darkBtn = document.getElementById('darkBtn');
+                    const lightBtn = document.getElementById('lightBtn');
+                    if (darkBtn) darkBtn.classList.toggle('active', d === 'dark');
+                    if (lightBtn) lightBtn.classList.toggle('active', d === 'light');
+                    if (themeBtn) {
+                      const isDark = d === 'dark';
+                      themeBtn.innerHTML = isDark
+                        ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg> Light'
+                        : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg> Dark';
+                    }
                   }
-                  applyTheme(dark);
-                  if (themeBtn) themeBtn.addEventListener('click', () => applyTheme(!dark));
+
+                  const savedTheme = localStorage.getItem('theme') || 'light';
+                  setTheme(savedTheme);
+                  if (themeBtn) {
+                    themeBtn.addEventListener('click', () => {
+                      setTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+                    });
+                  }
+                  const darkBtn = document.getElementById('darkBtn');
+                  const lightBtn = document.getElementById('lightBtn');
+                  if (darkBtn) darkBtn.onclick = () => setTheme('dark');
+                  if (lightBtn) lightBtn.onclick = () => setTheme('light');
 
                   // ============ PROGRESS BAR ============
                   const progressBar = document.getElementById('progressBar');
@@ -4598,27 +4622,6 @@
                   updateProgress();
                   updateBackToTop();
                   updateActiveNav();
-
-                  // ============ THEME SWITCHER ============
-                  function setTheme(d) {
-                    const html = document.documentElement;
-                    html.setAttribute('data-theme', d);
-                    localStorage.setItem('theme', d);
-                    const darkBtn = document.getElementById('darkBtn');
-                    const lightBtn = document.getElementById('lightBtn');
-                    if (darkBtn) darkBtn.classList.toggle('active', d === 'dark');
-                    if (lightBtn) lightBtn.classList.toggle('active', d === 'light');
-                  }
-
-                  // Initial load
-                  const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-                  setTheme(savedTheme);
-
-                  // Wiring up buttons
-                  const darkBtn = document.getElementById('darkBtn');
-                  const lightBtn = document.getElementById('lightBtn');
-                  if (darkBtn) darkBtn.onclick = () => setTheme('dark');
-                  if (lightBtn) lightBtn.onclick = () => setTheme('light');
                 })();
               </script>
 

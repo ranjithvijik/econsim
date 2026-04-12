@@ -36,9 +36,9 @@ module.exports = {
       }
     },
     {
-      name: 'Dark mode defaults',
+      name: 'Light mode defaults',
       fn: () => {
-        assert(contains('data-theme="dark"'), 'Should default to data-theme="dark"');
+        assert(contains('data-theme="light"'), 'Should default to data-theme="light"');
       }
     }
   ]
