@@ -17,7 +17,7 @@ module.exports = {
     {
       name: 'Index links to Student Guide',
       fn: () => {
-        assert(contains('econsimguide.html', 'index.html'), 'index.html should link to econsimguide.html');
+        assert(contains('href="/econsimguide.html"', 'index.html'), 'index.html should use root-relative Student Guide link');
         assert(contains('Student Guide', 'index.html'), 'index.html should label Student Guide link');
       },
     },

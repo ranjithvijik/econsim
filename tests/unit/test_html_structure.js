@@ -51,7 +51,7 @@ module.exports = {
     {
       name: 'Student Guide href from simulator',
       fn: () => {
-        assert(contains('econsimguide.html'), 'index should reference econsimguide.html');
+        assert(contains('href="/econsimguide.html"'), 'Student Guide must use root-relative URL (avoids nested paths on Amplify)');
         assert(contains('student-guide-link'), 'index should use student-guide-link class');
       }
     }
