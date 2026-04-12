@@ -3,7 +3,8 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0a1628">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <title>Economics Simulator</title>
@@ -99,6 +100,8 @@
     html {
       scroll-behavior: smooth;
       font-size: 16px;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
     }
 
     body {
@@ -121,6 +124,7 @@
     .app-layout {
       display: flex;
       min-height: 100vh;
+      min-height: 100dvh;
     }
 
     .sidebar {
@@ -144,6 +148,7 @@
       flex: 1;
       min-width: 0;
       transition: margin-left .3s;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
     }
 
     .top-bar {
@@ -156,7 +161,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 24px;
+      padding: 0 max(24px, env(safe-area-inset-right, 0px)) 0 max(24px, env(safe-area-inset-left, 0px));
       backdrop-filter: blur(12px);
     }
 
@@ -203,6 +208,7 @@
       background: var(--navy-700);
       border-bottom: 1px solid var(--border);
       padding: 10px 0;
+      padding-top: max(10px, env(safe-area-inset-top, 0px));
       overflow: hidden;
     }
 
@@ -262,10 +268,16 @@
       font-weight: 600;
       font-size: 14px;
       padding: 6px 12px;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       border: 1px solid var(--border-accent);
       border-radius: var(--radius);
       transition: all 0.2s;
       background: var(--surface);
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .student-guide-link:hover {
@@ -296,6 +308,8 @@
       font-size: 16px;
       transition: all .3s;
       color: var(--gray-300);
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .theme-toggle-btn.active {
@@ -609,7 +623,9 @@
     .chart-wrap {
       position: relative;
       width: 100%;
+      max-width: 100%;
       overflow: hidden;
+      touch-action: pan-y pinch-zoom;
     }
 
     .chart-wrap canvas {
@@ -1111,6 +1127,26 @@
         margin-left: 0;
       }
 
+      .section {
+        padding: 16px;
+      }
+
+      .section-title {
+        font-size: clamp(1.25rem, 4vw + 0.5rem, 1.75rem);
+      }
+
+      .top-bar {
+        padding-left: max(12px, env(safe-area-inset-left, 0px));
+        padding-right: max(12px, env(safe-area-inset-right, 0px));
+        flex-wrap: wrap;
+        height: auto;
+        min-height: var(--header-h);
+      }
+
+      .top-bar-meta {
+        display: none;
+      }
+
       .grid-2,
       .grid-3,
       .grid-4,
@@ -1120,6 +1156,39 @@
 
       .mobile-menu-btn {
         display: flex !important;
+      }
+
+      .theme-toggle-btn {
+        min-width: 44px;
+        min-height: 44px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      .ticker-content,
+      .spinner,
+      .status-dot {
+        animation: none !important;
+      }
+    }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 199;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .sidebar-overlay.visible {
+      display: block;
+    }
+
+    @media (min-width: 901px) {
+      .sidebar-overlay {
+        display: none !important;
       }
     }
 
@@ -1131,6 +1200,17 @@
       font-size: 22px;
       cursor: pointer;
       padding: 8px;
+      min-width: 44px;
+      min-height: 44px;
+      align-items: center;
+      justify-content: center;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .top-bar-meta {
+      font-size: 14px;
+      color: var(--gray-200);
     }
 
     .stock-change {
@@ -1450,14 +1530,15 @@
         <div style="margin-top:6px;color:var(--green);">🔴 78 MODULES ENABLED</div>
       </div>
     </aside>
+    <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true" onclick="closeMobileSidebar()"></div>
     <main class="main-content">
       <div class="ticker-strip" id="tickerStrip">
         <div class="ticker-content" id="tickerContent"></div>
       </div>
       <header class="top-bar">
-        <div class="top-bar-left"><button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button><span
-            class="ticker-badge">ECONSIM</span><span style="font-size:14px;color:var(--gray-200);">78
-            Modules</span></div>
+        <div class="top-bar-left"><button type="button" class="mobile-menu-btn" onclick="toggleSidebar()"
+            aria-label="Open navigation menu">☰</button><span
+            class="ticker-badge">ECONSIM</span><span class="top-bar-meta">78 Modules</span></div>
         <div class="top-bar-right">
           <a href="/econsimguide/" class="student-guide-link">Student Guide</a>
           <div class="theme-toggle"><button class="theme-toggle-btn" id="darkBtn"
@@ -1910,8 +1991,31 @@
     function setupMacroListeners() { const p = document.getElementById('pv-rate'); if (p) p.addEventListener('input', e => { e.target.dataset.userTouched = '1'; }); }
     function setTheme(t) { document.documentElement.setAttribute('data-theme', t); localStorage.setItem('theme', t); document.getElementById('darkBtn').classList.toggle('active', t === 'dark'); document.getElementById('lightBtn').classList.toggle('active', t === 'light'); refreshAllCharts(); }
     function initTheme() { setTheme(localStorage.getItem('theme') || 'light'); }
-    function showSection(id) { document.querySelectorAll('.section').forEach(s => s.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); const sec = document.getElementById(id); if (sec) sec.classList.add('active'); if (typeof event !== 'undefined' && event && event.target) event.target.closest('.nav-item')?.classList.add('active'); if (window.innerWidth <= 900) document.getElementById('sidebar').classList.remove('show'); }
-    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('show'); }
+    function closeMobileSidebar() {
+      const sb = document.getElementById('sidebar');
+      if (sb) sb.classList.remove('show');
+      const ov = document.getElementById('sidebarOverlay');
+      if (ov) { ov.classList.remove('visible'); ov.setAttribute('aria-hidden', 'true'); }
+    }
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      const sec = document.getElementById(id);
+      if (sec) sec.classList.add('active');
+      if (typeof event !== 'undefined' && event && event.target) event.target.closest('.nav-item')?.classList.add('active');
+      if (window.innerWidth <= 900) closeMobileSidebar();
+    }
+    function toggleSidebar() {
+      const sb = document.getElementById('sidebar');
+      if (!sb) return;
+      sb.classList.toggle('show');
+      const on = sb.classList.contains('show');
+      const ov = document.getElementById('sidebarOverlay');
+      if (ov) {
+        ov.classList.toggle('visible', on);
+        ov.setAttribute('aria-hidden', on ? 'false' : 'true');
+      }
+    }
     function updateTicker() { const tc = document.getElementById('tickerContent'); let h = ''; Object.keys(demoStockData).forEach(s => { const st = demoStockData[s]; const cc = st.change >= 0 ? 'up' : 'down'; const cs = st.change >= 0 ? '+' : ''; h += `<div class="ticker-item"><span class="ticker-symbol">${s}</span><span class="ticker-price">$${st.price.toFixed(2)}</span><span class="ticker-change ${cc}">${cs}${st.changePercent.toFixed(2)}%</span></div>`; }); tc.innerHTML = h + h; }
     async function fetchStockData() {
       const sym = document.getElementById('stockSymbol').value.toUpperCase();
