@@ -243,6 +243,23 @@
       }
     }
 
+    .student-guide-link {
+      text-decoration: none;
+      color: var(--teal);
+      font-weight: 600;
+      font-size: 14px;
+      padding: 6px 12px;
+      border: 1px solid var(--border-accent);
+      border-radius: var(--radius);
+      transition: all 0.2s;
+      background: var(--surface);
+    }
+
+    .student-guide-link:hover {
+      background: var(--teal);
+      color: #fff;
+    }
+
     .theme-toggle {
       display: flex;
       align-items: center;
@@ -1213,10 +1230,14 @@
       <div class="nav-section-title">Macroeconomics: Aggregate Models</div>
       <div class="nav-item" onclick="showSection('ad-as')"><span class="nav-icon">📉</span><span>AD-AS
           Model</span><span class="nav-number">21</span></div>
+      <div class="nav-item" onclick="showSection('islm-model')"><span class="nav-icon">📐</span><span>IS-LM
+          Model</span><span class="nav-number">M4</span></div>
       <div class="nav-item" onclick="showSection('fiscal-policy')"><span class="nav-icon">🏛️</span><span>Fiscal
           Policy</span><span class="nav-number">22</span></div>
       <div class="nav-item" onclick="showSection('monetary-policy')"><span class="nav-icon">🏦</span><span>Monetary
           Policy</span><span class="nav-number">23</span></div>
+      <div class="nav-item" onclick="showSection('taylor-rule')"><span class="nav-icon">🎯</span><span>Taylor
+          Rule</span><span class="nav-number">M18</span></div>
       <div class="nav-item" onclick="showSection('phillips-curve')"><span class="nav-icon">📊</span><span>Phillips
           Curve</span><span class="nav-number">24</span></div>
       <div class="nav-item" onclick="showSection('solow-growth')"><span class="nav-icon">🌱</span><span>Economic
@@ -1245,6 +1266,8 @@
           Calculator</span><span class="nav-number">G1</span></div>
       <div class="nav-item" onclick="showSection('real-nominal-gdp')"><span class="nav-icon">📉</span><span>Real vs
           Nominal GDP</span><span class="nav-number">G2</span></div>
+      <div class="nav-item" onclick="showSection('business-cycle')"><span class="nav-icon">🔄</span><span>Business
+          Cycle</span><span class="nav-number">G4</span></div>
 
       <div class="nav-section-title">Growth, Employment & Prices</div>
       <div class="nav-item" onclick="showSection('growth-rate')"><span class="nav-icon">📈</span><span>Growth
@@ -1323,6 +1346,8 @@
           Markets</span><span class="nav-number">I3</span></div>
       <div class="nav-item" onclick="showSection('public-choice')"><span class="nav-icon">🗳️</span><span>Public
           Choice</span><span class="nav-number">I4</span></div>
+      <div class="nav-item" onclick="showSection('public-goods')"><span class="nav-icon">🏛️</span><span>Public
+          Goods</span><span class="nav-number">I5</span></div>
 
       <div class="nav-section-title">International Economics</div>
       <div class="nav-item" onclick="showSection('exchange-rates')"><span class="nav-icon">💱</span><span>Exchange
@@ -1331,6 +1356,8 @@
           Debt</span><span class="nav-number">X2</span></div>
       <div class="nav-item" onclick="showSection('trade-policy')"><span class="nav-icon">📜</span><span>Trade
           Policy</span><span class="nav-number">X3</span></div>
+      <div class="nav-item" onclick="showSection('mundell-fleming')"><span class="nav-icon">🌐</span><span>Mundell-
+          Fleming</span><span class="nav-number">X6</span></div>
       <div class="nav-item" onclick="showSection('globalization')"><span
           class="nav-icon">🌐</span><span>Globalization</span><span class="nav-number">X4</span></div>
       <div class="nav-item" onclick="showSection('macro-policy-world')"><span class="nav-icon">🌍</span><span>Macro
@@ -1356,6 +1383,7 @@
             class="ticker-badge">ECONSIM</span><span style="font-size:14px;color:var(--gray-200);">78
             Modules</span></div>
         <div class="top-bar-right">
+          <a href="econsimguide.html" class="student-guide-link">Student Guide</a>
           <div class="theme-toggle"><button class="theme-toggle-btn active" id="darkBtn"
               onclick="setTheme('dark')">🌙</button><button class="theme-toggle-btn" id="lightBtn"
               onclick="setTheme('light')">☀️</button></div>
@@ -2012,6 +2040,58 @@
     function updatePhillips() { const un = parseFloat(document.getElementById('pc2-un').value), pie = parseFloat(document.getElementById('pc2-pie').value), sh = parseFloat(document.getElementById('pc2-shock').value), al = parseFloat(document.getElementById('pc2-alpha').value), u = parseFloat(document.getElementById('pc2-u').value); document.getElementById('pc2-un-val').textContent = `${un.toFixed(1)}%`; document.getElementById('pc2-pie-val').textContent = `${pie.toFixed(1)}%`; document.getElementById('pc2-shock-val').textContent = `${sh.toFixed(1)}%`; document.getElementById('pc2-alpha-val').textContent = al.toFixed(1); document.getElementById('pc2-u-val').textContent = `${u.toFixed(1)}%`; const pi = pie - al * (u - un) + sh, cy = u - un, ok = -2 * cy; let pos = 'At LRPC'; if (u < un - 0.3) pos = 'Left of LRPC'; else if (u > un + 0.3) pos = 'Right of LRPC'; document.getElementById('pc2-pi').textContent = `${pi.toFixed(1)}%`; document.getElementById('pc2-cyclic').textContent = `${cy >= 0 ? '+' : ''}${cy.toFixed(1)}%`; document.getElementById('pc2-okun').textContent = `${ok.toFixed(1)}%`; document.getElementById('pc2-pos').textContent = pos; document.getElementById('pc2-insight').textContent = sh > 0 ? 'Supply shock pushing inflation higher (stagflation risk).' : u < un ? 'Overheating: low unemployment, rising inflation.' : u > un ? 'Slack: high unemployment, falling inflation.' : 'At natural rate.'; const ctx = document.getElementById('phillipsChart'); if (!ctx) return; const col = getChartColors(), uv = [], sr = []; for (let x = 0.5; x <= 12; x += 0.5) { uv.push(x.toFixed(1)); sr.push(pie - al * (x - un) + sh); } if (phillipsChart) phillipsChart.destroy(); phillipsChart = new Chart(ctx, { type: 'line', data: { labels: uv, datasets: [{ label: 'SRPC', data: sr, borderColor: col.teal, fill: false, borderWidth: 2, tension: 0.3 }, { label: 'LRPC', data: uv.map(x => Math.abs(parseFloat(x) - un) < 0.3 ? 10 : null), borderColor: col.purple, borderDash: [5, 5], fill: false, borderWidth: 2 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: col.text } } }, scales: { x: { title: { display: true, text: 'Unemployment (%)', color: col.text }, ticks: { color: col.text }, grid: { color: col.grid } }, y: { title: { display: true, text: 'Inflation (%)', color: col.text }, ticks: { color: col.text }, grid: { color: col.grid } } } } }); }
     function updateGrowth() { const s = parseFloat(document.getElementById('sg-s').value), d = parseFloat(document.getElementById('sg-d').value), n = parseFloat(document.getElementById('sg-n').value), A = parseFloat(document.getElementById('sg-a').value), al = parseFloat(document.getElementById('sg-alpha').value); document.getElementById('sg-s-val').textContent = s.toFixed(2); document.getElementById('sg-d-val').textContent = d.toFixed(2); document.getElementById('sg-n-val').textContent = n.toFixed(3); document.getElementById('sg-a-val').textContent = A.toFixed(2); document.getElementById('sg-alpha-val').textContent = al.toFixed(2); const kS = Math.pow(s * A / (d + n), 1 / (1 - al)), yS = A * Math.pow(kS, al), cS = (1 - s) * yS; let gs = 'At GR'; if (s < al - 0.02) gs = 'Below GR'; else if (s > al + 0.02) gs = 'Above GR'; document.getElementById('sg-kstar').textContent = kS.toFixed(2); document.getElementById('sg-ystar').textContent = yS.toFixed(2); document.getElementById('sg-cstar').textContent = cS.toFixed(2); document.getElementById('sg-golden').textContent = gs; document.getElementById('sg-insight').textContent = s < al ? `Savings ${(s * 100).toFixed(0)}% below Golden Rule ${(al * 100).toFixed(0)}%. Increase savings for higher consumption.` : s > al ? `Savings ${(s * 100).toFixed(0)}% above Golden Rule ${(al * 100).toFixed(0)}%. Dynamically inefficient.` : 'At Golden Rule — max consumption per worker.'; const ctx = document.getElementById('growthChart'); if (!ctx) return; const col = getChartColors(), kv = [], od = [], id = [], bd = []; for (let k = 0.1; k <= 20; k += 0.5) { kv.push(k.toFixed(1)); od.push(A * Math.pow(k, al)); id.push(s * A * Math.pow(k, al)); bd.push((d + n) * k); } if (growthChart) growthChart.destroy(); growthChart = new Chart(ctx, { type: 'line', data: { labels: kv, datasets: [{ label: 'Output f(k)', data: od, borderColor: col.teal, borderWidth: 2, fill: false, tension: 0.3 }, { label: 'Investment s·f(k)', data: id, borderColor: col.green, borderWidth: 2.5, fill: false, tension: 0.3 }, { label: 'Break-even (δ+n)k', data: bd, borderColor: col.red, borderWidth: 2, borderDash: [6, 3], fill: false }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: col.text } } }, scales: { x: { ticks: { color: col.text, maxTicksLimit: 8 }, grid: { color: col.grid }, title: { display: true, text: 'Capital per Worker (k)', color: col.text } }, y: { ticks: { color: col.text }, grid: { color: col.grid }, title: { display: true, text: 'Output / Investment', color: col.text } } } } }); }
 
+    function updateISLM() {
+      const g = pf('islm-g'), t = pf('islm-t'), ms = pf('islm-ms');
+      ['islm-g', 'islm-t', 'islm-ms'].forEach(id => document.getElementById(id + '-val').textContent = document.getElementById(id).value);
+      const Y = (g - 0.8 * t + 0.2 * ms) * 2.5; 
+      const r = (0.01 * Y - 0.02 * ms); 
+      document.getElementById('islm-y-val').textContent = Y.toFixed(0);
+      document.getElementById('islm-r-val').textContent = Math.max(0.1, r).toFixed(1) + '%';
+      const ctx = document.getElementById('islmChart'); if (!ctx) return;
+      const col = getChartColors(), isData = [], lmData = [], labels = [];
+      for (let y = 500; y <= 2000; y += 100) { labels.push(y); isData.push(10 - (y - g + t) / 100); lmData.push((y - ms / 2) / 100); }
+      if (islmChartInstance) islmChartInstance.destroy();
+      islmChartInstance = new Chart(ctx, { type: 'line', data: { labels, datasets: [{ label: 'IS', data: isData, borderColor: col.red, fill: false }, { label: 'LM', data: lmData, borderColor: col.teal, fill: false }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0, max: 15 } } } });
+    }
+
+    function updateTaylorRule() {
+      const inf = pf('tr-inf'), gap = pf('tr-gap'), target = pf('tr-target');
+      ['tr-inf', 'tr-gap', 'tr-target'].forEach(id => document.getElementById(id + '-val').textContent = document.getElementById(id).value + '%');
+      const r = 2.0 + inf + 0.5 * (inf - target) + 0.5 * gap;
+      document.getElementById('tr-rate-calc').textContent = r.toFixed(1) + '%';
+      const stance = r > (target + 2) ? 'Contractionary' : 'Expansionary';
+      const stEl = document.getElementById('tr-stance'); stEl.textContent = stance; stEl.className = 'result-value ' + (stance === 'Contractionary' ? 'red' : 'green');
+    }
+
+    function updateBusinessCycle() {
+      const vol = pf('bc-vol'), days = pf('bc-days');
+      ['bc-vol', 'bc-days'].forEach(id => document.getElementById(id + '-val').textContent = document.getElementById(id).value);
+      const ctx = document.getElementById('bcChart'); if (!ctx) return;
+      const col = getChartColors(), labels = [], data = [];
+      for (let i = 0; i < days; i++) { labels.push(i); data.push(100 + vol * Math.sin(i / 5) + (i * 0.2)); }
+      if (busCycleChartInstance) busCycleChartInstance.destroy();
+      busCycleChartInstance = new Chart(ctx, { type: 'line', data: { labels, datasets: [{ label: 'Real GDP', data: data, borderColor: col.teal, backgroundColor: 'rgba(0,180,216,0.1)', fill: true }] }, options: { responsive: true, maintainAspectRatio: false } });
+    }
+
+    function updatePublicGoods() {
+      const users = pf('pg-users'), cost = pf('pg-cost'), contrib = pf('pg-contrib');
+      ['pg-users', 'pg-cost', 'pg-contrib'].forEach(id => document.getElementById(id + '-val').textContent = (id==='pg-users'?'':'$')+document.getElementById(id).value);
+      const fund = users * contrib; document.getElementById('pg-total-fund').textContent = '$' + fund.toLocaleString();
+      const success = fund >= cost; const stEl = document.getElementById('pg-status'); stEl.textContent = success ? 'PROVIDED' : 'FAILED'; stEl.className = 'result-value ' + (success ? 'green' : 'red');
+      const gain = success ? (10 - contrib) : 0; const gEl = document.getElementById('pg-gain'); gEl.textContent = (gain >= 0 ? '+' : '-') + '$' + Math.abs(gain); gEl.className = 'result-value ' + (gain > 0 ? 'green' : (gain < 0 ? 'red' : 'gray'));
+    }
+
+    function setMFRegime(r) { mfRegime = r; document.getElementById('mf-btn-floating').className = r === 'floating' ? 'btn btn-teal' : 'btn btn-outline'; document.getElementById('mf-btn-fixed').className = r === 'fixed' ? 'btn btn-teal' : 'btn btn-outline'; updateMF(); }
+    function updateMF() {
+      const fis = pf('mf-fiscal'), mon = pf('mf-monetary');
+      ['mf-fiscal', 'mf-monetary'].forEach(id => document.getElementById(id + '-val').textContent = document.getElementById(id).value);
+      const fPower = mfRegime === 'floating' ? 'LOW' : 'HIGH', mPower = mfRegime === 'floating' ? 'HIGH' : 'LOW';
+      document.getElementById('mf-fiscal-power').textContent = fPower; document.getElementById('mf-monetary-power').textContent = mPower;
+      document.getElementById('mf-fiscal-power').className = 'result-value ' + (fPower === 'HIGH' ? 'green' : 'red');
+      document.getElementById('mf-monetary-power').className = 'result-value ' + (mPower === 'HIGH' ? 'green' : 'red');
+      document.getElementById('mf-explanation').textContent = mfRegime === 'floating' ? 'Under floating rates, monetary policy is powerful as it affects exchange rates, but fiscal policy is crowded out by currency appreciation.' : 'Under fixed rates, fiscal policy is maximizing as the central bank must expand money supply to maintain the peg, but monetary policy is neutralized.';
+    }
+
     function pf(id) { return parseFloat(document.getElementById(id).value) || 0; }
 
     function updateScarcity() {
@@ -2044,7 +2124,8 @@
       renderScarcityCharts(food, shelter, edu, fAmt, sAmt, eAmt, fUtil, sUtil, eUtil);
     }
 
-    let ppfChartInstance;
+    let ppfChartInstance, islmChartInstance, busCycleChartInstance;
+    let mfRegime = 'floating';
     function updatePPF() {
       const maxA = pf('ppf-maxA'), maxB = pf('ppf-maxB'), pointA = pf('ppf-pointA'), tech = pf('ppf-tech') / 100;
       document.getElementById('ppf-maxA-val').textContent = maxA;
@@ -4985,7 +5066,40 @@
 </section>
 
 <!-- MODULE 21: AD-AS MODEL (Source-Enhanced with OpenStax Macro 3e) -->
-<section id="ad-as" class="section">
+</section>
+
+<!-- MODULE M4: IS-LM MODEL -->
+<section id="islm-model" class="section">
+<div class="section-header">
+  <span class="section-label">Module M4</span>
+  <h2 class="section-title">IS-LM Model</h2>
+  <p class="section-subtitle">The foundation of modern macroeconomics. Intersection of the Goods Market (IS) and Money Market (LM) to determine output and interest rates.</p>
+  <div><span class="source-tag source-openstax">📗 OpenStax Macro 3e · Ch.12</span></div>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">📐 Model Parameters</div>
+    ${sl('islm-g', 'Govt Spending (G)', 50, 500, 200, 10, 'updateISLM')}
+    ${sl('islm-t', 'Taxes (T)', 50, 500, 150, 10, 'updateISLM')}
+    ${sl('islm-ms', 'Money Supply (Ms)', 100, 1000, 500, 25, 'updateISLM')}
+    <div class="formula-block">
+      <span class="formula-label">IS-LM Equilibrium</span>
+      IS: Y = C(Y-T) + I(r) + G<br>
+      LM: Ms/P = L(Y, r)<br>
+      Equilibrium: (Y*, r*)
+    </div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">IS-LM Equilibrium Chart</div>
+    <div class="chart-subtitle">Goods market (IS) and Money market (LM)</div>
+    <div class="chart-wrap h-320"><canvas id="islmChart"></canvas></div>
+  </div>
+</div>
+<div class="grid-2" style="margin-top:16px;">
+  <div class="kpi-card"><div class="kpi-label">Equilibrium Output (Y*)</div><div class="kpi-val teal" id="islm-y-val">1200</div></div>
+  <div class="kpi-card gold"><div class="kpi-label">Interest Rate (r*)</div><div class="kpi-val" id="islm-r-val">3.5%</div></div>
+</div>
+</section>
 <div class="section-header">
   <span class="section-label">Module 21</span>
   <h2 class="section-title">Aggregate Demand–Aggregate Supply Model</h2>
@@ -5195,7 +5309,41 @@
 </section>
 
 <!-- MODULE 23: MONETARY POLICY (Source-Enhanced with OpenStax Macro 3e) -->
-<section id="monetary-policy" class="section">
+</section>
+
+<!-- MODULE M18: TAYLOR RULE -->
+<section id="taylor-rule" class="section">
+<div class="section-header">
+  <span class="section-label">Module M18</span>
+  <h2 class="section-title">Taylor Rule</h2>
+  <p class="section-subtitle">The guiding logic for central bank interest rate decisions based on inflation and output gaps.</p>
+  <div><span class="source-tag source-openstax">📗 OpenStax Macro 3e · Ch.18</span></div>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">🎯 Targeted Interest Rate</div>
+    ${sl('tr-inf', 'Current Inflation (%)', 0, 15, 4, 0.1, 'updateTaylorRule', '', '%')}
+    ${sl('tr-gap', 'Output Gap (%)', -10, 10, -2, 0.1, 'updateTaylorRule', '', '%')}
+    ${sl('tr-target', 'Target Inflation (%)', 1, 4, 2, 0.1, 'updateTaylorRule', '', '%')}
+    <div class="formula-block">
+      <span class="formula-label">Taylor Equation</span>
+      r = r_n + π + 0.5(π - π*) + 0.5(Output Gap)<br>
+      r_n = Neutral Real Interest Rate (est. 2%)
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Policy Verdict</div>
+    <div class="result-box">
+      <div class="result-item"><span class="result-label">Recommended FF Rate</span><span class="result-value teal" id="tr-rate-calc">5.0%</span></div>
+      <div class="result-item"><span class="result-label">Policy Stance</span><span class="result-value gold" id="tr-stance">Contractionary</span></div>
+    </div>
+    <div class="insight-card red" style="margin-top:20px;">
+      <div class="insight-label">💡 Central Bank Logic</div>
+      <p>If inflation > target, or output > potential, Taylor Rule suggests <strong>raising</strong> rates to cool the economy.</p>
+    </div>
+  </div>
+</div>
+</section>
 <div class="section-header">
   <span class="section-label">Module 23</span>
   <h2 class="section-title">Monetary Policy</h2>
@@ -5803,7 +5951,34 @@
 </section>
 
 <!-- G2: REAL VS NOMINAL GDP -->
-<section id="real-nominal-gdp" class="section">
+</section>
+
+<!-- MODULE G4: BUSINESS CYCLE -->
+<section id="business-cycle" class="section">
+<div class="section-header">
+  <span class="section-label">Module G4</span>
+  <h2 class="section-title">Business Cycle Simulator</h2>
+  <p class="section-subtitle">Observe the fluctuations in economic activity: Expansion, Peak, Recession, and Trough.</p>
+  <div><span class="source-tag source-openstax">📗 OpenStax Macro 3e · Ch.7</span></div>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">📈 Cycle Dynamics</div>
+    ${sl('bc-vol', 'Volatility (%)', 1, 10, 3, 1, 'updateBusinessCycle')}
+    ${sl('bc-days', 'Time Periods', 10, 100, 50, 5, 'updateBusinessCycle')}
+    <div class="insight-card gold" style="margin-top:20px;">
+      <div class="insight-label">💡 Key Phases</div>
+      <p><strong>Expansion:</strong> Rising GDP, falling unemployment.<br>
+      <strong>Recession:</strong> Two quarters of falling GDP.</p>
+    </div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">Real GDP Fluctuations</div>
+    <div class="chart-subtitle">Sine-wave model of the business cycle</div>
+    <div class="chart-wrap h-320"><canvas id="bcChart"></canvas></div>
+  </div>
+</div>
+</section>
 <div class="section-header">
   <span class="section-label">MACRO 02</span>
   <h2 class="section-title">Real vs. Nominal GDP Converter</h2>
@@ -6984,7 +7159,43 @@
 </section>
 
 <!-- I3: PUBLIC CHOICE -->
-<section id="public-choice" class="section">
+</section>
+
+<!-- MODULE I5: PUBLIC GOODS -->
+<section id="public-goods" class="section">
+<div class="section-header">
+  <span class="section-label">Module I5</span>
+  <h2 class="section-title">Public Goods & Free Rider</h2>
+  <p class="section-subtitle">Non-excludable and non-rival goods face the free-rider problem, leading to market failure.</p>
+  <div><span class="source-tag source-openstax">📗 OpenStax Micro 3e · Ch.13</span></div>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">🏛️ Public Provision</div>
+    ${sl('pg-users', 'Number of Users', 10, 500, 100, 10, 'updatePublicGoods')}
+    ${sl('pg-cost', 'Provision Cost ($)', 100, 2000, 500, 50, 'updatePublicGoods', '$')}
+    ${sl('pg-contrib', 'Individual Contribution', 0, 20, 5, 1, 'updatePublicGoods', '$')}
+    <div class="formula-block">
+      <span class="formula-label">Provision Rule</span>
+      Total Fund = Users × Contribution<br>
+      If Total Fund ≥ Cost: SUCCESS<br>
+      Individual Benefit = $10 (if success)
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Outcome Analysis</div>
+    <div class="result-box">
+      <div class="result-item"><span class="result-label">Total Fund</span><span class="result-value teal" id="pg-total-fund">$500</span></div>
+      <div class="result-item"><span class="result-label">Status</span><span class="result-value" id="pg-status">PROVIDED</span></div>
+      <div class="result-item"><span class="result-label">Net Individual Gain</span><span class="result-value green" id="pg-gain">+$5</span></div>
+    </div>
+    <div class="insight-card red" style="margin-top:20px;">
+      <div class="insight-label">⚠️ Free Rider Warning</div>
+      <p>If individuals think others will pay, they drop contribution to $0. If enough do this, the fund fails.</p>
+    </div>
+  </div>
+</div>
+</section>
   <div class="section-header">
     <span class="section-label">Module I3</span>
     <h2 class="section-title">Public Choice & Rent Seeking</h2>
@@ -7056,7 +7267,39 @@
 
 <!-- X3: S-I IDENTITY -->
 <!-- X3: TRADE POLICY -->
-<section id="trade-policy" class="section">
+</section>
+
+<!-- MODULE X6: MUNDELL-FLEMING -->
+<section id="mundell-fleming" class="section">
+<div class="section-header">
+  <span class="section-label">Module X6</span>
+  <h2 class="section-title">Mundell-Fleming Model</h2>
+  <p class="section-subtitle">Analyzing fiscal and monetary policy effectiveness under different exchange rate regimes.</p>
+  <div><span class="source-tag source-openstax">📗 Open Economy Macro</span></div>
+</div>
+<div class="card" style="margin-bottom:20px;">
+  <div class="card-title">🌐 Exchange Rate Regime</div>
+  <div class="btn-row">
+    <button class="btn btn-teal" onclick="setMFRegime('floating')" id="mf-btn-floating">Floating Exchange Rate</button>
+    <button class="btn btn-outline" onclick="setMFRegime('fixed')" id="mf-btn-fixed">Fixed Exchange Rate</button>
+  </div>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">🏛️ Policy Interventions</div>
+    ${sl('mf-fiscal', 'Fiscal Expansion (G)', 0, 100, 20, 10, 'updateMF')}
+    ${sl('mf-monetary', 'Monetary Expansion (Ms)', 0, 100, 20, 10, 'updateMF')}
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Policy Effectiveness</div>
+    <div class="result-box">
+      <div class="result-item"><span class="result-label">Fiscal Power</span><span class="result-value" id="mf-fiscal-power">HIGH</span></div>
+      <div class="result-item"><span class="result-label">Monetary Power</span><span class="result-value" id="mf-monetary-power">LOW</span></div>
+    </div>
+    <p class="chart-subtitle" id="mf-explanation" style="margin-top:12px;">Under fixed rates, fiscal policy is maximized but monetary policy is neutralized.</p>
+  </div>
+</div>
+</section>
 <div class="section-header">
   <span class="section-label">Module X3</span>
   <h2 class="section-title">Trade Policy: Tariffs, Quotas & VERs</h2>
