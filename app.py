@@ -2,11 +2,14 @@ import os
 import json
 from pathlib import Path
 from datetime import datetime, timezone
+from urllib.parse import quote
 
 import requests
 import streamlit as st
-import streamlit.components.v1 as components
-import world_bank_data as wb
+try:
+    import world_bank_data as wb
+except Exception:
+    wb = None
 
 
 st.set_page_config(
@@ -160,6 +163,8 @@ def get_world_bank_trade_bootstrap() -> dict:
         "NE.IMP.GNFS.ZS",  # Imports (% of GDP)
     ]
     result: dict[str, object] = {"country": "USA", "source": "World Bank", "series": {}, "fetched_at": ""}
+    if wb is None:
+        return {}
     try:
         data = wb.get_series(indicators, country="USA")
         # Normalize into {indicator: [{date, value}, ...]} ascending by date.
@@ -197,6 +202,22 @@ st.markdown(
 
 html = load_index_html()
 
+def render_embedded_html(raw_html: str) -> None:
+    """
+    Prefer st.iframe to avoid deprecated components.v1.html warnings.
+    Fall back only if iframe cannot be rendered for this runtime.
+    """
+    try:
+        data_url = "data:text/html;charset=utf-8," + quote(raw_html)
+        st.iframe(data_url, height=9000)
+        return
+    except Exception:
+        pass
+    st.warning("Falling back to legacy HTML embed mode.")
+    import streamlit.components.v1 as components
+    components.html(raw_html, height=9000, scrolling=True)
+
+
 # Full mirror of index.html (all 78 modules, same order/layout/styles/scripts).
-components.html(html, height=9000, scrolling=True)
+render_embedded_html(html)
 
