@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 from contextlib import redirect_stderr, redirect_stdout
 from io import StringIO
+import numpy as np
 
 import pandas as pd
 import plotly.graph_objects as go
@@ -136,7 +137,7 @@ def line_chart(df: pd.DataFrame, title: str, y_title: str, color: str = "#0891b2
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
 
 def fetch_fx_series(pair_label: str, yahoo_symbol: str, fred_key: str) -> tuple[pd.DataFrame, str]:
@@ -152,12 +153,21 @@ def fetch_fx_series(pair_label: str, yahoo_symbol: str, fred_key: str) -> tuple[
                 close = pd.Series(dtype="float64")
         else:
             close = close_obj
+        # Extra defensive normalization: ensure a 1D Series even if upstream returns ndarray-like shapes.
+        if not isinstance(close, pd.Series):
+            arr = np.asarray(close).squeeze()
+            if arr.ndim == 0:
+                close = pd.Series([arr])
+            elif arr.ndim == 1:
+                close = pd.Series(arr)
+            else:
+                close = pd.Series(arr.reshape(-1))
         close = pd.to_numeric(close, errors="coerce").dropna()
         if len(close) >= 2:
             return (
                 pd.DataFrame(
                     {
-                        "date": pd.to_datetime(close.index).to_list(),
+                        "date": pd.to_datetime(close.index, errors="coerce").to_list(),
                         "value": close.astype(float).to_list(),
                     }
                 ),
