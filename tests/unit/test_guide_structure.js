@@ -1,5 +1,9 @@
 'use strict';
 
+const fs = require('fs');
+const path = require('path');
+const { parse } = require('node-html-parser');
+
 const {
   countOccurrences,
   contains,
@@ -9,6 +13,12 @@ const {
 } = require('../helpers');
 
 const GUIDE = 'econsimguide.html';
+
+/** Parsed guide root (throws if file missing). Catches stray `</div>` that drops `.page` out of `.main-content`. */
+function parseGuideRoot() {
+  const html = fs.readFileSync(path.join(__dirname, '..', '..', GUIDE), 'utf8');
+  return parse(html);
+}
 
 /** Sidebar + body module order aligned with index.html (subset documented in guide). */
 const EXPECTED_SIDEBAR_TARGETS = [
@@ -79,7 +89,8 @@ function sidebarNavTargets(html) {
 
 module.exports = {
   name: 'Student Guide HTML',
-  description: 'Validates econsimguide.html structure, theme wiring, and navigation.',
+  description:
+    'Validates econsimguide.html structure, theme wiring, navigation, and DOM layout (sidebar + single main column).',
   tests: [
     {
       name: 'Single document shell',
@@ -177,6 +188,74 @@ module.exports = {
             positions[i] < positions[i + 1],
             `Order violation: "${moduleOnly[i]}" should appear before "${moduleOnly[i + 1]}" in body`,
           );
+        }
+      },
+    },
+    {
+      name: 'DOM: app-wrapper contains only sidebar + main-content (flex row)',
+      fn: () => {
+        const root = parseGuideRoot();
+        const app = root.querySelector('.app-wrapper');
+        assert(!!app, 'Missing .app-wrapper');
+        const kids = app.childNodes.filter((n) => n.nodeType === 1);
+        assertEqual(kids.length, 2, `app-wrapper should have exactly 2 element children, got ${kids.length}`);
+        assertEqual(kids[0].tagName, 'NAV', 'First child should be <nav>');
+        assert(
+          (kids[0].getAttribute('class') || '').split(/\s+/).includes('sidebar'),
+          'nav should have class sidebar',
+        );
+        assertEqual(kids[1].tagName, 'DIV', 'Second child should be <div class="main-content">');
+        assert(
+          (kids[1].getAttribute('class') || '').split(/\s+/).includes('main-content'),
+          'Second child should be .main-content',
+        );
+      },
+    },
+    {
+      name: 'DOM: no .page directly under .app-wrapper (stray closing div)',
+      fn: () => {
+        const root = parseGuideRoot();
+        const app = root.querySelector('.app-wrapper');
+        const stray = app.querySelectorAll(':scope > .page');
+        assertEqual(
+          stray.length,
+          0,
+          `Found ${stray.length} .page as direct child of .app-wrapper — extra </div> likely closed .main-content early`,
+        );
+      },
+    },
+    {
+      name: 'DOM: every .page section is inside .main-content',
+      fn: () => {
+        const root = parseGuideRoot();
+        const main = root.querySelector('.main-content');
+        assert(!!main, 'Missing .main-content');
+        const pages = root.querySelectorAll('.page');
+        assertAtLeast(pages.length, 1, 'Expected at least one .page');
+        const orphans = [];
+        for (const el of pages) {
+          const col = el.closest('.main-content');
+          if (!col || col !== main) {
+            orphans.push(el.getAttribute('id') || el.tagName);
+          }
+        }
+        assertEqual(
+          orphans.length,
+          0,
+          `.page outside .main-content: ${orphans.slice(0, 8).join(', ')}${orphans.length > 8 ? '…' : ''}`,
+        );
+      },
+    },
+    {
+      name: 'DOM: key anchors (#mp3, #m05, #references) under .main-content',
+      fn: () => {
+        const root = parseGuideRoot();
+        const main = root.querySelector('.main-content');
+        for (const id of ['mp3', 'm05', 'references']) {
+          const el = root.querySelector(`#${id}`);
+          assert(!!el, `Missing #${id}`);
+          const col = el.closest('.main-content');
+          assert(!!col && col === main, `#${id} must be a descendant of .main-content`);
         }
       },
     },
