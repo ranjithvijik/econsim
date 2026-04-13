@@ -1,103 +1,108 @@
-# Economics Simulator
+# Economics Simulator (EconSim)
 
 [![QA Status](https://github.com/ranjithvijik/econsim/actions/workflows/qa.yml/badge.svg)](https://github.com/ranjithvijik/econsim/actions)
 
-**Economics Simulator** is a comprehensive, interactive, and serverless web simulator designed to deeply explore both microeconomic and macroeconomic principles. Featuring 78 distinct educational modules, the platform seamlessly connects robust theoretical models with dynamic visualizations and live market data.
+**EconSim** is a client-side economics simulator: **78 interactive modules** covering microeconomics, macroeconomics, game theory, and applied topics. It pairs algebraic and graphical models with **Chart.js** visualizations, optional **live market** and **macro indicator** data, and a long-form **Student Guide** aligned with leading textbooks.
 
-Built entirely using Vanilla HTML, CSS, and JavaScript, it acts as a premier teaching tool, allowing users to empirically manipulate exogenous variables and instantly observe shifts in equilibrium states, elasticity, and macroeconomic policy impacts.
-
----
-
-## 🌟 Core Features
-
-- **78 Interactive Modules**: Comprehensive coverage ranging from foundational Supply & Demand and Elasticity to advanced Game Theory, Externalities, and the Solow Growth Model, encompassing 100% curriculum coverage across Micro and Macro.
-- **Real-Time Live Markets Integration**: Fetch live intraday market data (via Yahoo Finance API and CORS proxies) directly into the simulator to test theories against real-world equities and indices without a backend server.
-- **Dynamic Visualizations**: Deep integration with `Chart.js` provides immediate, smooth rerendering of complex curves (e.g., AD-AS models, Cost Curves, Cournot Reaction Functions) in response to slider manipulations.
-- **Zero-Dependency Architecture**: The frontend is 100% vanilla and serverless, requiring zero build steps to deploy or run locally. Simply open `index.html` in your browser.
-- **Modern UI/UX**: Glassmorphism elements, strict Dark/Light mode thematic toggles, and carefully engineered micro-animations ensure an immersive educational experience.
-- **Academic Rigor**: Incorporates formulas, KPI metrics, and explicit conceptual linkages matching leading textbooks *(OpenStax, Perloff & Brander)*.
+There is **no build step** for the app itself—open `index.html` in a browser or deploy the static files anywhere.
 
 ---
 
-## 🏗️ Included Modules
+## Features
 
-The platform is systematically segmented into comprehensive tracks:
-
-### Microeconomics & Firm Strategy
-- **Fundamentals**: Scarcity & Choice, PPF Simulator, Budget Constraint, Opportunity Cost, Utility Maximization, Marginal Decision, Indifference Curves.
-- **Market Dynamics**: Supply & Demand Equilibrium, Elasticity (Price, Supply, Cross/Income), Price Controls, Demand Shifter.
-- **Production & Costs**: Short-Run Production, Production & Cost Curves, Revenue vs Profit.
-- **Market Structures**: Perfect Competition, Monopolies, Monopolistic Competition, Oligopoly (Kinked Demand, Cournot vs Stackelberg, Bertrand Price Competition).
-- **Firm Strategy**: Collusion & Cartels, Entry Deterrence, Merger Analysis (HHI), Firm Organization (Make-or-Buy), Corporate Social Responsibility (CSR) & Business Ethics.
-- **Labor & Welfare**: Labor Market, MRP Labor, Poverty Calculator, Lorenz Curve, Tax Incidence.
-
-### Game Theory & Information Economics
-- **Game Theory Paradigms**: Static & Nash Equilibrium, Sequential Games & Backward Induction, Repeated Games, Mixed Strategy, Coordination Games, Behavioral Game Theory.
-- **Information & Risk**: Expected Value, Asymmetric Information, Moral Hazard, Auctions & Bargaining.
-- **Market Failure**: Externalities & Market Failure, Public Choice.
-
-### Macroeconomics
-- **National Accounting & Indicators**: GDP Calculator, Real vs Nominal GDP, Economic Growth Rate, Unemployment Calculator, Types of Unemployment, CPI Calculator, Purchasing Power.
-- **Aggregate Economy**: AD-AS Model, Keynesian Cross, Paradox of Thrift.
-- **Fiscal & Monetary Policy**: Fiscal Policy & Multipliers, Monetary Policy Mechanisms, The Phillips Curve, Fractional Reserve Banking, Financial Markets, National Debt.
-- **Long-Run Growth**: Solow Growth Model, Productivity Growth.
-
-### International Economics & Globalization
-- **Trade**: Comparative Advantage, Balance of Trade, Tariff Simulation, Trade Policy, Intra-Industry Trade.
-- **Global Systems**: Exchange Rates, Globalization, Macro Policy Around the World.
+- **78 modules** — Supply & demand through AD–AS, game theory, externalities, banking, trade, globalization, and more (see in-app navigation).
+- **Student Guide** — `econsimguide.html`, also served as `/econsimguide/` on AWS Amplify (see [Deployment](#deployment)).
+- **Course alignment** — In-app **course topic → simulator** table mapping typical syllabus units (OpenStax Micro/Macro chapters + managerial-style topics) to modules; deep links use `index.html#section-id`.
+- **OpenStax alignment** — Narrative and citations tied to *Principles of Microeconomics 3e* and *Principles of Macroeconomics 3e* (CC BY 4.0); PDFs linked from the app and guide.
+- **Other academic references** — Perloff & Brander (*Managerial Economics and Strategy*) and embedded “source” tags on many sections.
+- **Themes** — Light/dark UI with persistent preference.
+- **Charts** — Chart.js (CDN) for curves, bars, and dashboards that update from sliders and inputs.
+- **Data tiers** — Demo/synthetic data by default; optional local Python API, CORS proxies, FRED, and Alpha Vantage when keys and network are available.
 
 ---
 
-## 🔌 External APIs & Data Sources
+## Repository layout
 
-EconSim integrates direct connections to real-world data providers to dynamically adjust curriculum constants, shifting models out of theoretical bounds and into live economic reflection.
-
-### API Keys (GitHub Secrets)
-The following keys should be configured as **Environment Variables** or **GitHub Repository Secrets** for automated deployments:
-- `FRED_API`: Required for fetching macroeconomic indicators.
-- `AV_API_KEY`: Required for fetching Alpha Vantage stock configurations.
-
-### Data Tiers
-1. **Tier 1 (Local Servers)**: If a python/flask backend (`http://127.0.0.1:5000/`) is detected on the network, it fetches unfiltered live financial data locally.
-2. **Tier 2 (CORS Proxies)**: Securely proxies serverless requests to Yahoo Finance for immediate real-time equity queries without exposing tokens.
-3. **Tier 3 (Direct APIs)**: 
-   - **Federal Reserve Economic Data (FRED)**: Directly queried mapping 11 global indexes (FEDFUNDS, CPI, UNRATE, 10-Yr Yields, GDP Growth, etc.) via the St. Louis Fed.
-   - **Alpha Vantage**: Queried securely to fetch fallback `GLOBAL_QUOTE` financial analytics to fuel microeconomic models (like Dividend Gordon Growth equations and Beta calculations).
-4. **Tier 4 (Static Fallback)**: If rate-limits are hit or users run completely offline, the system safely triggers an initialized synthetic fallback simulation dataset dynamically generated in JS to ensure the UI visually succeeds in classroom environments.
+| Path | Purpose |
+|------|---------|
+| `index.html` | Main simulator (all sections injected by JS). |
+| `econsimguide.html` | Printable Student Guide (standalone HTML + CSS). |
+| `run_tests.js` | Node test orchestrator; writes `QA-REPORT.md`. |
+| `tests/unit/` | HTML structure, modules, components, guide, deploy config tests. |
+| `amplify.yml` | AWS Amplify build (guide URL, API key injection, security headers). |
+| `.github/workflows/` | QA and deploy workflows. |
 
 ---
 
-## 🧪 Automated Testing & QA Pipeline
+## Quick start (local)
 
-To ensure the unwavering stability of all educational components, this repository employs a fully offline HTML AST (Abstract Syntax Tree) QA testing framework written in Node.js. It executes in milliseconds without the overhead of a headless browser.
+1. Clone the repository.
+2. Open **`index.html`** in a modern browser (Chrome, Firefox, Safari, Edge).
 
-### QA Checks Implemented:
-- **`test_html_structure.js`**: Validates base HTML skeleton structure, dependencies, and globals.
-- **`test_modules.js`**: Validates the presence of all 78 modules, sub-titles, and academic source tags.
-- **`test_components.js`**: Asserts that all functional UI items (such as `<input type="range">` sliders, KPI cards, and `<canvas>` graph targets) are strictly maintained.
+Optional: serve over HTTP for stricter browser behavior:
 
-### Running QA Locally
-If you have Node.js 18+ installed on your machine:
 ```bash
-# Install the light-weight DOM parser dependency
-make install
-
-# Execute the QA suite and generate QA-REPORT.md
-make qa
+npx --yes serve -p 8080
+# Then open http://localhost:8080/index.html
 ```
-*Note: The QA-REPORT.md is dynamically overwritten on each run, providing an exact letter grade and specific module failure traces.*
 
-### CI/CD Deployment
-The repository includes integrated GitHub Actions (`qa.yml` and `deploy.yml`) as well as AWS Amplify (`amplify.yml`) instructions. The QA suite automatically runs on every push or Pull Request, blocking broken code from deploying.
+Open the guide directly with **`econsimguide.html`** or, after Amplify-style copy, **`econsimguide/index.html`**.
 
 ---
 
-## 🚀 Getting Started
+## Testing and QA
 
-Since the simulator operates purely client-side, deployment and usage are frictionless.
+Tests are **Node.js** checks against the HTML/JS (no headless browser). **Node 18+** required.
 
-1. **Locally**: Clone the repo and open `index.html` in any modern web browser.
-2. **Hosting**: Drag and drop the repository root directly into Vercel, Netlify, GitHub Pages, or AWS Amplify. No build command is required for the static frontend.
+```bash
+npm install          # installs devDependency node-html-parser
+npm test             # full suite → QA-REPORT.md
+npm run test:fast    # skip slower checks if supported
+```
 
-## 📄 License
-This project is for educational simulation and empirical economic analysis. 
+Equivalent **Makefile** targets: `make install`, `make qa`, `make fast`, `make t-html`, `make t-modules`, `make t-components`, `make t-guide`, `make t-deploy`.
+
+Suite overview:
+
+| Module | Role |
+|--------|------|
+| `html_structure` | Document shell, layout, Student Guide link pattern. |
+| `simulator_modules` | Section IDs and module metadata. |
+| `interactive_components` | Sliders, KPIs, canvases, etc. |
+| `guide_structure` | Student Guide DOM and navigation. |
+| `deploy_config` | `amplify.yml` and deploy expectations. |
+
+CI runs **`qa.yml`** on push/PR; see the badge at the top of this file.
+
+---
+
+## Deployment
+
+- **Static hosts** — Upload the repo root (or `index.html` + assets as your host requires). No compile step.
+- **AWS Amplify** — See `amplify.yml`: injects `AV_API_KEY` and `FRED` (as `FRED_API` secret) into `index.html`, copies `econsimguide.html` to **`econsimguide/index.html`** so **`/econsimguide/`** resolves, and sets security/cache headers for HTML.
+
+Configure secrets in Amplify (or your CI) for live FRED / Alpha Vantage usage. The UI still runs with **demo data** if keys are missing.
+
+---
+
+## External APIs (optional)
+
+| Secret / env | Use |
+|--------------|-----|
+| `FRED_API` | St. Louis Fed macro series (injected at build on Amplify). |
+| `AV_API_KEY` | Alpha Vantage quotes (injected at build on Amplify). |
+
+The code falls back to **synthetic/demo** stocks and cached-style macro values when APIs are unavailable or rate-limited.
+
+---
+
+## License and attribution
+
+This project is for **education and research**. Third-party textbook excerpts and attributions in the HTML follow their respective licenses (notably **OpenStax**, CC BY 4.0). Do not remove attribution blocks when redistributing derived materials.
+
+---
+
+## Acknowledgments
+
+- **OpenStax** — *Principles of Microeconomics 3e* & *Principles of Macroeconomics 3e* (Rice University; CC BY 4.0).
+- **Perloff & Brander** — *Managerial Economics and Strategy* (Pearson), referenced where noted in the UI.
