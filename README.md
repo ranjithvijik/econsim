@@ -12,8 +12,7 @@ There is **no build step** for the app itself—open `index.html` in a browser o
 
 - **78 modules** — Supply & demand through AD–AS, game theory, externalities, banking, trade, globalization, and more (see in-app navigation).
 - **Student Guide** — `econsimguide.html`, also served as `/econsimguide/` on AWS Amplify (see [Deployment](#deployment)).
-- **Course alignment** — In-app **course topic → simulator** table mapping typical syllabus units (OpenStax Micro/Macro chapters + managerial-style topics) to modules; deep links use `index.html#section-id`.
-- **OpenStax alignment** — Narrative and citations tied to *Principles of Microeconomics 3e* and *Principles of Macroeconomics 3e* (CC BY 4.0); PDFs linked from the app and guide.
+- **Course alignment** — In-app **course topic → simulator** table mapping typical syllabus units (including common micro/macro chapter themes + managerial-style topics) to modules; deep links use `index.html#section-id`.
 - **Other academic references** — Perloff & Brander (*Managerial Economics and Strategy*) and embedded “source” tags on many sections.
 - **Themes** — Light/dark UI with persistent preference.
 - **Charts** — Chart.js (CDN) for curves, bars, and dashboards that update from sliders and inputs.
