@@ -1085,6 +1085,11 @@
       background: var(--orange);
     }
 
+    .api-status-dot.live {
+      background: var(--green);
+      box-shadow: 0 0 8px rgba(0, 208, 132, 0.5);
+    }
+
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
@@ -1661,10 +1666,10 @@
               onclick="setTheme('dark')">🌙</button><button class="theme-toggle-btn active" id="lightBtn"
               onclick="setTheme('light')">☀️</button></div>
           <div class="status-dot"></div>
-          <div style="display:flex; flex-direction:column; align-items:flex-end; line-height: 1.2;">
-            <span style="font-size:12px;color:var(--green);font-family:var(--font-mono);font-weight:600;">LIVE</span>
-            <span id="lastUpdatedTime"
-              style="font-size:10px;color:var(--gray-300);font-family:var(--font-mono);"></span>
+          <div style="display:flex; flex-direction:column; align-items:flex-end; line-height: 1.25; max-width: min(420px, 46vw); text-align: right;">
+            <span style="font-size:12px;color:var(--green);font-family:var(--font-mono);font-weight:600;">DATA</span>
+            <span id="lastUpdatedTime" title="Latest macro and market data refresh"
+              style="font-size:10px;color:var(--gray-300);font-family:var(--font-mono);word-break: break-word;">Refresh: —</span>
           </div>
         </div>
       </header>
@@ -1962,52 +1967,79 @@
       return data ? data.price : null;
     }
 
+    let _macroRefreshAt = null;
+    let _marketRefreshAt = null;
+
+    function formatDataRefreshTime(date) {
+      return (date || new Date()).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'medium' });
+    }
+
+    /** kind: 'macro' | 'market' — updates top bar + section footers */
+    function touchDataRefresh(kind) {
+      const s = formatDataRefreshTime(new Date());
+      if (kind === 'macro') _macroRefreshAt = s;
+      if (kind === 'market') _marketRefreshAt = s;
+
+      const top = document.getElementById('lastUpdatedTime');
+      if (top) {
+        const bits = [];
+        if (_macroRefreshAt) bits.push('Macro ' + _macroRefreshAt);
+        if (_marketRefreshAt) bits.push('Market ' + _marketRefreshAt);
+        top.textContent = bits.length ? ('Refresh · ' + bits.join(' · ')) : ('Updated ' + s);
+      }
+      const mEl = document.getElementById('macroLastUpdated');
+      if (mEl && kind === 'macro') mEl.textContent = 'Macro indicators last refreshed: ' + s;
+      const mkEl = document.getElementById('marketLastUpdated');
+      if (mkEl && kind === 'market') mkEl.textContent = 'Market quote last refreshed: ' + s;
+    }
+
     async function fetchMacroData() {
       try {
-        // Tier 1: Local Python Server (If running)
-        try {
-          const resp = await fetch(`http://127.0.0.1:5000/api/stock/^TNX`, { signal: AbortSignal.timeout(1000) });
-          if (resp.ok) {
-            const d = await resp.json();
-            // This assumes the backend can fetch these tickers
-            // We'll primarily rely on Tier 2 for macro in this version
-          }
-        } catch (e) { }
+        const fredKeyOk = FRED_API_KEY && !FRED_API_KEY.startsWith('__FRED');
+        const fredGot = {};
 
-        // Tier 2: Yahoo Ticker Proxies via CORS Proxies
-        console.log('📡 Fetching Real-Time Macro Data (Yields)...');
-        const results = await Promise.allSettled([
-          fetchYahooMacro('^IRX'), // 13-week T-Bill (Fed Funds proxy)
-          fetchYahooMacro('^TNX'), // 10-Year yield
-          fetchYahooMacro('^FVX'), // 5-Year yield (proxy for short-mid term)
-        ]);
-
-        if (results[0].status === 'fulfilled' && results[0].value) economicState.FEDFUNDS = results[0].value;
-        if (results[1].status === 'fulfilled' && results[1].value) economicState.DGS10 = results[1].value;
-        if (results[2].status === 'fulfilled' && results[2].value) economicState.DGS2 = results[2].value;
-
-        console.log('📊 Real-time Macro State Updated:', {
-          'Fed Funds (proxy)': economicState.FEDFUNDS,
-          '10Y Yield': economicState.DGS10,
-          '2Y Yield (proxy)': economicState.DGS2
-        });
-
-        // Tier 3: FRED API Direct Connect (If injected)
-        if (FRED_API_KEY && !FRED_API_KEY.startsWith('__FRED')) {
-          console.log('📡 Fetching Real-Time Macro Data from FRED...');
-          const fredPromises = Object.keys(FRED_SERIES_MAP).map(async key => {
+        // Primary: FRED (official macro series)
+        if (fredKeyOk) {
+          console.log('📡 Fetching macro data from FRED (primary)...');
+          await Promise.allSettled(Object.keys(FRED_SERIES_MAP).map(async (key) => {
             const { id, units } = FRED_SERIES_MAP[key];
             const val = await fetchFredSeries(id, units);
-            if (val !== null) economicState[key] = val;
-          });
+            if (val !== null && !isNaN(val)) {
+              economicState[key] = val;
+              fredGot[key] = true;
+            }
+          }));
+          console.log('📊 FRED macro state:', economicState);
+        }
 
-          await Promise.allSettled(fredPromises);
-          console.log('📊 Complete FRED-linked Macro State:', economicState);
+        // Secondary: Yahoo Finance yield proxies — only fill gaps (or all yields if no FRED key)
+        const needFed = !fredGot.FEDFUNDS;
+        const need10 = !fredGot.DGS10;
+        const need2 = !fredGot.DGS2;
+        if (!fredKeyOk || needFed || need10 || need2) {
+          console.log('📡 Supplementing macro yields from Yahoo Finance...');
+          const results = await Promise.allSettled([
+            fetchYahooMacro('^IRX'),
+            fetchYahooMacro('^TNX'),
+            fetchYahooMacro('^FVX'),
+          ]);
+          if (results[0].status === 'fulfilled' && results[0].value != null && needFed) {
+            economicState.FEDFUNDS = results[0].value;
+          }
+          if (results[1].status === 'fulfilled' && results[1].value != null && need10) {
+            economicState.DGS10 = results[1].value;
+          }
+          if (results[2].status === 'fulfilled' && results[2].value != null && need2) {
+            economicState.DGS2 = results[2].value;
+          }
+          console.log('📊 After Yahoo yield supplement:', { FEDFUNDS: economicState.FEDFUNDS, DGS10: economicState.DGS10, DGS2: economicState.DGS2 });
         }
 
         refreshMacroLinkedExperience();
       } catch (err) {
-        console.warn('⚠️ Real-time macro fetch failed. Using static FRED data.', err);
+        console.warn('⚠️ Macro fetch error; keeping baseline economicState.', err);
+      } finally {
+        touchDataRefresh('macro');
       }
     }
     function clampValue(v, mn, mx) { return Math.max(mn, Math.min(mx, v)); }
@@ -2164,8 +2196,166 @@
         updateGrowth();
       }
 
-      // === Update all market context panels ===
+      // === IS-LM, Taylor Rule, PPF, budget, unemployment/CPI/GDP calculators, etc. ===
+      const islmG = document.getElementById('islm-g'), islmT = document.getElementById('islm-t'), islmMs = document.getElementById('islm-ms');
+      if (islmG && islmT && islmMs) {
+        islmG.value = clampValue(180 + gdp * 12, 50, 500);
+        islmT.value = clampValue(140 + unemp * 8, 50, 500);
+        islmMs.value = clampValue(700 + (5.5 - fed) * 40, 100, 1000);
+        updateISLM();
+      }
+      const trInf = document.getElementById('tr-inf'), trGap = document.getElementById('tr-gap'), trTarget = document.getElementById('tr-target');
+      if (trInf && trGap && trTarget) {
+        trInf.value = clampValue(cpi, 0, 15);
+        trGap.value = clampValue(gdp - 2.5, -10, 10);
+        trTarget.value = 2;
+        updateTaylorRule();
+      }
+      const bcVol = document.getElementById('bc-vol');
+      if (bcVol) {
+        bcVol.value = clampValue(2 + Math.abs(gdp - 2.2) * 1.2 + Math.abs(cpi - 2) * 0.4, 1, 10);
+        updateBusinessCycle();
+      }
+      const ppfMaxA = document.getElementById('ppf-maxA'), ppfMaxB = document.getElementById('ppf-maxB'), ppfPointA = document.getElementById('ppf-pointA'), ppfTech = document.getElementById('ppf-tech');
+      if (ppfMaxA && ppfMaxB && ppfPointA && ppfTech) {
+        const ind = economicState.INDPRO || 1.8;
+        ppfTech.value = clampValue(Math.round(5 + gdp * 2 + ind * 1.5), 0, 100);
+        ppfMaxA.value = clampValue(100 + (gdp - 2) * 5, 50, 500);
+        ppfMaxB.value = clampValue(260 + (sentiment - 75) * 2, 50, 500);
+        const ma = parseFloat(ppfMaxA.value);
+        ppfPointA.value = clampValue(Math.round(ma * 0.45), 0, 500);
+        updatePPF();
+      }
+      const bcInc = document.getElementById('bc-income');
+      if (bcInc) {
+        bcInc.value = clampValue(200 + sentiment * 2.5, 50, 500);
+        updateBudgetConstraint();
+      }
+      const urE = document.getElementById('ur-employed'), urU = document.getElementById('ur-unemployed'), urN = document.getElementById('ur-nilf');
+      if (urE && urU && urN) {
+        const lf = 164;
+        const uM = clampValue(Math.round(lf * unemp / 100), 1, 30);
+        urU.value = uM;
+        urE.value = clampValue(lf - uM, 100, 200);
+        updateUnempRate();
+      }
+      const cpiBase = document.getElementById('cpi-base'), cpiCur = document.getElementById('cpi-current'), cpiPrev = document.getElementById('cpi-prev');
+      if (cpiBase && cpiCur && cpiPrev) {
+        cpiBase.value = 1000;
+        cpiCur.value = clampValue(1000 * (1 + cpi / 100), 500, 3000);
+        cpiPrev.value = clampValue(100 + cpi * 0.8, 80, 200);
+        updateCPICalc();
+      }
+      const gdpC = document.getElementById('gdp-c');
+      if (gdpC) {
+        document.getElementById('gdp-c').value = clampValue(14.2 + (sentiment - 75) * 0.03, 5, 20);
+        document.getElementById('gdp-i').value = clampValue(3.5 + (gdp - 2.5) * 0.2, 1, 8);
+        document.getElementById('gdp-g').value = clampValue(4.0 + (unemp > 5 ? 0.3 : 0), 1, 10);
+        document.getElementById('gdp-x').value = clampValue(2.4, 0.5, 5);
+        document.getElementById('gdp-m').value = clampValue(3.2, 0.5, 6);
+        updateGDPCalc();
+      }
+      const rnNom = document.getElementById('rn-nominal'), rnDef = document.getElementById('rn-deflator');
+      if (rnNom && rnDef) {
+        rnNom.value = clampValue(22 + gdp * 0.4, 10, 35);
+        rnDef.value = clampValue(100 + cpi * 2.5, 80, 200);
+        updateRealNominal();
+      }
+      const gr1 = document.getElementById('gr-gdp1'), gr2 = document.getElementById('gr-gdp2');
+      if (gr1 && gr2) {
+        const y1 = 20;
+        gr1.value = y1;
+        gr2.value = clampValue(y1 * (1 + gdp / 100), 5, 35);
+        updateGrowthRate();
+      }
+      const cmDd = document.getElementById('cm-dd'), cmSi = document.getElementById('cm-si'), cmCap = document.getElementById('cm-cap');
+      if (cmDd && cmSi) {
+        cmDd.value = clampValue(400 + fed * 25, 500, 2000);
+        cmSi.value = clampValue(200 + fed * 15, 0, 500);
+        if (cmCap) cmCap.value = 0;
+        updateCreditMarket();
+      }
+      const lmLdInt = document.getElementById('lm-ld-int');
+      if (lmLdInt) {
+        lmLdInt.value = clampValue(120 - unemp * 2.5, 50, 200);
+        updateLaborMarket();
+      }
+      const kcC0 = document.getElementById('kc-c0'), kcMpc = document.getElementById('kc-mpc'), kcInv = document.getElementById('kc-invest'), kcGov = document.getElementById('kc-gov');
+      if (kcC0 && kcMpc && kcInv && kcGov) {
+        kcC0.value = clampValue(180 + sentiment * 0.4, 50, 500);
+        kcMpc.value = clampValue(0.55 + (sentiment - 70) * 0.004, 0.1, 0.95);
+        kcInv.value = clampValue(120 + gdp * 25, 50, 500);
+        kcGov.value = clampValue(160 + (unemp > 5 ? 40 : 0), 50, 500);
+        updateKeynesianCross();
+      }
+      const ppInfl = document.getElementById('pp-inflation');
+      if (ppInfl) {
+        ppInfl.value = clampValue(cpi, 0, 20);
+        updatePurchasingPower();
+      }
+      const xrRate = document.getElementById('xr-rate'), xrTrade = document.getElementById('xr-trade');
+      if (xrRate && xrTrade) {
+        xrRate.value = clampValue(fed, 0, 10);
+        xrTrade.value = clampValue(-30 + gdp * 8, -100, 100);
+        updateExchangeRates();
+      }
+      const ndDef = document.getElementById('nd-deficit'), ndR = document.getElementById('nd-rate'), ndG = document.getElementById('nd-growth');
+      if (ndDef && ndR && ndG) {
+        ndR.value = clampValue(economicState.DGS10 != null ? economicState.DGS10 : fed + 1.2, 0, 10);
+        ndG.value = clampValue(gdp, -3, 8);
+        ndDef.value = clampValue(3 + (unemp > 5 ? 1.5 : 0), -5, 15);
+        updateNationalDebt();
+      }
+      const mpGap = document.getElementById('mp-gap'), mpInfl = document.getElementById('mp-infl'), mpUn = document.getElementById('mp-unemp'), mpDebt = document.getElementById('mp-debt'), mpCa = document.getElementById('mp-ca');
+      if (mpGap && mpInfl && mpUn) {
+        mpGap.value = clampValue((gdp - 2.5) * 1.5, -10, 10);
+        mpInfl.value = clampValue(cpi, 0, 20);
+        mpUn.value = clampValue(unemp, 2, 20);
+        if (mpDebt) mpDebt.value = clampValue(95 + cpi * 2, 10, 200);
+        if (mpCa) mpCa.value = clampValue(-2.5 - (gdp > 3 ? 0.5 : 0), -10, 10);
+        updateMacroPolicy();
+      }
+      const scBudget = document.getElementById('sc-budget');
+      if (scBudget) {
+        scBudget.value = clampValue(450 + sentiment * 2, 100, 1000);
+        updateScarcity();
+      }
+      const frRr = document.getElementById('fr-rr');
+      if (frRr) {
+        frRr.value = clampValue(Math.max(5, Math.round(28 - fed * 2)), 1, 50);
+        updateFractionalReserve();
+      }
+      const glOpen = document.getElementById('gl-openness'), glMob = document.getElementById('gl-mobility'), siS = document.getElementById('si-s'), siI = document.getElementById('si-i');
+      if (glOpen && glMob) {
+        glOpen.value = clampValue(38 + gdp * 1.2, 0, 100);
+        glMob.value = clampValue(4 + (spread < 0 ? 1.5 : 0), 0, 10);
+      }
+      if (siS && siI) {
+        siS.value = clampValue(2.2 + (gdp - 2) * 0.08, 0, 5);
+        siI.value = clampValue(2.0 + (fed > 5 ? -0.05 : 0.05), 0, 5);
+        updateGlobalization();
+      } else if (glOpen && glMob) {
+        updateGlobalization();
+      }
+
+      wireMarketIntoSimulations();
       updateMarketContextPanels();
+    }
+
+    /** Loanable funds / risk premium from live quote beta & market cap (Module I4). */
+    function wireMarketIntoSimulations() {
+      const symEl = document.getElementById('stockSymbol');
+      const sym = (symEl && symEl.value) ? symEl.value.toUpperCase() : 'AAPL';
+      const stock = currentStockData || demoStockData[sym] || demoStockData['AAPL'];
+      if (!stock) return;
+      const beta = stock.beta != null ? stock.beta : 1;
+      const fmRisk = document.getElementById('fm-risk'), fmSav = document.getElementById('fm-savings');
+      if (fmRisk && fmSav) {
+        fmRisk.value = clampValue(beta * 1.8, 0, 10);
+        const cap = stock.marketCap || 1e9;
+        fmSav.value = clampValue(600 + Math.log10(Math.max(cap, 1e9)) * 350, 100, 5000);
+        updateFinancialMarkets();
+      }
     }
 
     function updateMarketContextPanels() {
@@ -2237,6 +2427,20 @@
     }
 
     function refreshMacroLinkedExperience() { renderEconomicIndicators(); wireMacroToModules(); }
+
+    window.EconSim = {
+      getMacroSeries() { return { ...economicState }; },
+      getMacroPolicy,
+      getMacroRegime,
+      getYieldSpread,
+      getMarketQuote() {
+        const symEl = document.getElementById('stockSymbol');
+        const sym = (symEl && symEl.value) ? symEl.value.toUpperCase() : 'AAPL';
+        const q = currentStockData || demoStockData[sym] || null;
+        return { symbol: sym, quote: q ? { ...q } : null };
+      },
+      applyLiveDataToModules() { refreshMacroLinkedExperience(); }
+    };
     function resetMacroTouchState() { const p = document.getElementById('pv-rate'); if (p) delete p.dataset.userTouched; refreshMacroLinkedExperience(); }
     function setupMacroListeners() { const p = document.getElementById('pv-rate'); if (p) p.addEventListener('input', e => { e.target.dataset.userTouched = '1'; }); }
     function setTheme(t) { document.documentElement.setAttribute('data-theme', t); localStorage.setItem('theme', t); document.getElementById('darkBtn').classList.toggle('active', t === 'dark'); document.getElementById('lightBtn').classList.toggle('active', t === 'light'); refreshAllCharts(); }
@@ -2275,6 +2479,21 @@
       }
     }
     function updateTicker() { const tc = document.getElementById('tickerContent'); let h = ''; Object.keys(demoStockData).forEach(s => { const st = demoStockData[s]; const cc = st.change >= 0 ? 'up' : 'down'; const cs = st.change >= 0 ? '+' : ''; h += `<div class="ticker-item"><span class="ticker-symbol">${s}</span><span class="ticker-price">$${st.price.toFixed(2)}</span><span class="ticker-change ${cc}">${cs}${st.changePercent.toFixed(2)}%</span></div>`; }); tc.innerHTML = h + h; }
+
+    function setMarketDataBanner(live, detail) {
+      const wrap = document.querySelector('.api-status');
+      const el = wrap && wrap.querySelector('span');
+      const dot = wrap && wrap.querySelector('.api-status-dot');
+      if (!el || !dot) return;
+      if (live) {
+        el.textContent = 'Live market data — ' + detail;
+        dot.className = 'api-status-dot live';
+      } else {
+        el.textContent = 'Demo mode — ' + detail;
+        dot.className = 'api-status-dot demo';
+      }
+    }
+
     async function fetchStockData() {
       const sym = document.getElementById('stockSymbol').value.toUpperCase();
       const per = document.getElementById('timePeriod').value;
@@ -2283,50 +2502,57 @@
       document.getElementById('selectedStockSymbol').textContent = sym;
 
       let dataFound = false;
+      let bannerDetail = 'simulated prices (last resort: Yahoo → Alpha Vantage → local server all failed)';
 
-      // TIER 1: Local Python Server (yfinance)
+      // 1 — Yahoo Finance (default for serverless)
       try {
-        const response = await fetch(`http://127.0.0.1:5000/api/stock/${sym}`, { signal: AbortSignal.timeout(2000) });
-        if (response.ok) {
-          const realData = await response.json();
-          if (!realData.error) {
-            currentStockData = realData;
-            dataFound = true;
-            console.log('📡 Tier 1: Data fetched from local Python server');
-          }
+        const yahooData = await fetchYahooQuote(sym);
+        if (yahooData) {
+          currentStockData = yahooData;
+          dataFound = true;
+          bannerDetail = 'Yahoo Finance';
+          console.log('📡 Market data: Yahoo Finance');
         }
-      } catch (err) { /* silent fail to tier 2 */ }
+      } catch (err) { /* try next */ }
 
-      // TIER 2: Serverless (Yahoo Finance via CORS Proxies)
-      if (!dataFound) {
-        try {
-          const yahooData = await fetchYahooQuote(sym);
-          if (yahooData) {
-            currentStockData = yahooData;
-            dataFound = true;
-            console.log('📡 Tier 2: Data fetched via CORS Proxy (Yahoo Finance)');
-          }
-        } catch (err) { /* silent fail to tier 3 */ }
-      }
-
-      // TIER 3: Alpha Vantage Direct Connect
+      // 2 — Alpha Vantage
       if (!dataFound) {
         try {
           const avData = await fetchAlphaVantageQuote(sym);
           if (avData) {
             currentStockData = avData;
             dataFound = true;
-            console.log('📡 Tier 3: Data fetched directly via Alpha Vantage API');
+            bannerDetail = 'Alpha Vantage';
+            console.log('📡 Market data: Alpha Vantage (fallback)');
           }
-        } catch (err) { /* silent fail to fallback */ }
+        } catch (err) { /* try next */ }
       }
 
-      // TIER 4: Demo Fallback
+      // 3 — Local Python server (optional dev backend)
       if (!dataFound) {
-        console.warn('⚠️ All live sources failed. Falling back to simulated data.');
-        await new Promise(r => setTimeout(r, 400)); // Brief delay for UX
-        currentStockData = demoStockData[sym] || generateRandomStock(sym);
+        try {
+          const response = await fetch(`http://127.0.0.1:5000/api/stock/${sym}`, { signal: AbortSignal.timeout(2000) });
+          if (response.ok) {
+            const realData = await response.json();
+            if (!realData.error) {
+              currentStockData = realData;
+              dataFound = true;
+              bannerDetail = 'local Python API';
+              console.log('📡 Market data: local Python server');
+            }
+          }
+        } catch (err) { /* last resort below */ }
       }
+
+      // 4 — Static / generated demo (last resort only)
+      if (!dataFound) {
+        console.warn('⚠️ All live market sources failed; using static demo data.');
+        await new Promise(r => setTimeout(r, 400));
+        currentStockData = demoStockData[sym] || generateRandomStock(sym);
+        if (currentStockData && !currentStockData.source) currentStockData.source = 'demo';
+      }
+
+      setMarketDataBanner(dataFound, bannerDetail);
 
       displayStockData(currentStockData);
       updateStockChart(sym, per);
@@ -2336,7 +2562,7 @@
       document.getElementById('stockLoading').style.display = 'none';
       document.getElementById('stockData').style.display = 'block';
     }
-    function displayStockData(d) { document.getElementById('stockPrice').textContent = `$${d.price.toFixed(2)}`; document.getElementById('stockName').textContent = d.name; document.getElementById('stockSector').textContent = d.sector; const cd = document.getElementById('stockChangeDisplay'); const cs = d.change >= 0 ? '+' : ''; cd.textContent = `${cs}$${d.change.toFixed(2)} (${cs}${d.changePercent.toFixed(2)}%)`; cd.className = `stock-change ${d.change >= 0 ? 'up' : 'down'}`; document.getElementById('stockOpen').textContent = `$${d.open.toFixed(2)}`; document.getElementById('stockHigh').textContent = `$${d.high.toFixed(2)}`; document.getElementById('stockLow').textContent = `$${d.low.toFixed(2)}`; document.getElementById('stockVolume').textContent = formatVolume(d.volume); document.getElementById('stockPE').textContent = d.pe.toFixed(1); document.getElementById('stockMarketCap').textContent = formatMarketCap(d.marketCap); document.getElementById('stockDividend').textContent = `${d.dividendYield.toFixed(2)}%`; document.getElementById('stock52High').textContent = `$${d.high52.toFixed(2)}`; document.getElementById('stock52Low').textContent = `$${d.low52.toFixed(2)}`; document.getElementById('stockBeta').textContent = d.beta.toFixed(2); document.getElementById('pv-dividend').textContent = `$${d.dividend.toFixed(2)}`; const el = document.getElementById('lastUpdatedTime'); if (el) { const now = new Date(); el.textContent = now.toLocaleDateString() + ' ' + now.toLocaleTimeString(); } }
+    function displayStockData(d) { document.getElementById('stockPrice').textContent = `$${d.price.toFixed(2)}`; document.getElementById('stockName').textContent = d.name; document.getElementById('stockSector').textContent = d.sector; const cd = document.getElementById('stockChangeDisplay'); const cs = d.change >= 0 ? '+' : ''; cd.textContent = `${cs}$${d.change.toFixed(2)} (${cs}${d.changePercent.toFixed(2)}%)`; cd.className = `stock-change ${d.change >= 0 ? 'up' : 'down'}`; document.getElementById('stockOpen').textContent = `$${d.open.toFixed(2)}`; document.getElementById('stockHigh').textContent = `$${d.high.toFixed(2)}`; document.getElementById('stockLow').textContent = `$${d.low.toFixed(2)}`; document.getElementById('stockVolume').textContent = formatVolume(d.volume); document.getElementById('stockPE').textContent = d.pe.toFixed(1); document.getElementById('stockMarketCap').textContent = formatMarketCap(d.marketCap); document.getElementById('stockDividend').textContent = `${d.dividendYield.toFixed(2)}%`; document.getElementById('stock52High').textContent = `$${d.high52.toFixed(2)}`; document.getElementById('stock52Low').textContent = `$${d.low52.toFixed(2)}`; document.getElementById('stockBeta').textContent = d.beta.toFixed(2); document.getElementById('pv-dividend').textContent = `$${d.dividend.toFixed(2)}`; touchDataRefresh('market'); }
     async function updateStockChart(sym = 'AAPL', per = '1mo') {
       const ctx = document.getElementById('stockPriceChart');
       if (!ctx) return;
@@ -2346,42 +2572,42 @@
       let prices = [];
       let sourceLabel = '(Simulated)';
 
-      // TIER 1: Local Server
+      // 1 — Yahoo Finance history (default)
       try {
-        const response = await fetch(`http://127.0.0.1:5000/api/history/${sym}?period=${per}`, { signal: AbortSignal.timeout(2000) });
-        if (response.ok) {
-          const history = await response.json();
-          if (history && history.length > 0) {
-            labels = history.map(h => {
-              const date = new Date(h.date);
-              return per === '1d' || per === '5d'
-                ? date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                : date.toLocaleDateString([], { month: 'short', day: 'numeric' });
-            });
-            prices = history.map(h => h.price);
-            sourceLabel = '(Real-Time Backend)';
-          }
+        const historyData = await fetchYahooHistory(sym, per);
+        if (historyData && historyData.length > 0) {
+          labels = historyData.map(d => {
+            const date = new Date(d.date);
+            return per === '1d' || per === '5d'
+              ? date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+              : date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+          });
+          prices = historyData.map(d => d.price);
+          sourceLabel = '(Yahoo Finance)';
         }
-      } catch (err) { /* silent fail to tier 2 */ }
+      } catch (e) { /* try local */ }
 
-      // TIER 2: Serverless (Yahoo Finance via Proxies)
+      // 2 — Local Python history
       if (prices.length === 0) {
         try {
-          const historyData = await fetchYahooHistory(sym, per);
-          if (historyData && historyData.length > 0) {
-            labels = historyData.map(d => {
-              const date = new Date(d.date);
-              return per === '1d' || per === '5d'
-                ? date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                : date.toLocaleDateString([], { month: 'short', day: 'numeric' });
-            });
-            prices = historyData.map(d => d.price);
-            sourceLabel = '(Real-Time Proxy)';
+          const response = await fetch(`http://127.0.0.1:5000/api/history/${sym}?period=${per}`, { signal: AbortSignal.timeout(2000) });
+          if (response.ok) {
+            const history = await response.json();
+            if (history && history.length > 0) {
+              labels = history.map(h => {
+                const date = new Date(h.date);
+                return per === '1d' || per === '5d'
+                  ? date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                  : date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+              });
+              prices = history.map(h => h.price);
+              sourceLabel = '(Local API)';
+            }
           }
-        } catch (e) { /* silent fail to tier 3 */ }
+        } catch (err) { /* synthetic below */ }
       }
 
-      // TIER 3: Fallback
+      // 3 — Synthetic path (last resort)
       if (prices.length === 0) {
         const st = currentStockData || demoStockData[sym] || { price: 150 };
         const pd = { '1d': 1, '5d': 5, '1mo': 30, '3mo': 90, '6mo': 180, '1y': 365 };
@@ -2671,6 +2897,7 @@
     }
 
     function pf(id) { return parseFloat(document.getElementById(id).value) || 0; }
+    function sf(id, val) { const el = document.getElementById(id); if (el) el.value = val; }
 
     function updateScarcity() {
       const budget = pf('sc-budget'), food = pf('sc-food'), shelter = pf('sc-shelter'), edu = pf('sc-education');
@@ -3898,15 +4125,12 @@
       updatePovertyCalc(); randomizeUnempScenarios(); updateProductivityGrowth();
       updateAsymInfo(); updateMoralHazard(); updateFinancialMarkets(); updatePublicChoice();
       updateExchangeRates(); updateNationalDebt(); updateTradePolicy(); updateGlobalization(); updateTaxIncidence(); updateIntraIndustry(); updateMacroPolicy();
-      currentStockData = demoStockData['AAPL'];
-      displayStockData(currentStockData);
-      updateStockChart('AAPL', '1mo');
-      calculatePresentValue();
       loadSectorData('tech');
       economicState = { ...fredData };
       setupMacroListeners();
-      fetchMacroData(); // Kick off real-time macro fetch
       refreshMacroLinkedExperience();
+      fetchMacroData().then(() => refreshMacroLinkedExperience()).catch(() => refreshMacroLinkedExperience());
+      fetchStockData();
       setInterval(() => {
         Object.keys(demoStockData).forEach(s => {
           const st = demoStockData[s];
@@ -3945,6 +4169,7 @@
 
 <!-- API STATUS -->
 <div class="api-status"><div class="api-status-dot demo"></div><span>Demo Mode — Simulated data for educational purposes</span></div>
+<p id="marketLastUpdated" style="font-size:12px;color:var(--gray-300);margin:-8px 0 16px;line-height:1.45;">Market quote last refreshed: —</p>
 
 <!-- STOCK SEARCH -->
 <div class="card" style="margin-bottom:16px;">
@@ -4039,8 +4264,9 @@
 <!-- FRED ECONOMIC INDICATORS -->
 <div class="card" style="margin-top:16px;">
   <div class="card-title">📊 FRED Economic Indicators</div>
+  <p id="macroLastUpdated" style="font-size:12px;color:var(--gray-300);margin:0 0 12px;line-height:1.45;">Macro indicators last refreshed: —</p>
   <div class="btn-row" style="margin-bottom:12px;">
-    <button class="btn btn-outline" onclick="refreshMacroLinkedExperience()">🔄 Refresh All</button>
+    <button class="btn btn-outline" onclick="fetchMacroData()">🔄 Refresh macro data</button>
     <button class="btn btn-teal" onclick="wireMacroToModules()">🧠 Apply to All Modules</button>
     <button class="btn btn-ghost" onclick="resetMacroTouchState()">Reset PV Hint</button>
   </div>
