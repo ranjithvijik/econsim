@@ -1927,6 +1927,130 @@
       return data ? data.price : null;
     }
 
+    /** Major FX vs USD — Yahoo symbols (same chart API as equities). */
+    const FX_LIVE_PAIRS = [
+      { yahoo: 'EURUSD=X', label: 'EUR/USD', decimals: 4 },
+      { yahoo: 'GBPUSD=X', label: 'GBP/USD', decimals: 4 },
+      { yahoo: 'USDJPY=X', label: 'USD/JPY', decimals: 2 },
+      { yahoo: 'USDCAD=X', label: 'USD/CAD', decimals: 4 },
+      { yahoo: 'USDCHF=X', label: 'USD/CHF', decimals: 4 },
+      { yahoo: 'AUDUSD=X', label: 'AUD/USD', decimals: 4 },
+      { yahoo: 'NZDUSD=X', label: 'NZD/USD', decimals: 4 }
+    ];
+
+    let fxMultiChartInstance = null;
+    let _fxRefreshAt = null;
+
+    async function fetchFxLiveDashboard() {
+      const statusEl = document.getElementById('fx-live-status');
+      const gridEl = document.getElementById('fx-live-cards');
+      if (statusEl) statusEl.textContent = 'Loading spot rates…';
+      if (gridEl) gridEl.innerHTML = '';
+      try {
+        const results = await Promise.allSettled(
+          FX_LIVE_PAIRS.map(async (p) => {
+            const quote = await fetchYahooQuote(p.yahoo);
+            return { pair: p, quote };
+          })
+        );
+        const col = getChartColors();
+        const palette = [col.teal, col.gold, col.green, col.red, col.purple, '#f472b6', '#94a3b8'];
+        let ok = 0;
+        const rowHtml = [];
+        const historyJobs = [];
+        for (let i = 0; i < results.length; i++) {
+          const r = results[i];
+          const p = FX_LIVE_PAIRS[i];
+          if (r.status !== 'fulfilled' || !r.value.quote || r.value.quote.price == null) continue;
+          ok++;
+          const q = r.value.quote;
+          const d = p.decimals;
+          const ch = q.changePercent != null ? q.changePercent : 0;
+          const chStr = (ch >= 0 ? '+' : '') + ch.toFixed(2) + '%';
+          const pos = ch >= 0;
+          rowHtml.push(
+            `<div class="kpi-card" style="min-width:148px;flex:1 1 140px;"><div class="kpi-label">${p.label}</div>` +
+            `<div class="kpi-val teal" style="font-size:17px;">${q.price.toFixed(d)}</div>` +
+            `<div class="result-value ${pos ? 'green' : 'red'}" style="font-size:12px;margin-top:4px;">${chStr} 1d</div></div>`
+          );
+          historyJobs.push(
+            (async () => {
+              const hist = await fetchYahooHistory(p.yahoo, '1mo');
+              if (!hist || hist.length < 2) return null;
+              return { label: p.label, points: hist, color: palette[i % palette.length] };
+            })()
+          );
+        }
+        if (gridEl) {
+          gridEl.innerHTML = rowHtml.length
+            ? `<div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:flex-start;">${rowHtml.join('')}</div>`
+            : '<p class="small-text">No live quotes — check network or CORS proxies. Sliders below still work.</p>';
+        }
+        if (statusEl) {
+          statusEl.textContent = ok
+            ? `Live spot: ${ok}/${FX_LIVE_PAIRS.length} pairs (Yahoo Finance) · Chart: 30-day paths indexed to 100 at window start.`
+            : 'Live FX unavailable. Teaching sliders below still work.';
+        }
+        const histories = (await Promise.all(historyJobs)).filter(Boolean);
+        renderFxIndexedHistoryChart(histories);
+      } catch (e) {
+        console.warn('FX dashboard fetch error', e);
+        if (statusEl) statusEl.textContent = 'FX load error. Try Refresh FX or check console.';
+        renderFxIndexedHistoryChart([]);
+      }
+      touchDataRefresh('fx');
+    }
+
+    function renderFxIndexedHistoryChart(histories) {
+      const ctx = document.getElementById('fxMultiChart');
+      if (!ctx) return;
+      if (fxMultiChartInstance) {
+        fxMultiChartInstance.destroy();
+        fxMultiChartInstance = null;
+      }
+      if (!histories.length) return;
+      const minLen = Math.min(...histories.map((h) => h.points.length));
+      if (minLen < 2) return;
+      const labels = histories[0].points.slice(-minLen).map((pt) => {
+        const t = typeof pt.date === 'number' ? pt.date : new Date(pt.date).getTime();
+        return new Date(t).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+      });
+      const col = getChartColors();
+      const datasets = histories.map((h) => {
+        const slice = h.points.slice(-minLen);
+        const b = slice[0].price;
+        const data = slice.map((pt) => (pt.price / b) * 100);
+        return {
+          label: h.label,
+          data,
+          borderColor: h.color,
+          backgroundColor: 'transparent',
+          fill: false,
+          borderWidth: 2,
+          tension: 0.25,
+          pointRadius: 0
+        };
+      });
+      fxMultiChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: { labels, datasets },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: { legend: { labels: { color: col.text, boxWidth: 12 } } },
+          scales: {
+            x: { ticks: { color: col.text, maxTicksLimit: 12 }, grid: { color: col.grid } },
+            y: {
+              ticks: { color: col.text, callback: (v) => v.toFixed(0) },
+              grid: { color: col.grid },
+              title: { display: true, text: 'Index (100 = start of window)', color: col.text, font: { size: 11 } }
+            }
+          }
+        }
+      });
+    }
+
     let _macroRefreshAt = null;
     let _marketRefreshAt = null;
 
@@ -1934,23 +2058,27 @@
       return (date || new Date()).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'medium' });
     }
 
-    /** kind: 'macro' | 'market' — updates top bar + section footers */
+    /** kind: 'macro' | 'market' | 'fx' — updates top bar + section footers */
     function touchDataRefresh(kind) {
       const s = formatDataRefreshTime(new Date());
       if (kind === 'macro') _macroRefreshAt = s;
       if (kind === 'market') _marketRefreshAt = s;
+      if (kind === 'fx') _fxRefreshAt = s;
 
       const top = document.getElementById('lastUpdatedTime');
       if (top) {
         const bits = [];
         if (_macroRefreshAt) bits.push('Macro ' + _macroRefreshAt);
         if (_marketRefreshAt) bits.push('Market ' + _marketRefreshAt);
+        if (_fxRefreshAt) bits.push('FX ' + _fxRefreshAt);
         top.textContent = bits.length ? ('Refresh · ' + bits.join(' · ')) : ('Updated ' + s);
       }
       const mEl = document.getElementById('macroLastUpdated');
       if (mEl && kind === 'macro') mEl.textContent = 'Macro indicators last refreshed: ' + s;
       const mkEl = document.getElementById('marketLastUpdated');
       if (mkEl && kind === 'market') mkEl.textContent = 'Market quote last refreshed: ' + s;
+      const fxEl = document.getElementById('fxRatesLastUpdated');
+      if (fxEl && kind === 'fx') fxEl.textContent = 'FX spot rates last refreshed: ' + s;
     }
 
     async function fetchMacroData() {
@@ -4091,6 +4219,8 @@
       refreshMacroLinkedExperience();
       fetchMacroData().then(() => refreshMacroLinkedExperience()).catch(() => refreshMacroLinkedExperience());
       fetchStockData();
+      fetchFxLiveDashboard();
+      setInterval(() => { fetchFxLiveDashboard(); }, LIVE_CONFIG.refreshMs);
       setInterval(() => {
         Object.keys(demoStockData).forEach(s => {
           const st = demoStockData[s];
@@ -8047,21 +8177,33 @@
     <p class="section-subtitle">Exchange rates are determined by the demand and supply of currencies. Explore how interest rate differentials, inflation rates, and trade balances drive currency appreciation or depreciation in the $7.5 trillion-a-day FX market.</p>
     <div><span class="source-tag source-openstax">📗 OpenStax Macro Ch.16 · Exchange Rates</span></div>
   </div>
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-title">📡 Live FX dashboard (market data)</div>
+    <p id="fx-live-status" class="small-text" style="margin-bottom:10px;color:var(--gray-300);">Loading spot rates…</p>
+    <div id="fx-live-cards" style="margin-bottom:12px;"></div>
+    <p id="fxRatesLastUpdated" class="small-text" style="margin-bottom:10px;color:var(--gray-400);">FX spot rates last refreshed: —</p>
+    <button type="button" class="btn btn-outline" onclick="fetchFxLiveDashboard()">🔄 Refresh FX rates</button>
+  </div>
+  <div class="chart-card" style="margin-bottom:16px;">
+    <div class="chart-title">Major pairs — 30-day relative paths</div>
+    <div class="chart-subtitle">Each line indexed to 100 at the start of the window (comparable % moves)</div>
+    <div class="chart-wrap h-320"><canvas id="fxMultiChart"></canvas></div>
+  </div>
   <div class="grid-2">
     <div class="card">
-      <div class="card-title">💱 Market Drivers</div>
+      <div class="card-title">💱 Market Drivers (classroom model)</div>
       ${sl('xr-rate', 'Domestic Interest Rate', 0, 10, 5, 0.1, 'updateExchangeRates', '', '%')}
       ${sl('xr-trade', 'Net Exports (B)', -100, 100, 0, 10, 'updateExchangeRates', '$')}
     </div>
     <div class="card">
-      <div class="card-title">📉 Currency Value</div>
+      <div class="card-title">📉 Model exchange rate (E)</div>
       <div class="result-box">
         <div class="result-item"><span class="result-label">Exchange Rate (E)</span><span class="result-value teal" id="xr-val">1.00</span></div>
         <div class="result-item"><span class="result-label">Impulse</span><span class="result-value gold" id="xr-direction">Stable</span></div>
       </div>
     </div>
   </div>
-  <div class="chart-card" style="margin-top:16px;"><div class="chart-title">Currency Market Equilibrium</div><div class="chart-subtitle">Demand and supply of domestic currency</div><div class="chart-wrap h-280"><canvas id="exchangeRateChart"></canvas></div></div>
+  <div class="chart-card" style="margin-top:16px;"><div class="chart-title">Currency Market Equilibrium (illustrative)</div><div class="chart-subtitle">Demand and supply of domestic currency from slider model</div><div class="chart-wrap h-280"><canvas id="exchangeRateChart"></canvas></div></div>
 </section>
 
 <!-- X2: NATIONAL DEBT -->
