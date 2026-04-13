@@ -1811,7 +1811,65 @@
 
     // --- Serverless API Configurations ---
     const AV_API_KEY = '__AV_API_KEY__';
-    const FRED_API_KEY = '__FRED_API_KEY__';
+    /** Build-time injection (GitHub Actions / Amplify `sed`). Browser localStorage overrides when set. */
+    const FRED_API_KEY_BUILD = '__FRED_API_KEY__';
+    const LS_FRED_API_KEY = 'econsim_fred_api_key';
+
+    function getFredApiKey() {
+      try {
+        const ls = localStorage.getItem(LS_FRED_API_KEY);
+        if (ls && ls.trim()) return ls.trim();
+      } catch (e) { /* private / blocked */ }
+      const b = typeof FRED_API_KEY_BUILD !== 'undefined' ? String(FRED_API_KEY_BUILD).trim() : '';
+      if (b && !b.startsWith('__FRED')) return b;
+      return '';
+    }
+
+    function fredKeyIsConfigured() {
+      return getFredApiKey().length > 0;
+    }
+
+    function initFredApiKeyUi() {
+      const el = document.getElementById('fred-api-key-input');
+      if (!el) return;
+      let hasLs = false;
+      try { hasLs = !!localStorage.getItem(LS_FRED_API_KEY); } catch (e) { /* ignore */ }
+      const b = String(FRED_API_KEY_BUILD || '').trim();
+      const hasBuild = b && !b.startsWith('__FRED');
+      el.placeholder = hasLs
+        ? 'Key saved in this browser — paste to replace'
+        : (hasBuild ? 'Optional: paste to override deploy key' : 'Paste your FRED API key');
+    }
+
+    function saveFredApiKeyFromUi() {
+      const el = document.getElementById('fred-api-key-input');
+      const hint = document.getElementById('fred-api-key-saved-hint');
+      const v = el && el.value ? el.value.trim() : '';
+      try {
+        if (v) localStorage.setItem(LS_FRED_API_KEY, v);
+        else localStorage.removeItem(LS_FRED_API_KEY);
+      } catch (e) {
+        if (hint) hint.textContent = 'Could not save (browser storage blocked).';
+        return;
+      }
+      if (el && v) el.value = '';
+      if (hint) hint.textContent = v ? 'Saved — refreshing live series…' : 'Cleared — refreshing…';
+      try { fetchMacroData(); } catch (e) { }
+      fetchUsDebtLiveDashboard();
+      fetchUsTariffLiveDashboard();
+      fetchIntlTradeOpennessDashboard();
+      initFredApiKeyUi();
+      setTimeout(function () {
+        if (hint) hint.textContent = v ? 'Saved.' : 'Cleared.';
+      }, 2800);
+    }
+
+    function clearFredApiKeyFromUi() {
+      const el = document.getElementById('fred-api-key-input');
+      if (el) el.value = '';
+      try { localStorage.removeItem(LS_FRED_API_KEY); } catch (e) { /* ignore */ }
+      saveFredApiKeyFromUi();
+    }
 
     const FRED_SERIES_MAP = {
       'FEDFUNDS': { id: 'FEDFUNDS', units: 'lin' },
@@ -1828,8 +1886,9 @@
     };
 
     async function fetchFredSeries(seriesId, units = 'lin') {
-      if (!FRED_API_KEY || FRED_API_KEY.startsWith('__FRED')) return null;
-      const url = `https://api.stlouisfed.org/fred/series/observations?series_id=${seriesId}&api_key=${FRED_API_KEY}&file_type=json&sort_order=desc&limit=1&units=${units}`;
+      const apiKey = getFredApiKey();
+      if (!apiKey) return null;
+      const url = `https://api.stlouisfed.org/fred/series/observations?series_id=${seriesId}&api_key=${apiKey}&file_type=json&sort_order=desc&limit=1&units=${units}`;
       const data = await fetchViaProxy(url);
       if (data && data.observations && data.observations.length > 0) {
         const val = parseFloat(data.observations[0].value);
@@ -1840,8 +1899,9 @@
 
     /** Multiple FRED observations (ascending by date) for charts. */
     async function fetchFredObservations(seriesId, units = 'lin', limit = 52) {
-      if (!FRED_API_KEY || FRED_API_KEY.startsWith('__FRED')) return null;
-      const url = `https://api.stlouisfed.org/fred/series/observations?series_id=${seriesId}&api_key=${FRED_API_KEY}&file_type=json&sort_order=asc&limit=${limit}&units=${units}`;
+      const apiKey = getFredApiKey();
+      if (!apiKey) return null;
+      const url = `https://api.stlouisfed.org/fred/series/observations?series_id=${seriesId}&api_key=${apiKey}&file_type=json&sort_order=asc&limit=${limit}&units=${units}`;
       const data = await fetchViaProxy(url);
       if (!data || !data.observations || !data.observations.length) return null;
       const pts = [];
@@ -1943,7 +2003,7 @@
       return data ? data.price : null;
     }
 
-    /** Major FX vs USD — Yahoo symbols (same chart API as equities). */
+    /** Major FX — Yahoo symbols (same chart API as equities). */
     const FX_LIVE_PAIRS = [
       { yahoo: 'EURUSD=X', label: 'EUR/USD', decimals: 4 },
       { yahoo: 'GBPUSD=X', label: 'GBP/USD', decimals: 4 },
@@ -1951,8 +2011,31 @@
       { yahoo: 'USDCAD=X', label: 'USD/CAD', decimals: 4 },
       { yahoo: 'USDCHF=X', label: 'USD/CHF', decimals: 4 },
       { yahoo: 'AUDUSD=X', label: 'AUD/USD', decimals: 4 },
-      { yahoo: 'NZDUSD=X', label: 'NZD/USD', decimals: 4 }
+      { yahoo: 'NZDUSD=X', label: 'NZD/USD', decimals: 4 },
+      { yahoo: 'EURGBP=X', label: 'EUR/GBP', decimals: 4 },
+      { yahoo: 'EURJPY=X', label: 'EUR/JPY', decimals: 2 },
+      { yahoo: 'GBPJPY=X', label: 'GBP/JPY', decimals: 2 },
+      { yahoo: 'USDMXN=X', label: 'USD/MXN', decimals: 4 },
+      { yahoo: 'USDINR=X', label: 'USD/INR', decimals: 2 },
+      { yahoo: 'USDCNY=X', label: 'USD/CNY', decimals: 4 },
+      { yahoo: 'USDSEK=X', label: 'USD/SEK', decimals: 4 },
+      { yahoo: 'USDKRW=X', label: 'USD/KRW', decimals: 2 }
     ];
+
+    function ensureFxPairSelectOptions() {
+      const sel = document.getElementById('fx-pair-select');
+      if (!sel || sel.dataset.fxInit === '1') return sel;
+      sel.innerHTML = '';
+      FX_LIVE_PAIRS.forEach((pair, i) => {
+        const opt = document.createElement('option');
+        opt.value = String(i);
+        opt.textContent = pair.label;
+        sel.appendChild(opt);
+      });
+      sel.value = '1';
+      sel.dataset.fxInit = '1';
+      return sel;
+    }
 
     let fxMultiChartInstance = null;
     let _fxRefreshAt = null;
@@ -1961,98 +2044,89 @@
     let _intlTradeRefreshAt = null;
 
     async function fetchFxLiveDashboard() {
+      ensureFxPairSelectOptions();
+      const sel = document.getElementById('fx-pair-select');
       const statusEl = document.getElementById('fx-live-status');
       const gridEl = document.getElementById('fx-live-cards');
-      if (statusEl) statusEl.textContent = 'Loading spot rates…';
+      const subEl = document.getElementById('fx-chart-subtitle');
+      let idx = sel ? parseInt(sel.value, 10) : 1;
+      if (isNaN(idx) || idx < 0 || idx >= FX_LIVE_PAIRS.length) idx = 1;
+      const p = FX_LIVE_PAIRS[idx];
+      if (statusEl) statusEl.textContent = 'Loading ' + p.label + '…';
       if (gridEl) gridEl.innerHTML = '';
+      if (subEl) subEl.textContent = p.label + ' — last ~30 calendar days (daily closes, Yahoo Finance)';
       try {
-        const results = await Promise.allSettled(
-          FX_LIVE_PAIRS.map(async (p) => {
-            const quote = await fetchYahooQuote(p.yahoo);
-            return { pair: p, quote };
-          })
-        );
-        const col = getChartColors();
-        const palette = [col.teal, col.gold, col.green, col.red, col.purple, '#f472b6', '#94a3b8'];
-        let ok = 0;
-        const rowHtml = [];
-        const historyJobs = [];
-        for (let i = 0; i < results.length; i++) {
-          const r = results[i];
-          const p = FX_LIVE_PAIRS[i];
-          if (r.status !== 'fulfilled' || !r.value.quote || r.value.quote.price == null) continue;
-          ok++;
-          const q = r.value.quote;
-          const d = p.decimals;
-          const ch = q.changePercent != null ? q.changePercent : 0;
+        const quote = await fetchYahooQuote(p.yahoo);
+        const d = p.decimals;
+        if (quote && quote.price != null) {
+          const ch = quote.changePercent != null ? quote.changePercent : 0;
           const chStr = (ch >= 0 ? '+' : '') + ch.toFixed(2) + '%';
           const pos = ch >= 0;
-          rowHtml.push(
-            `<div class="kpi-card" style="min-width:148px;flex:1 1 140px;"><div class="kpi-label">${p.label}</div>` +
-            `<div class="kpi-val teal" style="font-size:17px;">${q.price.toFixed(d)}</div>` +
-            `<div class="result-value ${pos ? 'green' : 'red'}" style="font-size:12px;margin-top:4px;">${chStr} 1d</div></div>`
-          );
-          historyJobs.push(
-            (async () => {
-              const hist = await fetchYahooHistory(p.yahoo, '1mo');
-              if (!hist || hist.length < 2) return null;
-              return { label: p.label, points: hist, color: palette[i % palette.length] };
-            })()
-          );
+          if (gridEl) {
+            gridEl.innerHTML =
+              '<div style="display:flex;flex-wrap:wrap;gap:12px;">' +
+              '<div class="kpi-card" style="min-width:220px;flex:1 1 220px;">' +
+              '<div class="kpi-label">' + p.label + '</div>' +
+              '<div class="kpi-val teal" style="font-size:22px;">' + quote.price.toFixed(d) + '</div>' +
+              '<div class="result-value ' + (pos ? 'green' : 'red') + '" style="font-size:13px;margin-top:6px;">' + chStr + ' vs prior close</div>' +
+              '</div></div>';
+          }
+          if (statusEl) {
+            statusEl.textContent = 'Live spot for ' + p.label + ' (Yahoo Finance). Pick another pair from the menu if this feed is blocked.';
+          }
+          const hist = await fetchYahooHistory(p.yahoo, '1mo');
+          renderFxSinglePairHistoryChart(hist, p);
+        } else {
+          if (gridEl) {
+            gridEl.innerHTML =
+              '<p class="small-text">No quote for this pair — choose a different currency pair, or check network / CORS proxies. Sliders below still work.</p>';
+          }
+          if (statusEl) {
+            statusEl.textContent = 'Could not load ' + p.label + '. Try another pair from the dropdown or Refresh.';
+          }
+          renderFxSinglePairHistoryChart(null, p);
         }
-        if (gridEl) {
-          gridEl.innerHTML = rowHtml.length
-            ? `<div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:flex-start;">${rowHtml.join('')}</div>`
-            : '<p class="small-text">No live quotes — check network or CORS proxies. Sliders below still work.</p>';
-        }
-        if (statusEl) {
-          statusEl.textContent = ok
-            ? `Live spot: ${ok}/${FX_LIVE_PAIRS.length} pairs (Yahoo Finance) · Chart: 30-day paths indexed to 100 at window start.`
-            : 'Live FX unavailable. Teaching sliders below still work.';
-        }
-        const histories = (await Promise.all(historyJobs)).filter(Boolean);
-        renderFxIndexedHistoryChart(histories);
       } catch (e) {
         console.warn('FX dashboard fetch error', e);
         if (statusEl) statusEl.textContent = 'FX load error. Try Refresh FX or check console.';
-        renderFxIndexedHistoryChart([]);
+        if (gridEl) gridEl.innerHTML = '<p class="small-text">Load error.</p>';
+        renderFxSinglePairHistoryChart(null, p);
       }
       touchDataRefresh('fx');
     }
 
-    function renderFxIndexedHistoryChart(histories) {
+    function renderFxSinglePairHistoryChart(points, pair) {
       const ctx = document.getElementById('fxMultiChart');
       if (!ctx) return;
       if (fxMultiChartInstance) {
         fxMultiChartInstance.destroy();
         fxMultiChartInstance = null;
       }
-      if (!histories.length) return;
-      const minLen = Math.min(...histories.map((h) => h.points.length));
-      if (minLen < 2) return;
-      const labels = histories[0].points.slice(-minLen).map((pt) => {
+      if (!pair || !points || points.length < 2) return;
+      const clean = points.filter((pt) => pt.price != null && !isNaN(pt.price));
+      if (clean.length < 2) return;
+      const col = getChartColors();
+      const dec = pair.decimals;
+      const labels = clean.map((pt) => {
         const t = typeof pt.date === 'number' ? pt.date : new Date(pt.date).getTime();
         return new Date(t).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
       });
-      const col = getChartColors();
-      const datasets = histories.map((h) => {
-        const slice = h.points.slice(-minLen);
-        const b = slice[0].price;
-        const data = slice.map((pt) => (pt.price / b) * 100);
-        return {
-          label: h.label,
-          data,
-          borderColor: h.color,
-          backgroundColor: 'transparent',
-          fill: false,
-          borderWidth: 2,
-          tension: 0.25,
-          pointRadius: 0
-        };
-      });
+      const data = clean.map((pt) => pt.price);
       fxMultiChartInstance = new Chart(ctx, {
         type: 'line',
-        data: { labels, datasets },
+        data: {
+          labels,
+          datasets: [{
+            label: pair.label + ' (close)',
+            data,
+            borderColor: col.teal,
+            backgroundColor: 'rgba(0, 180, 216, 0.12)',
+            fill: true,
+            borderWidth: 2,
+            tension: 0.2,
+            pointRadius: 0
+          }]
+        },
         options: {
           responsive: true,
           maintainAspectRatio: false,
@@ -2061,9 +2135,9 @@
           scales: {
             x: { ticks: { color: col.text, maxTicksLimit: 12 }, grid: { color: col.grid } },
             y: {
-              ticks: { color: col.text, callback: (v) => v.toFixed(0) },
+              ticks: { color: col.text, callback: (v) => Number(v).toFixed(dec) },
               grid: { color: col.grid },
-              title: { display: true, text: 'Index (100 = start of window)', color: col.text, font: { size: 11 } }
+              title: { display: true, text: 'Spot', color: col.text, font: { size: 11 } }
             }
           }
         }
@@ -2076,9 +2150,12 @@
       const statusEl = document.getElementById('debt-live-status');
       const kpisEl = document.getElementById('debt-live-kpis');
       const drvEl = document.getElementById('debt-live-drivers');
-      const fredOk = FRED_API_KEY && !FRED_API_KEY.startsWith('__FRED');
+      const fredOk = fredKeyIsConfigured();
       if (!fredOk) {
-        if (statusEl) statusEl.textContent = 'Add a FRED API key for live U.S. federal debt and flow statistics (same key as macro).';
+        if (statusEl) {
+          statusEl.textContent =
+            'No FRED API key detected. Open Real-Time Market Data and paste a free key from fred.stlouisfed.org (stored in this browser), or set the FRED_API secret when deploying so the key is injected at build time.';
+        }
         renderDebtHistoryChart(null);
         return;
       }
@@ -2245,8 +2322,9 @@
       const statusSim = document.getElementById('tariff-sim-live-status');
       const kpisSim = document.getElementById('tariff-sim-live-kpis');
       const drvSim = document.getElementById('tariff-sim-live-drivers');
-      const fredOk = FRED_API_KEY && !FRED_API_KEY.startsWith('__FRED');
-      const keyMsg = 'Add a FRED API key for live customs duties and trade series (same key as macro).';
+      const fredOk = fredKeyIsConfigured();
+      const keyMsg =
+        'No FRED API key detected. Paste a key under Real-Time Market Data (FRED API key), or configure FRED_API at deploy time.';
       if (!fredOk) {
         if (statusEl) statusEl.textContent = keyMsg;
         if (statusSim) statusSim.textContent = keyMsg;
@@ -2354,9 +2432,12 @@
       const statusEl = document.getElementById('ca-live-status');
       const kpisEl = document.getElementById('ca-live-kpis');
       const drvEl = document.getElementById('ca-live-drivers');
-      const fredOk = FRED_API_KEY && !FRED_API_KEY.startsWith('__FRED');
+      const fredOk = fredKeyIsConfigured();
       if (!fredOk) {
-        if (statusEl) statusEl.textContent = 'Add a FRED API key for live exports, imports, and GDP (same key as macro).';
+        if (statusEl) {
+          statusEl.textContent =
+            'No FRED API key detected. Add one under Real-Time Market Data (FRED API key), or set FRED_API when building the site.';
+        }
         renderIntlTradeChart(null);
         return;
       }
@@ -2587,7 +2668,7 @@
 
     async function fetchMacroData() {
       try {
-        const fredKeyOk = FRED_API_KEY && !FRED_API_KEY.startsWith('__FRED');
+        const fredKeyOk = fredKeyIsConfigured();
         const fredGot = {};
 
         // Primary: FRED (official macro series)
@@ -4709,6 +4790,7 @@
     document.addEventListener('DOMContentLoaded', function () {
       const container = document.getElementById('sectionContainer');
       container.innerHTML = buildAllSections();
+      initFredApiKeyUi();
       initTheme();
       updateTicker();
       updateSupplyDemand(); updateCosts(); updateMarketStructures(); updateRevProfit();
@@ -4792,6 +4874,24 @@
 <!-- API STATUS -->
 <div class="api-status"><div class="api-status-dot demo"></div><span>Demo Mode — Simulated data for educational purposes</span></div>
 <p id="marketLastUpdated" style="font-size:12px;color:var(--gray-300);margin:-8px 0 16px;line-height:1.45;">Market quote last refreshed: —</p>
+
+<div class="card" style="margin-bottom:16px;" id="fred-api-setup">
+  <div class="card-title">🔑 FRED API key (live macro, debt, tariffs, trade)</div>
+  <p class="small-text" style="margin-bottom:10px;line-height:1.55;color:var(--gray-300);">
+    Needed for St. Louis Fed series in this app. Request a <strong>free</strong> key at
+    <a href="https://fred.stlouisfed.org/docs/api/api_key.html" target="_blank" rel="noopener noreferrer">fred.stlouisfed.org</a>.
+    It is stored only in <strong>this browser</strong> (localStorage) unless your host injects it at deploy time.
+  </p>
+  <div class="input-group" style="margin-bottom:10px;max-width:min(100%,420px);">
+    <label for="fred-api-key-input">FRED API key</label>
+    <input type="password" id="fred-api-key-input" autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')saveFredApiKeyFromUi()">
+  </div>
+  <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;">
+    <button type="button" class="btn btn-teal" onclick="saveFredApiKeyFromUi()">Save &amp; refresh live data</button>
+    <button type="button" class="btn btn-outline" onclick="clearFredApiKeyFromUi()">Clear saved key</button>
+    <span id="fred-api-key-saved-hint" class="small-text" style="color:var(--green);"></span>
+  </div>
+</div>
 
 <!-- STOCK SEARCH -->
 <div class="card" style="margin-bottom:16px;">
@@ -8737,14 +8837,18 @@
   </div>
   <div class="card" style="margin-bottom:16px;">
     <div class="card-title">📡 Live FX dashboard (market data)</div>
+    <div class="input-group" style="margin-bottom:12px;max-width:min(100%,380px);">
+      <label for="fx-pair-select">Currency pair</label>
+      <select id="fx-pair-select" onchange="fetchFxLiveDashboard()"></select>
+    </div>
     <p id="fx-live-status" class="small-text" style="margin-bottom:10px;color:var(--gray-300);">Loading spot rates…</p>
     <div id="fx-live-cards" style="margin-bottom:12px;"></div>
     <p id="fxRatesLastUpdated" class="small-text" style="margin-bottom:10px;color:var(--gray-400);">FX spot rates last refreshed: —</p>
     <button type="button" class="btn btn-outline" onclick="fetchFxLiveDashboard()">🔄 Refresh FX rates</button>
   </div>
   <div class="chart-card" style="margin-bottom:16px;">
-    <div class="chart-title">Major pairs — 30-day relative paths</div>
-    <div class="chart-subtitle">Each line indexed to 100 at the start of the window (comparable % moves)</div>
+    <div class="chart-title">Spot history (selected pair)</div>
+    <div class="chart-subtitle" id="fx-chart-subtitle">Choose a pair above — ~30 calendar days of daily closes</div>
     <div class="chart-wrap h-320"><canvas id="fxMultiChart"></canvas></div>
   </div>
   <div class="grid-2">

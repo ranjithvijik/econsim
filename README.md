@@ -90,13 +90,15 @@ CI runs **`qa.yml`** on push/PR; see the badge at the top of this file.
 
 Configure secrets in Amplify and/or GitHub for live FRED / Alpha Vantage usage. The UI still runs with **demo data** if keys are missing.
 
+**Local / static hosting:** Open **Real-Time Market Data** in the app and paste a [free FRED API key](https://fred.stlouisfed.org/docs/api/api_key.html); it is stored in the browser (`localStorage`) and overrides the build-time placeholder when set.
+
 ---
 
 ## External APIs (optional)
 
 | Secret / env | Use |
 |--------------|-----|
-| `FRED_API` | St. Louis Fed macro series (build-time injection into `index.html` as `FRED_API_KEY`). |
+| `FRED_API` | St. Louis Fed macro series (build-time `sed` replaces `__FRED_API_KEY__` inside `FRED_API_KEY_BUILD` in `index.html`). |
 | `AV_API_KEY` | Alpha Vantage quotes (fallback when Yahoo or local API is unavailable). |
 
 **Market data order of attempt:** Yahoo Finance (via CORS proxies) → Alpha Vantage → optional local Python server → static/demo symbols. **Macro:** FRED when the key is present; yields can be supplemented from market proxies when series are missing.
