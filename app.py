@@ -1,8 +1,12 @@
 import os
 from pathlib import Path
 
+import pandas as pd
+import plotly.graph_objects as go
+import requests
 import streamlit as st
 import streamlit.components.v1 as components
+import yfinance as yf
 
 
 st.set_page_config(
@@ -27,14 +31,22 @@ def get_secret(name: str) -> str:
     return ""
 
 
+def get_any_secret(names: list[str]) -> str:
+    for n in names:
+        v = get_secret(n)
+        if v:
+            return v
+    return ""
+
+
 def inject_keys(html: str) -> str:
     """
     Keep compatibility with repo deploy workflow:
     - __AV_API_KEY__ <- AV_API_KEY
     - __FRED_API_KEY__ <- FRED_API
     """
-    av_key = get_secret("AV_API_KEY")
-    fred_key = get_secret("FRED_API")
+    av_key = get_any_secret(["AV_API_KEY", "ALPHA_VANTAGE_API_KEY"])
+    fred_key = get_any_secret(["FRED_API", "FRED_API_KEY"])
 
     if av_key:
         html = html.replace("__AV_API_KEY__", av_key)
@@ -52,6 +64,67 @@ def load_index_html() -> str:
     return inject_keys(raw)
 
 
+@st.cache_data(ttl=600)
+def fetch_yahoo_series(symbol: str, period: str = "1mo", interval: str = "1d") -> pd.DataFrame:
+    data = yf.download(symbol, period=period, interval=interval, progress=False, auto_adjust=False)
+    if data is None or data.empty:
+        return pd.DataFrame()
+    return data
+
+
+@st.cache_data(ttl=1800)
+def fetch_fred_observations(series_id: str, api_key: str, limit: int = 80, units: str = "lin") -> pd.DataFrame:
+    if not api_key:
+        return pd.DataFrame()
+    url = "https://api.stlouisfed.org/fred/series/observations"
+    params = {
+        "series_id": series_id,
+        "api_key": api_key,
+        "file_type": "json",
+        "sort_order": "asc",
+        "limit": limit,
+        "units": units,
+    }
+    resp = requests.get(url, params=params, timeout=15)
+    resp.raise_for_status()
+    data = resp.json()
+    rows = []
+    for o in data.get("observations", []):
+        val = o.get("value")
+        if val in (None, "."):
+            continue
+        try:
+            rows.append({"date": pd.to_datetime(o["date"]), "value": float(val)})
+        except Exception:
+            continue
+    return pd.DataFrame(rows)
+
+
+def line_chart(df: pd.DataFrame, title: str, y_title: str, color: str = "#0891b2"):
+    if df is None or df.empty:
+        st.info("No data returned.")
+        return
+    fig = go.Figure()
+    fig.add_trace(
+        go.Scatter(
+            x=df["date"],
+            y=df["value"],
+            mode="lines",
+            line=dict(color=color, width=2),
+            fill="tozeroy",
+        )
+    )
+    fig.update_layout(
+        title=title,
+        xaxis_title="Date",
+        yaxis_title=y_title,
+        margin=dict(l=20, r=20, t=45, b=20),
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+
 st.markdown(
     """
 <style>
@@ -62,8 +135,142 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+def render_html_mirror(section_id: str | None = None, height: int = 1800):
+    html = load_index_html()
+    if section_id:
+        # Force section hash in embedded document for module-level fallback.
+        html = (
+            f"<script>window.location.hash='#{section_id}';</script>"
+            + html
+        )
+    components.html(html, height=height, scrolling=True)
 
-html = load_index_html()
 
-# Large height to allow full-page scrolling inside Streamlit.
-components.html(html, height=1600, scrolling=True)
+st.title("Economics Simulator")
+st.caption("Python-native modules by default (yfinance/FRED); automatic fallback to HTML mirror.")
+
+fred_key = get_any_secret(["FRED_API", "FRED_API_KEY"])
+
+python_modules = [
+    "Exchange Rates",
+    "National Debt",
+    "Trade Policy",
+    "Comparative Advantage",
+]
+
+fallback_section_map = {
+    "Exchange Rates": "exchange-rates",
+    "National Debt": "national-debt",
+    "Trade Policy": "trade-policy",
+    "Comparative Advantage": "comp-advantage",
+}
+
+selected = st.sidebar.selectbox("Module", python_modules, index=0)
+show_full = st.sidebar.toggle("Open full HTML mirror", value=False)
+
+if show_full:
+    render_html_mirror(fallback_section_map.get(selected))
+    st.stop()
+
+if selected == "Exchange Rates":
+    st.subheader("Exchange Rates (Python-native)")
+    fx_map = {
+        "GBP/USD": ("GBPUSD=X", 4),
+        "EUR/USD": ("EURUSD=X", 4),
+        "USD/JPY": ("JPY=X", 2),
+        "USD/CAD": ("CAD=X", 4),
+        "USD/CHF": ("CHF=X", 4),
+        "AUD/USD": ("AUDUSD=X", 4),
+        "NZD/USD": ("NZDUSD=X", 4),
+    }
+    pair = st.selectbox("FX pair (Yahoo Finance)", list(fx_map.keys()), index=0)
+    ticker, d = fx_map[pair]
+    fx = fetch_yahoo_series(ticker, "1mo", "1d")
+    if fx.empty:
+        st.warning("Yahoo FX fetch failed. Falling back to HTML mirror section.")
+        render_html_mirror("exchange-rates", height=1400)
+    else:
+        close = fx["Close"].dropna()
+        if len(close) < 2:
+            st.warning("Not enough FX history points. Falling back to HTML mirror section.")
+            render_html_mirror("exchange-rates", height=1400)
+        else:
+            chg = (close.iloc[-1] / close.iloc[-2] - 1) * 100
+            c1, c2 = st.columns([1, 2])
+            with c1:
+                st.metric(pair, f"{close.iloc[-1]:.{d}f}", f"{chg:+.2f}%")
+            with c2:
+                fx_plot = pd.DataFrame({"date": close.index, "value": close.values})
+                line_chart(fx_plot, f"{pair} spot history (Yahoo via yfinance)", "Spot")
+
+elif selected == "National Debt":
+    st.subheader("National Debt (Python-native, FRED)")
+    if not fred_key:
+        st.error(
+            "Missing FRED secret. Set `FRED_API` (preferred) or `FRED_API_KEY` "
+            "in Streamlit app secrets/environment."
+        )
+    else:
+        debt = fetch_fred_observations("GFDEGDQ188S", fred_key, 80)
+        total = fetch_fred_observations("GFDEBTN", fred_key, 20)
+        if debt.empty:
+            st.warning("FRED debt fetch failed. Falling back to HTML mirror section.")
+            render_html_mirror("national-debt", height=1500)
+        else:
+            c1, c2 = st.columns(2)
+            with c1:
+                st.metric("Debt / GDP (latest)", f"{debt['value'].iloc[-1]:.1f}%")
+            with c2:
+                if not total.empty:
+                    st.metric("Total public debt (latest, $M)", f"{total['value'].iloc[-1]:,.0f}")
+            line_chart(debt, "Federal debt as % of GDP (GFDEGDQ188S)", "% of GDP", color="#0891b2")
+
+elif selected == "Trade Policy":
+    st.subheader("Trade Policy / Tariffs (Python-native, FRED)")
+    if not fred_key:
+        st.error(
+            "Missing FRED secret. Set `FRED_API` (preferred) or `FRED_API_KEY` "
+            "in Streamlit app secrets/environment."
+        )
+    else:
+        tariff = fetch_fred_observations("B235RC1Q027SBEA", fred_key, 80)
+        imports_goods = fetch_fred_observations("A255RC1Q027SBEA", fred_key, 80)
+        if tariff.empty:
+            st.warning("FRED tariff fetch failed. Falling back to HTML mirror section.")
+            render_html_mirror("trade-policy", height=1500)
+        else:
+            c1, c2 = st.columns(2)
+            with c1:
+                st.metric("Customs duties (latest, $B SAAR)", f"{tariff['value'].iloc[-1]:.1f}")
+            with c2:
+                if not imports_goods.empty:
+                    imp_last = imports_goods["value"].iloc[-1]
+                    t_last = tariff["value"].iloc[-1]
+                    if imp_last:
+                        st.metric("Duties / Imports (rough)", f"{(t_last / imp_last) * 100:.2f}%")
+            line_chart(tariff, "Federal customs duties (B235RC1Q027SBEA)", "Billions USD (SAAR)", color="#ca8a04")
+
+elif selected == "Comparative Advantage":
+    st.subheader("Comparative Advantage context (Python-native, FRED)")
+    if not fred_key:
+        st.error(
+            "Missing FRED secret. Set `FRED_API` (preferred) or `FRED_API_KEY` "
+            "in Streamlit app secrets/environment."
+        )
+    else:
+        exp = fetch_fred_observations("EXPGS", fred_key, 80)
+        imp = fetch_fred_observations("IMPGS", fred_key, 80)
+        gdp = fetch_fred_observations("GDP", fred_key, 80)
+        nx = fetch_fred_observations("NETEXP", fred_key, 80)
+        if exp.empty or imp.empty or gdp.empty or nx.empty:
+            st.warning("Trade series incomplete. Falling back to HTML mirror section.")
+            render_html_mirror("comp-advantage", height=1500)
+        else:
+            open_pct = ((exp["value"].iloc[-1] + imp["value"].iloc[-1]) / gdp["value"].iloc[-1]) * 100
+            c1, c2 = st.columns(2)
+            with c1:
+                st.metric("Trade openness (X+M)/GDP", f"{open_pct:.1f}%")
+            with c2:
+                st.metric("Net exports (latest, $B SAAR)", f"{nx['value'].iloc[-1]:,.0f}")
+            line_chart(nx, "Net exports history (NETEXP)", "Billions USD (SAAR)", color="#0891b2")
+
