@@ -143,9 +143,26 @@ def fetch_fx_series(pair_label: str, yahoo_symbol: str, fred_key: str) -> tuple[
     # Primary: Yahoo via yfinance
     ydf = fetch_yahoo_series(yahoo_symbol, "1mo", "1d")
     if not ydf.empty and "Close" in ydf:
-        close = ydf["Close"].dropna()
+        close_obj = ydf["Close"]
+        # yfinance may return Close as DataFrame (MultiIndex columns) or Series.
+        if isinstance(close_obj, pd.DataFrame):
+            if close_obj.shape[1] >= 1:
+                close = close_obj.iloc[:, 0]
+            else:
+                close = pd.Series(dtype="float64")
+        else:
+            close = close_obj
+        close = pd.to_numeric(close, errors="coerce").dropna()
         if len(close) >= 2:
-            return pd.DataFrame({"date": close.index, "value": close.values}), "Yahoo"
+            return (
+                pd.DataFrame(
+                    {
+                        "date": pd.to_datetime(close.index).to_list(),
+                        "value": close.astype(float).to_list(),
+                    }
+                ),
+                "Yahoo",
+            )
 
     # Fallback: FRED daily FX series (if key exists)
     fred_fx_map = {
