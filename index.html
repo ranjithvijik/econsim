@@ -1152,6 +1152,11 @@
         display: none;
       }
 
+      .top-bar-title {
+        font-size: 13px;
+        max-width: min(200px, 42vw);
+      }
+
       .grid-2,
       .grid-3,
       .grid-4,
@@ -1216,6 +1221,19 @@
     .top-bar-meta {
       font-size: 14px;
       color: var(--gray-200);
+    }
+
+    .top-bar-title {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--white);
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
+      max-width: min(280px, 28vw);
     }
 
     .stock-change {
@@ -1647,8 +1665,7 @@
           Trade</span><span class="nav-number">A2</span></div>
       <div class="sidebar-footer">
         <div style="color:var(--teal);font-weight:600;margin-bottom:4px;">Economics Simulator</div>
-        <div>Built with RJBot on BoodleBox</div>
-        <div style="margin-top:6px;color:var(--green);">🔴 78 MODULES ENABLED</div>
+        <div style="margin-top:6px;color:var(--green);">🟢 78 MODULES ENABLED</div>
       </div>
     </aside>
     <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true" onclick="closeMobileSidebar()"></div>
@@ -1659,7 +1676,9 @@
       <header class="top-bar">
         <div class="top-bar-left"><button type="button" class="mobile-menu-btn" onclick="toggleSidebar()"
             aria-label="Open navigation menu">☰</button><span
-            class="ticker-badge">ECONSIM</span><span class="top-bar-meta">78 Modules</span></div>
+            class="ticker-badge">ECONSIM</span>
+          <h1 class="top-bar-title">Economics Simulator</h1>
+          <span class="top-bar-meta">78 Modules</span></div>
         <div class="top-bar-right">
           <a href="/econsimguide/" class="student-guide-link">Student Guide</a>
           <div class="theme-toggle"><button class="theme-toggle-btn" id="darkBtn"
