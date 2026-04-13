@@ -1,11 +1,12 @@
 import os
 from pathlib import Path
+from contextlib import redirect_stderr, redirect_stdout
+from io import StringIO
 
 import pandas as pd
 import plotly.graph_objects as go
 import requests
 import streamlit as st
-import streamlit.components.v1 as components
 import yfinance as yf
 
 
@@ -66,7 +67,20 @@ def load_index_html() -> str:
 
 @st.cache_data(ttl=600)
 def fetch_yahoo_series(symbol: str, period: str = "1mo", interval: str = "1d") -> pd.DataFrame:
-    data = yf.download(symbol, period=period, interval=interval, progress=False, auto_adjust=False)
+    # Silence yfinance stderr/stdout noise (e.g., rate-limit traces) and return empty on failure.
+    sink = StringIO()
+    try:
+        with redirect_stdout(sink), redirect_stderr(sink):
+            data = yf.download(
+                symbol,
+                period=period,
+                interval=interval,
+                progress=False,
+                auto_adjust=False,
+                threads=False,
+            )
+    except Exception:
+        return pd.DataFrame()
     if data is None or data.empty:
         return pd.DataFrame()
     return data
@@ -125,6 +139,32 @@ def line_chart(df: pd.DataFrame, title: str, y_title: str, color: str = "#0891b2
     st.plotly_chart(fig, use_container_width=True)
 
 
+def fetch_fx_series(pair_label: str, yahoo_symbol: str, fred_key: str) -> tuple[pd.DataFrame, str]:
+    # Primary: Yahoo via yfinance
+    ydf = fetch_yahoo_series(yahoo_symbol, "1mo", "1d")
+    if not ydf.empty and "Close" in ydf:
+        close = ydf["Close"].dropna()
+        if len(close) >= 2:
+            return pd.DataFrame({"date": close.index, "value": close.values}), "Yahoo"
+
+    # Fallback: FRED daily FX series (if key exists)
+    fred_fx_map = {
+        "GBP/USD": "DEXUSUK",  # USD per GBP
+        "EUR/USD": "DEXUSEU",  # USD per EUR
+        "USD/JPY": "DEXJPUS",  # JPY per USD
+        "USD/CAD": "DEXCAUS",  # CAD per USD
+        "USD/CHF": "DEXSZUS",  # CHF per USD
+        "AUD/USD": "DEXUSAL",  # USD per AUD
+        "NZD/USD": "DEXUSNZ",  # USD per NZD
+    }
+    if fred_key and pair_label in fred_fx_map:
+        fdf = fetch_fred_observations(fred_fx_map[pair_label], fred_key, limit=60, units="lin")
+        if not fdf.empty:
+            return fdf, "FRED"
+
+    return pd.DataFrame(), "Unavailable"
+
+
 st.markdown(
     """
 <style>
@@ -136,14 +176,11 @@ st.markdown(
 )
 
 def render_html_mirror(section_id: str | None = None, height: int = 1800):
-    html = load_index_html()
+    mirror_url = get_any_secret(["ECONSIM_HTML_MIRROR_URL"]) or "https://ranjithvijik.github.io/econsim/"
+    url = mirror_url.rstrip("/") + "/"
     if section_id:
-        # Force section hash in embedded document for module-level fallback.
-        html = (
-            f"<script>window.location.hash='#{section_id}';</script>"
-            + html
-        )
-    components.html(html, height=height, scrolling=True)
+        url += f"#{section_id}"
+    st.iframe(url, height=height, scrolling=True)
 
 
 st.title("Economics Simulator")
@@ -185,23 +222,18 @@ if selected == "Exchange Rates":
     }
     pair = st.selectbox("FX pair (Yahoo Finance)", list(fx_map.keys()), index=0)
     ticker, d = fx_map[pair]
-    fx = fetch_yahoo_series(ticker, "1mo", "1d")
-    if fx.empty:
-        st.warning("Yahoo FX fetch failed. Falling back to HTML mirror section.")
+    fx_df, fx_source = fetch_fx_series(pair, ticker, fred_key)
+    if fx_df.empty:
+        st.warning("FX fetch unavailable (Yahoo/FRED). Falling back to HTML mirror section.")
         render_html_mirror("exchange-rates", height=1400)
     else:
-        close = fx["Close"].dropna()
-        if len(close) < 2:
-            st.warning("Not enough FX history points. Falling back to HTML mirror section.")
-            render_html_mirror("exchange-rates", height=1400)
-        else:
-            chg = (close.iloc[-1] / close.iloc[-2] - 1) * 100
-            c1, c2 = st.columns([1, 2])
-            with c1:
-                st.metric(pair, f"{close.iloc[-1]:.{d}f}", f"{chg:+.2f}%")
-            with c2:
-                fx_plot = pd.DataFrame({"date": close.index, "value": close.values})
-                line_chart(fx_plot, f"{pair} spot history (Yahoo via yfinance)", "Spot")
+        chg = (fx_df["value"].iloc[-1] / fx_df["value"].iloc[-2] - 1) * 100
+        c1, c2 = st.columns([1, 2])
+        with c1:
+            st.metric(pair, f"{fx_df['value'].iloc[-1]:.{d}f}", f"{chg:+.2f}%")
+            st.caption(f"Source: {fx_source}")
+        with c2:
+            line_chart(fx_df, f"{pair} spot history ({fx_source})", "Spot")
 
 elif selected == "National Debt":
     st.subheader("National Debt (Python-native, FRED)")
