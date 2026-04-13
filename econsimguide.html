@@ -173,6 +173,12 @@
       --slate-100: #e2e8f0;
     }
 
+    /* Top bar uses var(--white); in light theme --white is inverted for legacy controls — force paper white here */
+    [data-theme="light"] .top-bar {
+      background: #ffffff;
+      border-bottom-color: #e2e8f0;
+    }
+
     [data-theme="light"] .sidebar {
       border-right-color: var(--border);
       color: var(--text-muted);
@@ -4908,11 +4914,15 @@
 
         <div style="padding-left:2em;text-indent:-2em;margin-bottom:1em;line-height:1.6;font-size:13px;">
           Greenlaw, S. A., Shapiro, D., & MacDonald, D. (2022). <em>Principles of macroeconomics</em> (3rd
-          ed.). OpenStax, Rice University. https://openstax.org/details/books/principles-macroeconomics-3e
+          ed.). OpenStax, Rice University.
+          <a href="https://assets.openstax.org/oscms-prodcms/media/documents/Macroeconomics3e-WEB.pdf"
+            target="_blank" rel="noopener noreferrer">Macroeconomics 3e (PDF)</a>
         </div>
         <div style="padding-left:2em;text-indent:-2em;margin-bottom:1em;line-height:1.6;font-size:13px;">
           Greenlaw, S. A., Shapiro, D., & MacDonald, D. (2022). <em>Principles of microeconomics</em> (3rd
-          ed.). OpenStax, Rice University. https://openstax.org/details/books/principles-microeconomics-3e
+          ed.). OpenStax, Rice University.
+          <a href="https://assets.openstax.org/oscms-prodcms/media/documents/Microeconomics3e-WEB.pdf"
+            target="_blank" rel="noopener noreferrer">Microeconomics 3e (PDF)</a>
         </div>
         <div style="padding-left:2em;text-indent:-2em;margin-bottom:1em;line-height:1.6;font-size:13px;">
           Perloff, J. M., & Brander, J. A. (2020). <em>Managerial economics and strategy</em> (3rd ed.).
