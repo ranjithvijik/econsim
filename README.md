@@ -17,7 +17,14 @@ There is **no build step** for the app itself—open `index.html` in a browser o
 - **Other academic references** — Perloff & Brander (*Managerial Economics and Strategy*) and embedded “source” tags on many sections.
 - **Themes** — Light/dark UI with persistent preference.
 - **Charts** — Chart.js (CDN) for curves, bars, and dashboards that update from sliders and inputs.
-- **Data tiers** — Demo/synthetic data by default; optional local Python API, CORS proxies, FRED, and Alpha Vantage when keys and network are available.
+- **Data tiers** — Demo/synthetic data by default; optional local Python API, CORS proxies, **FRED** (primary macro), **Yahoo Finance** (default quotes), **Alpha Vantage** fallback, and static demo when sources fail.
+- **Live data in the UI** — Macro and market **refresh timestamps** appear in the top bar and section footers so you can see when indicators and quotes were last updated.
+- **Cross-module wiring** — FRED-style macro series and the selected equity quote feed **slider defaults and context** across many tools (micro through macro): e.g. supply/demand, AD–AS, fiscal/monetary/Phillips/Solow, IS–LM, Taylor rule, GDP/CPI/unemployment calculators, credit and labor markets, Keynesian cross, loanable funds (risk premium from **beta**), and more. Use **Apply to All Modules** in Live Markets, or refresh macro data from the FRED card.
+- **Embed-friendly API** — After load, `window.EconSim` exposes read-only helpers and a one-call refresh:
+  - `getMacroSeries()` — shallow copy of current macro indicator object
+  - `getMacroPolicy()`, `getMacroRegime()`, `getYieldSpread()` — derived policy hints
+  - `getMarketQuote()` — `{ symbol, quote }` for the ticker in the UI
+  - `applyLiveDataToModules()` — re-runs the same propagation as the live-data controls
 
 ---
 
@@ -30,7 +37,7 @@ There is **no build step** for the app itself—open `index.html` in a browser o
 | `run_tests.js` | Node test orchestrator; writes `QA-REPORT.md`. |
 | `tests/unit/` | HTML structure, modules, components, guide, deploy config tests. |
 | `amplify.yml` | AWS Amplify build (guide URL, API key injection, security headers). |
-| `.github/workflows/` | QA and deploy workflows. |
+| `.github/workflows/` | **QA** on push/PR; **deploy** workflow on `main` injects API keys, copies the guide to `econsimguide/index.html`, and uploads a `site` build artifact. |
 
 ---
 
@@ -79,9 +86,10 @@ CI runs **`qa.yml`** on push/PR; see the badge at the top of this file.
 ## Deployment
 
 - **Static hosts** — Upload the repo root (or `index.html` + assets as your host requires). No compile step.
-- **AWS Amplify** — See `amplify.yml`: injects `AV_API_KEY` and `FRED` (as `FRED_API` secret) into `index.html`, copies `econsimguide.html` to **`econsimguide/index.html`** so **`/econsimguide/`** resolves, and sets security/cache headers for HTML.
+- **AWS Amplify** — See `amplify.yml`: injects `AV_API_KEY` and `FRED_API` into `index.html` (replacing placeholders), copies `econsimguide.html` to **`econsimguide/index.html`** so **`/econsimguide/`** resolves, and sets security/cache headers for HTML.
+- **GitHub Actions** — On push to **`main`**, `.github/workflows/deploy.yml` runs the same placeholder replacement (repository secrets `AV_API_KEY` and `FRED_API`), prepares **`econsimguide/index.html`**, and uploads the **`site`** artifact for download or downstream hosting.
 
-Configure secrets in Amplify (or your CI) for live FRED / Alpha Vantage usage. The UI still runs with **demo data** if keys are missing.
+Configure secrets in Amplify and/or GitHub for live FRED / Alpha Vantage usage. The UI still runs with **demo data** if keys are missing.
 
 ---
 
@@ -89,10 +97,12 @@ Configure secrets in Amplify (or your CI) for live FRED / Alpha Vantage usage. T
 
 | Secret / env | Use |
 |--------------|-----|
-| `FRED_API` | St. Louis Fed macro series (injected at build on Amplify). |
-| `AV_API_KEY` | Alpha Vantage quotes (injected at build on Amplify). |
+| `FRED_API` | St. Louis Fed macro series (build-time injection into `index.html` as `FRED_API_KEY`). |
+| `AV_API_KEY` | Alpha Vantage quotes (fallback when Yahoo or local API is unavailable). |
 
-The code falls back to **synthetic/demo** stocks and cached-style macro values when APIs are unavailable or rate-limited.
+**Market data order of attempt:** Yahoo Finance (via CORS proxies) → Alpha Vantage → optional local Python server → static/demo symbols. **Macro:** FRED when the key is present; yields can be supplemented from market proxies when series are missing.
+
+The code falls back to **synthetic/demo** stocks and baseline macro values when APIs are unavailable or rate-limited.
 
 ---
 
