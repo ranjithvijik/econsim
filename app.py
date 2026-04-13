@@ -207,7 +207,8 @@ def render_html_mirror(section_id: str | None = None, height: int = 1800):
     url = mirror_url.rstrip("/") + "/"
     if section_id:
         url += f"#{section_id}"
-    st.iframe(url, height=height, scrolling=True)
+    # Keep args minimal for broad Streamlit-version compatibility.
+    st.iframe(url, height=height)
 
 
 st.title("Economics Simulator")
@@ -230,7 +231,7 @@ fallback_section_map = {
 }
 
 selected = st.sidebar.selectbox("Module", python_modules, index=0)
-show_full = st.sidebar.toggle("Open full HTML mirror", value=False)
+show_full = st.sidebar.toggle("Open full HTML mirror", value=True)
 
 if show_full:
     render_html_mirror(fallback_section_map.get(selected))
