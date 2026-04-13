@@ -1317,6 +1317,122 @@
       color: var(--gray-200);
       margin: 0;
     }
+
+    /* OpenStax 3e textbook alignment (content paraphrased from prefaces; CC BY 4.0) */
+    .openstax-textbooks-strip {
+      padding: 12px max(24px, env(safe-area-inset-right, 0px)) 14px max(24px, env(safe-area-inset-left, 0px));
+      background: linear-gradient(135deg, rgba(0, 180, 216, 0.1), rgba(26, 64, 128, 0.08));
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--gray-200);
+    }
+
+    .openstax-textbooks-strip p {
+      margin: 0;
+    }
+
+    .openstax-textbooks-strip strong {
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+
+    .openstax-textbooks-strip cite {
+      font-style: italic;
+    }
+
+    .openstax-pdf-links {
+      margin-top: 10px;
+      font-weight: 600;
+    }
+
+    .openstax-pdf-links a {
+      color: var(--teal);
+      text-decoration: none;
+    }
+
+    .openstax-pdf-links a:hover {
+      text-decoration: underline;
+    }
+
+    .openstax-pdf-links .sep {
+      color: var(--gray-400);
+      font-weight: 500;
+      padding: 0 6px;
+    }
+
+    .syllabus-map-wrap {
+      padding: 0 max(24px, env(safe-area-inset-right, 0px)) 20px max(24px, env(safe-area-inset-left, 0px));
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .syllabus-map-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0 0 10px;
+    }
+
+    .syllabus-map-note {
+      font-size: 13px;
+      color: var(--gray-300);
+      margin: 0 0 12px;
+      line-height: 1.5;
+    }
+
+    .syllabus-map {
+      width: 100%;
+      min-width: 520px;
+      border-collapse: collapse;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .syllabus-map th,
+    .syllabus-map td {
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .syllabus-map thead th {
+      background: var(--navy-700);
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+
+    .syllabus-map tbody tr:nth-child(even) td {
+      background: rgba(0, 180, 216, 0.04);
+    }
+
+    .syllabus-map .ref-col {
+      color: var(--gray-300);
+      white-space: nowrap;
+    }
+
+    .syllabus-link {
+      display: inline;
+      background: none;
+      border: none;
+      padding: 0;
+      margin: 0;
+      font: inherit;
+      color: var(--teal);
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    .syllabus-link:hover {
+      color: var(--gold);
+    }
+
+    .syllabus-link-sep {
+      color: var(--gray-400);
+      padding: 0 4px;
+      user-select: none;
+    }
   </style>
 </head>
 
@@ -1552,6 +1668,140 @@
           </div>
         </div>
       </header>
+      <div class="openstax-textbooks-strip" role="region" aria-label="OpenStax textbook alignment">
+        <p><strong>OpenStax alignment.</strong> Interactive modules in EconSim pair with <cite>Principles of
+            Microeconomics 3e</cite> and <cite>Principles of Macroeconomics 3e</cite> (OpenStax, Rice University;
+          licensed <abbr title="Creative Commons Attribution 4.0 International">CC&nbsp;BY&nbsp;4.0</abbr>). The micro
+          text moves from scarcity and choice through supply and demand (including labor and finance), elasticity and
+          consumer theory, production and market structure, policy applications, and international economics. The macro
+          text develops GDP and growth, unemployment and inflation, open-economy flows, the aggregate demand–supply
+          framework, Keynesian and neoclassical perspectives, money and banking, fiscal and monetary policy, and global
+          macro topics—matching themes used across this simulator.</p>
+        <p class="openstax-pdf-links">Full books:
+          <a href="https://assets.openstax.org/oscms-prodcms/media/documents/Microeconomics3e-WEB.pdf"
+            target="_blank" rel="noopener noreferrer">Microeconomics 3e (PDF)</a><span class="sep">·</span><a
+            href="https://assets.openstax.org/oscms-prodcms/media/documents/Macroeconomics3e-WEB.pdf" target="_blank"
+            rel="noopener noreferrer">Macroeconomics 3e (PDF)</a>
+        </p>
+      </div>
+      <div class="syllabus-map-wrap" role="region" aria-label="Course topic to simulator map">
+        <h2 class="syllabus-map-title">Course topics → EconSim modules</h2>
+        <p class="syllabus-map-note">Each row ties a typical principles / managerial unit to OpenStax chapters and the
+          interactive modules where you can explore it. Click a module name to open it.</p>
+        <table class="syllabus-map">
+          <thead>
+            <tr>
+              <th scope="col">Course topic</th>
+              <th scope="col">Textbook (typical)</th>
+              <th scope="col">Simulators</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Introduction; Demand &amp; Supply</td>
+              <td class="ref-col">OpenStax Micro Ch.3</td>
+              <td><button type="button" class="syllabus-link" onclick="showSection('scarcity-choice')">Scarcity &amp;
+                  Choice</button><span class="syllabus-link-sep">·</span><button type="button" class="syllabus-link"
+                  onclick="showSection('supply-demand')">Supply &amp; Demand</button></td>
+            </tr>
+            <tr>
+              <td>Demand, Supply, Equilibrium &amp; empirical markets</td>
+              <td class="ref-col">Micro Ch.3</td>
+              <td><button type="button" class="syllabus-link" onclick="showSection('supply-demand')">Supply &amp;
+                  Demand</button><span class="syllabus-link-sep">·</span><button type="button" class="syllabus-link"
+                  onclick="showSection('live-markets')">Real-Time Markets</button></td>
+            </tr>
+            <tr>
+              <td>Production and costs</td>
+              <td class="ref-col">Micro Ch.7</td>
+              <td><button type="button" class="syllabus-link" onclick="showSection('production-costs')">Production &amp;
+                  Costs</button></td>
+            </tr>
+            <tr>
+              <td>Market structure &amp; pricing with market power</td>
+              <td class="ref-col">Micro Ch.9 &amp; 11</td>
+              <td><button type="button" class="syllabus-link" onclick="showSection('market-structures')">Market
+                  Structures</button><span class="syllabus-link-sep">·</span><button type="button"
+                  class="syllabus-link" onclick="showSection('price-disc')">Price Discrimination</button><span
+                  class="syllabus-link-sep">·</span><button type="button" class="syllabus-link"
+                  onclick="showSection('merger')">Merger Analysis</button></td>
+            </tr>
+            <tr>
+              <td>Organizational architecture</td>
+              <td class="ref-col">Managerial Ch.7</td>
+              <td><button type="button" class="syllabus-link" onclick="showSection('firm-org')">Firm
+                  Organization</button></td>
+            </tr>
+            <tr>
+              <td>Economics of business strategy</td>
+              <td class="ref-col">Managerial Ch.12–13</td>
+              <td><button type="button" class="syllabus-link" onclick="showSection('game-theory')">Static Games</button><span
+                  class="syllabus-link-sep">·</span><button type="button" class="syllabus-link"
+                  onclick="showSection('sequential-games')">Sequential Games</button><span
+                  class="syllabus-link-sep">·</span><button type="button" class="syllabus-link"
+                  onclick="showSection('dynamic-games')">Repeated Games</button></td>
+            </tr>
+            <tr>
+              <td>Economics of regulation</td>
+              <td class="ref-col">Micro Ch.12–13</td>
+              <td><button type="button" class="syllabus-link" onclick="showSection('externalities')">Externalities</button><span
+                  class="syllabus-link-sep">·</span><button type="button" class="syllabus-link"
+                  onclick="showSection('public-goods')">Public Goods</button><span class="syllabus-link-sep">·</span><button
+                  type="button" class="syllabus-link" onclick="showSection('public-choice')">Public Choice</button></td>
+            </tr>
+            <tr>
+              <td>CSR &amp; business ethics</td>
+              <td class="ref-col">Readings + Micro themes</td>
+              <td><button type="button" class="syllabus-link" onclick="showSection('csr-ethics')">CSR &amp;
+                  Ethics</button></td>
+            </tr>
+            <tr>
+              <td>GDP, unemployment &amp; business cycles</td>
+              <td class="ref-col">Macro Ch.6 &amp; 8</td>
+              <td><button type="button" class="syllabus-link" onclick="showSection('gdp-calc')">GDP Calculator</button><span
+                  class="syllabus-link-sep">·</span><button type="button" class="syllabus-link"
+                  onclick="showSection('unemp-calc')">Unemployment</button><span class="syllabus-link-sep">·</span><button
+                  type="button" class="syllabus-link" onclick="showSection('business-cycle')">Business Cycle</button></td>
+            </tr>
+            <tr>
+              <td>Inflation</td>
+              <td class="ref-col">Macro Ch.9</td>
+              <td><button type="button" class="syllabus-link" onclick="showSection('cpi-calc')">CPI &amp;
+                  Inflation</button></td>
+            </tr>
+            <tr>
+              <td>Aggregate demand &amp; supply</td>
+              <td class="ref-col">Macro Ch.11</td>
+              <td><button type="button" class="syllabus-link" onclick="showSection('ad-as')">AD-AS Model</button></td>
+            </tr>
+            <tr>
+              <td>Money, banking &amp; monetary policy</td>
+              <td class="ref-col">Macro Ch.14–15</td>
+              <td><button type="button" class="syllabus-link" onclick="showSection('fractional-reserve')">Fractional
+                  Reserve</button><span class="syllabus-link-sep">·</span><button type="button" class="syllabus-link"
+                  onclick="showSection('monetary-policy')">Monetary Policy</button><span
+                  class="syllabus-link-sep">·</span><button type="button" class="syllabus-link"
+                  onclick="showSection('financial-markets')">Financial Markets</button></td>
+            </tr>
+            <tr>
+              <td>Government budgets &amp; fiscal policy</td>
+              <td class="ref-col">Macro Ch.17–18</td>
+              <td><button type="button" class="syllabus-link" onclick="showSection('fiscal-policy')">Fiscal
+                  Policy</button><span class="syllabus-link-sep">·</span><button type="button" class="syllabus-link"
+                  onclick="showSection('national-debt')">National Debt</button></td>
+            </tr>
+            <tr>
+              <td>Current global economic issues</td>
+              <td class="ref-col">Macro Ch.20+</td>
+              <td><button type="button" class="syllabus-link" onclick="showSection('globalization')">Globalization</button><span
+                  class="syllabus-link-sep">·</span><button type="button" class="syllabus-link"
+                  onclick="showSection('trade-policy')">Trade Policy</button><span class="syllabus-link-sep">·</span><button
+                  type="button" class="syllabus-link" onclick="showSection('macro-policy-world')">Macro Policy
+                  Debate</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <div id="sectionContainer"></div>
     </main>
   </div>
@@ -2002,7 +2252,15 @@
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
       const sec = document.getElementById(id);
       if (sec) sec.classList.add('active');
-      if (typeof event !== 'undefined' && event && event.target) event.target.closest('.nav-item')?.classList.add('active');
+      const fromNav = typeof event !== 'undefined' && event && event.target && event.target.closest('.nav-item');
+      if (fromNav) {
+        fromNav.classList.add('active');
+      } else {
+        document.querySelectorAll('.nav-item').forEach(n => {
+          const oc = n.getAttribute('onclick');
+          if (oc && oc.indexOf("showSection('" + id + "')") !== -1) n.classList.add('active');
+        });
+      }
       if (window.innerWidth <= 900) closeMobileSidebar();
     }
     function toggleSidebar() {
@@ -3658,6 +3916,12 @@
         updateTicker();
       }, 5000);
       console.log('EconSim — All 78 modules loaded with 100% curriculum coverage!');
+      function applyHashSection() {
+        const h = (location.hash || '').replace(/^#/, '');
+        if (h && document.getElementById(h)) showSection(h);
+      }
+      applyHashSection();
+      window.addEventListener('hashchange', applyHashSection);
     });
 
     function sl(id, label, min, max, val, step, fn, prefix = '', suffix = '', hint = '') {
