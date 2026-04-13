@@ -18,12 +18,13 @@ jobs:
         run: |
           sed -i "s/__AV_API_KEY__/${{ secrets.AV_API_KEY }}/g" index.html
           sed -i "s/__FRED_API_KEY__/${{ secrets.FRED_API }}/g" index.html
+          sed -i "s/__BEA_API_KEY__/${{ secrets.BEA_API }}/g" index.html
           echo "API keys injected into index.html"
 
       - name: Verify injection
         run: |
-          if grep -q "__AV_API_KEY__" index.html || grep -q "__FRED_API_KEY__" index.html; then
-            echo "ERROR: Placeholders were not replaced. Check that AV_API_KEY and FRED_API secrets are set."
+          if grep -q "__AV_API_KEY__" index.html || grep -q "__FRED_API_KEY__" index.html || grep -q "__BEA_API_KEY__" index.html; then
+            echo "ERROR: Placeholders were not replaced. Check that AV_API_KEY, FRED_API, and BEA_API secrets are set."
             exit 1
           else
             echo "Placeholder successfully replaced."

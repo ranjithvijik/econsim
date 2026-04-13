@@ -99,7 +99,11 @@ Configure secrets in Amplify and/or GitHub for live FRED / Alpha Vantage usage. 
 | Secret / env | Use |
 |--------------|-----|
 | `FRED_API` | St. Louis Fed macro series (build-time `sed` replaces `__FRED_API_KEY__` inside `FRED_API_KEY_BUILD` in `index.html`). |
+| `BEA_API` | Bureau of Economic Analysis API key (NIPA trade and tariff table pulls; replaces `__BEA_API_KEY__`). |
 | `AV_API_KEY` | Alpha Vantage quotes (fallback when Yahoo or local API is unavailable). |
+
+Python mirror dependency: `world-bank-data` is included for World Bank annual trade indicator fallback in Streamlit deployments.
+Streamlit also prefetches World Bank Data360 API trade indicators (`WB_WDI` dataset) and uses them as first annual fallback for trade openness when BEA/FRED are unavailable.
 
 **Market data order of attempt:** Yahoo Finance (via CORS proxies) → Alpha Vantage → optional local Python server → static/demo symbols. **Macro:** FRED when the key is present; yields can be supplemented from market proxies when series are missing.
 
