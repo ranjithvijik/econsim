@@ -1385,6 +1385,44 @@
       text-transform: uppercase
     }
 
+    .sim-home-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--teal);
+      text-decoration: none;
+    }
+
+    .sim-home-link:hover {
+      color: var(--teal-dim);
+      text-decoration: underline;
+    }
+
+    .sim-home-link:focus-visible {
+      outline: 2px solid var(--teal);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+
+    .top-bar-sim-link {
+      margin-top: 0;
+      padding: 6px 10px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      color: #0f172a;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .top-bar-sim-link:hover {
+      background: #f1f5f9;
+      text-decoration: none;
+      color: #0e7490;
+    }
+
     /* Search */
     .sidebar-search {
       position: relative;
@@ -1755,6 +1793,16 @@
       color: #e2e8f0
     }
 
+    [data-theme="dark"] .top-bar-sim-link {
+      border-color: #334155;
+      color: #94a3b8
+    }
+
+    [data-theme="dark"] .top-bar-sim-link:hover {
+      background: var(--navy-600);
+      color: #e2e8f0
+    }
+
     [data-theme="dark"] body {
       background: var(--navy-900);
       color: var(--text-primary)
@@ -2088,6 +2136,8 @@
           <div>
             <div class="sidebar-title">EconSim</div>
             <div class="sidebar-version">Student Guide</div>
+            <a href="../index.html" class="sim-home-link"><i class="fas fa-house" aria-hidden="true"></i> Simulator
+              home</a>
           </div>
         </div>
         <div class="theme-toggle" role="group" aria-label="Theme selection">
@@ -2274,6 +2324,7 @@
         </button>
         <span class="top-bar-title">EconSim v10.0 — Complete Enhanced Edition</span>
         <div class="top-bar-actions">
+          <a href="../index.html" class="sim-home-link top-bar-sim-link">Simulator home</a>
           <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
