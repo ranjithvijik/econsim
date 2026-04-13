@@ -58,12 +58,42 @@ jobs:
           cat QA-REPORT-node${{ matrix.node-version }}.md >> $GITHUB_STEP_SUMMARY
 
   # ──────────────────────────────────────────────────────────────────────────
+  # Job 1b: Python/Streamlit dependency smoke test
+  # ──────────────────────────────────────────────────────────────────────────
+  python-smoke:
+    name: "Python Smoke (Streamlit deps)"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Validate imports and app syntax
+        run: |
+          python - <<'PY'
+          import py_compile
+          import requests
+          import streamlit
+          import world_bank_data
+          py_compile.compile("app.py", doraise=True)
+          print("Python dependency smoke test passed.")
+          PY
+
+  # ──────────────────────────────────────────────────────────────────────────
   # Job 2: Commit canonical QA-REPORT.md back to main after a push
   # ──────────────────────────────────────────────────────────────────────────
   commit-report:
     name: "Commit QA Report"
     runs-on: ubuntu-latest
-    needs: test
+    needs: [test, python-smoke]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:

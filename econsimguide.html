@@ -3015,8 +3015,25 @@
         <div class="banner fin">
           <div class="sid">Module F1 · Live Market Data</div>
           <h2>📈 Live Stock Tracker</h2>
-          <p>Track stock prices, daily changes, valuation metrics, and relative performance.</p>
+          <p>Track stock prices, daily changes, valuation metrics, and relative performance, with transparent source tags and layered macro/trade data fallbacks.</p>
           <div class="tags"><span class="tag">Finance</span></div>
+        </div>
+        <div class="ibox teal">
+          <div class="title">📡 Live Data Sources (Current Stack)</div>
+          <ul style="margin:4px 0 0 14px;line-height:1.75">
+            <li><strong>Market quotes:</strong> Yahoo Finance → Alpha Vantage → local API → demo fallback.</li>
+            <li><strong>Macro/debt:</strong> FRED primary, with cached last-good refresh for resilience.</li>
+            <li><strong>Trade/tariff:</strong> BEA (NIPA tables) plus FRED mappings, with World Bank annual enrichment/fallback.</li>
+            <li><strong>Source tags:</strong> KPI cards show compact badges (for example <em>FRED</em>, <em>BEA/FRED</em>, <em>World Bank</em>, <em>Cache</em>) so students can verify provenance.</li>
+          </ul>
+        </div>
+        <div class="ibox gold">
+          <div class="title">🕒 Refresh Timing & Reliability Notes</div>
+          <ul style="margin:4px 0 0 14px;line-height:1.75">
+            <li>Section status lines include last refresh timestamps (FRED/BEA/World Bank where applicable).</li>
+            <li>Quarterly national accounts and annual World Bank indicators may move on different release schedules.</li>
+            <li>When APIs fail or keys are unavailable, EconSim reuses prior cached values before falling back to synthetic/demo values.</li>
+          </ul>
         </div>
         <div class="ibox teal">
           <div class="title">📘 Present Value of the Firm</div>A firm's value equals the present value of its
