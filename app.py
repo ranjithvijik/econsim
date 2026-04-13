@@ -208,7 +208,15 @@ def render_html_mirror(section_id: str | None = None, height: int = 1800):
     if section_id:
         url += f"#{section_id}"
     # Keep args minimal for broad Streamlit-version compatibility.
-    st.iframe(url, height=height)
+    try:
+        st.iframe(url, height=height)
+    except TypeError:
+        # Older/newer API mismatch fallback.
+        try:
+            st.iframe(url)
+        except Exception:
+            st.warning("Could not embed HTML mirror in this Streamlit runtime.")
+            st.markdown(f"[Open mirror in browser]({url})")
 
 
 st.title("Economics Simulator")
