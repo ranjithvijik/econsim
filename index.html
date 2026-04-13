@@ -3158,11 +3158,12 @@
       const el = wrap && wrap.querySelector('span');
       const dot = wrap && wrap.querySelector('.api-status-dot');
       if (!el || !dot) return;
+      const src = detail || 'source unavailable';
       if (live) {
-        el.textContent = 'Live market data — ' + detail;
+        el.textContent = 'Live market data — source: ' + src;
         dot.className = 'api-status-dot live';
       } else {
-        el.textContent = 'Demo mode — ' + detail;
+        el.textContent = 'Demo mode — ' + src;
         dot.className = 'api-status-dot demo';
       }
     }
@@ -3170,6 +3171,7 @@
     async function fetchStockData() {
       const sym = document.getElementById('stockSymbol').value.toUpperCase();
       const per = document.getElementById('timePeriod').value;
+      setMarketDataBanner(false, 'checking Yahoo → Alpha Vantage → local server');
       document.getElementById('stockLoading').style.display = 'flex';
       document.getElementById('stockData').style.display = 'none';
       document.getElementById('selectedStockSymbol').textContent = sym;
@@ -4872,7 +4874,7 @@
 </div>
 
 <!-- API STATUS -->
-<div class="api-status"><div class="api-status-dot demo"></div><span>Demo Mode — Simulated data for educational purposes</span></div>
+<div class="api-status"><div class="api-status-dot demo"></div><span>Checking market data source…</span></div>
 <p id="marketLastUpdated" style="font-size:12px;color:var(--gray-300);margin:-8px 0 16px;line-height:1.45;">Market quote last refreshed: —</p>
 
 <div class="card" style="margin-bottom:16px;" id="fred-api-setup">

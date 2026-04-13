@@ -1,4 +1,5 @@
 import os
+import json
 from pathlib import Path
 
 import streamlit as st
@@ -50,8 +51,24 @@ def load_index_html() -> str:
     if not index_path.exists():
         st.error("`index.html` not found next to `app.py`.")
         st.stop()
-    raw = index_path.read_text(encoding="utf-8")
-    return inject_keys(raw)
+    raw = inject_keys(index_path.read_text(encoding="utf-8"))
+    fred_key = get_any_secret(["FRED_API", "FRED_API_KEY"])
+
+    # Remove manual key prompt UI and auto-seed localStorage when secret is available.
+    bootstrap = """
+<style>
+  #fred-api-setup { display: none !important; }
+</style>
+"""
+    if fred_key:
+        bootstrap += (
+            "<script>"
+            "try { localStorage.setItem('econsim_fred_api_key', "
+            + json.dumps(fred_key)
+            + "); } catch(e) {}"
+            "</script>"
+        )
+    return bootstrap + raw
 
 
 st.markdown(
