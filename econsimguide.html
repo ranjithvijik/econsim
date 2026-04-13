@@ -1553,9 +1553,23 @@
       position: relative;
       display: flex;
       flex-direction: column;
+      flex-wrap: nowrap;
+      align-items: stretch;
+      align-content: flex-start;
+      /* Block inherited multicol; children must stack in one column */
+      column-count: 1;
+      columns: 1;
       overflow-x: hidden;
       background: var(--navy-900);
       isolation: isolate;
+    }
+
+    .main-content > * {
+      flex: 0 0 auto;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
     }
 
     /* ============ TOP BAR ============ */
@@ -3308,7 +3322,6 @@
           <div class="title">🎛️ Simulation Parameters</div>⚙️ Demand Intercept (a) · ⚙️ Demand Slope (b) · ⚙️ Marginal
           Cost
         </div>
-      </div>
 
 
       <div class="learning-obj">
@@ -3384,6 +3397,8 @@
         <p><strong>Simulate it:</strong> Set MC = 10, demand intercept = 200. Compare monopoly price (~$105) to
           competitive price ($10). The DWL triangle represents patients who would benefit from the drug but can't afford
           it at the monopoly price.</p>
+      </div>
+
       </div>
 
       <!-- MODULE 06: COURNOT -->
