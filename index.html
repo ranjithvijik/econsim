@@ -1958,6 +1958,7 @@
     let _fxRefreshAt = null;
     let _debtRefreshAt = null;
     let _tariffRefreshAt = null;
+    let _intlTradeRefreshAt = null;
 
     async function fetchFxLiveDashboard() {
       const statusEl = document.getElementById('fx-live-status');
@@ -2167,19 +2168,94 @@
     }
 
     let tariffHistoryChartInstance = null;
+    let tariffSimHistoryChartInstance = null;
+    let intlTradeChartInstance = null;
 
-    /** U.S. tariff / trade tax revenue & proxies (BEA via FRED). */
+    function buildTariffLiveKpisHtml(customsB, impGoodsB, implicitPct, customsYoy, netExpB) {
+      const parts = [];
+      if (customsB != null) {
+        parts.push(
+          `<div class="kpi-card" style="min-width:158px;flex:1 1 150px;"><div class="kpi-label">Federal customs duties</div>` +
+          `<div class="kpi-val teal">$${customsB.toFixed(1)}B</div>` +
+          `<div class="small-text" style="color:var(--gray-400);margin-top:4px;">B235RC1Q027SBEA · SAAR</div></div>`
+        );
+      }
+      if (impGoodsB != null) {
+        parts.push(
+          `<div class="kpi-card" style="min-width:158px;flex:1 1 150px;"><div class="kpi-label">Imports of goods</div>` +
+          `<div class="kpi-val gold">$${impGoodsB.toFixed(0)}B</div>` +
+          `<div class="small-text" style="color:var(--gray-400);margin-top:4px;">A255RC1Q027SBEA · SAAR</div></div>`
+        );
+      }
+      if (implicitPct != null) {
+        parts.push(
+          `<div class="kpi-card" style="min-width:158px;flex:1 1 150px;"><div class="kpi-label">Duties ÷ goods imports</div>` +
+          `<div class="kpi-val purple">${implicitPct.toFixed(2)}%</div>` +
+          `<div class="small-text" style="color:var(--gray-400);margin-top:4px;">Rough implicit average</div></div>`
+        );
+      }
+      if (customsYoy != null && !isNaN(customsYoy)) {
+        const pos = customsYoy >= 0;
+        parts.push(
+          `<div class="kpi-card" style="min-width:158px;flex:1 1 150px;"><div class="kpi-label">Duties YoY</div>` +
+          `<div class="kpi-val" style="color:${pos ? 'var(--teal)' : 'var(--red)'}">${(pos ? '+' : '') + customsYoy.toFixed(1)}%</div>` +
+          `<div class="small-text" style="color:var(--gray-400);margin-top:4px;">B235 · % change from year ago</div></div>`
+        );
+      }
+      if (netExpB != null) {
+        const def = netExpB < 0;
+        parts.push(
+          `<div class="kpi-card" style="min-width:158px;flex:1 1 150px;"><div class="kpi-label">Net exports (NIPA)</div>` +
+          `<div class="kpi-val" style="color:${def ? 'var(--red)' : 'var(--teal)'}">$${netExpB.toFixed(0)}B</div>` +
+          `<div class="small-text" style="color:var(--gray-400);margin-top:4px;">NETEXP · SAAR</div></div>`
+        );
+      }
+      return parts.length
+        ? `<div style="display:flex;flex-wrap:wrap;gap:12px;">${parts.join('')}</div>`
+        : '<p class="small-text">No tariff-related series returned.</p>';
+    }
+
+    function buildTariffLiveDriversHtml(implicitPct, netExpB) {
+      let dhtml = '<ul style="margin:0;padding-left:18px;line-height:1.65;color:var(--gray-200);font-size:13px;">';
+      dhtml +=
+        '<li><strong>What this measures:</strong> BEA customs duties are federal receipts from border taxes on imports—<em>collections</em>, not the statutory tariff schedule.</li>';
+      dhtml +=
+        '<li><strong>Drivers of collections:</strong> statutory and effective tariff rates, import volumes, import prices, exemptions, timing (e.g. refunds), and enforcement—all move revenue independently.</li>';
+      if (implicitPct != null) {
+        dhtml += `<li><strong>Implicit average (duties ÷ goods imports):</strong> ~${implicitPct.toFixed(
+          2
+        )}% is a rough effective wedge on goods imports only; services and pass-through pricing are not fully captured.</li>`;
+      }
+      dhtml +=
+        '<li><strong>Quotas &amp; VERs:</strong> Like tariffs, they raise domestic price, but <strong>rents</strong> go to license holders or foreign exporters—federal duty revenue may not rise the same way.</li>';
+      if (netExpB != null) {
+        dhtml += `<li><strong>Trade balance context:</strong> Net exports (NETEXP) at $${netExpB.toFixed(
+          0
+        )}B (SAAR) is the NIPA goods &amp; services balance; tariffs alone do not guarantee a smaller deficit.</li>`;
+      }
+      dhtml += '</ul>';
+      return dhtml;
+    }
+
+    /** U.S. tariff / trade tax revenue & proxies (BEA via FRED). Fills Trade Policy (X3) and Tariff Simulator (T3). */
     async function fetchUsTariffLiveDashboard() {
       const statusEl = document.getElementById('tariff-live-status');
       const kpisEl = document.getElementById('tariff-live-kpis');
       const drvEl = document.getElementById('tariff-live-drivers');
+      const statusSim = document.getElementById('tariff-sim-live-status');
+      const kpisSim = document.getElementById('tariff-sim-live-kpis');
+      const drvSim = document.getElementById('tariff-sim-live-drivers');
       const fredOk = FRED_API_KEY && !FRED_API_KEY.startsWith('__FRED');
+      const keyMsg = 'Add a FRED API key for live customs duties and trade series (same key as macro).';
       if (!fredOk) {
-        if (statusEl) statusEl.textContent = 'Add a FRED API key for live customs duties and trade series (same key as macro).';
-        renderTariffHistoryChart(null);
+        if (statusEl) statusEl.textContent = keyMsg;
+        if (statusSim) statusSim.textContent = keyMsg;
+        renderTariffHistoryChart(null, 'policy');
+        renderTariffHistoryChart(null, 'sim');
         return;
       }
       if (statusEl) statusEl.textContent = 'Loading customs duties & import series (FRED / BEA)…';
+      if (statusSim) statusSim.textContent = 'Loading customs duties & import series (FRED / BEA)…';
       try {
         const [customsB, impGoodsB, customsYoy, netExpB, hist] = await Promise.all([
           fetchFredSeries('B235RC1Q027SBEA', 'lin'),
@@ -2194,90 +2270,42 @@
           implicitPct = (customsB / impGoodsB) * 100;
         }
 
-        if (kpisEl) {
-          const parts = [];
-          if (customsB != null) {
-            parts.push(
-              `<div class="kpi-card" style="min-width:158px;flex:1 1 150px;"><div class="kpi-label">Federal customs duties</div>` +
-              `<div class="kpi-val teal">$${customsB.toFixed(1)}B</div>` +
-              `<div class="small-text" style="color:var(--gray-400);margin-top:4px;">B235RC1Q027SBEA · SAAR</div></div>`
-            );
-          }
-          if (impGoodsB != null) {
-            parts.push(
-              `<div class="kpi-card" style="min-width:158px;flex:1 1 150px;"><div class="kpi-label">Imports of goods</div>` +
-              `<div class="kpi-val gold">$${impGoodsB.toFixed(0)}B</div>` +
-              `<div class="small-text" style="color:var(--gray-400);margin-top:4px;">A255RC1Q027SBEA · SAAR</div></div>`
-            );
-          }
-          if (implicitPct != null) {
-            parts.push(
-              `<div class="kpi-card" style="min-width:158px;flex:1 1 150px;"><div class="kpi-label">Duties ÷ goods imports</div>` +
-              `<div class="kpi-val purple">${implicitPct.toFixed(2)}%</div>` +
-              `<div class="small-text" style="color:var(--gray-400);margin-top:4px;">Rough implicit average</div></div>`
-            );
-          }
-          if (customsYoy != null && !isNaN(customsYoy)) {
-            const pos = customsYoy >= 0;
-            parts.push(
-              `<div class="kpi-card" style="min-width:158px;flex:1 1 150px;"><div class="kpi-label">Duties YoY</div>` +
-              `<div class="kpi-val" style="color:${pos ? 'var(--teal)' : 'var(--red)'}">${(pos ? '+' : '') + customsYoy.toFixed(1)}%</div>` +
-              `<div class="small-text" style="color:var(--gray-400);margin-top:4px;">B235 · % change from year ago</div></div>`
-            );
-          }
-          if (netExpB != null) {
-            const def = netExpB < 0;
-            parts.push(
-              `<div class="kpi-card" style="min-width:158px;flex:1 1 150px;"><div class="kpi-label">Net exports (NIPA)</div>` +
-              `<div class="kpi-val" style="color:${def ? 'var(--red)' : 'var(--teal)'}">$${netExpB.toFixed(0)}B</div>` +
-              `<div class="small-text" style="color:var(--gray-400);margin-top:4px;">NETEXP · SAAR</div></div>`
-            );
-          }
-          kpisEl.innerHTML = parts.length
-            ? `<div style="display:flex;flex-wrap:wrap;gap:12px;">${parts.join('')}</div>`
-            : '<p class="small-text">No tariff-related series returned.</p>';
-        }
+        const khtml = buildTariffLiveKpisHtml(customsB, impGoodsB, implicitPct, customsYoy, netExpB);
+        const dhtml = buildTariffLiveDriversHtml(implicitPct, netExpB);
+        if (kpisEl) kpisEl.innerHTML = khtml;
+        if (kpisSim) kpisSim.innerHTML = khtml;
+        if (drvEl) drvEl.innerHTML = dhtml;
+        if (drvSim) drvSim.innerHTML = dhtml;
 
-        if (drvEl) {
-          let dhtml = '<ul style="margin:0;padding-left:18px;line-height:1.65;color:var(--gray-200);font-size:13px;">';
-          dhtml +=
-            '<li><strong>What this measures:</strong> BEA customs duties are federal receipts from border taxes on imports—<em>collections</em>, not the statutory tariff schedule.</li>';
-          dhtml +=
-            '<li><strong>Drivers of collections:</strong> statutory and effective tariff rates, import volumes, import prices, exemptions, timing (e.g. refunds), and enforcement—all move revenue independently.</li>';
-          if (implicitPct != null) {
-            dhtml += `<li><strong>Implicit average (duties ÷ goods imports):</strong> ~${implicitPct.toFixed(
-              2
-            )}% is a rough “effective” wedge on goods imports only; services and pass-through pricing aren’t fully captured.</li>`;
-          }
-          dhtml +=
-            '<li><strong>Quotas &amp; VERs:</strong> Like tariffs, they raise domestic price, but <strong>rents</strong> go to license holders or foreign exporters—federal duty revenue may not rise the same way.</li>';
-          if (netExpB != null) {
-            dhtml += `<li><strong>Trade balance context:</strong> Net exports (NETEXP) at $${netExpB.toFixed(
-              0
-            )}B (SAAR) is the NIPA goods &amp; services balance; tariffs alone do not guarantee a smaller deficit.</li>`;
-          }
-          dhtml += '</ul>';
-          drvEl.innerHTML = dhtml;
-        }
+        const statusText =
+          'Latest quarterly BEA series (vintages align within NIPA; not daily tariff headlines). Compare to the welfare diagrams below, which use stylized $/unit tariffs.';
+        if (statusEl) statusEl.textContent = statusText;
+        if (statusSim) statusSim.textContent = statusText;
 
-        if (statusEl) {
-          statusEl.textContent =
-            'Latest quarterly BEA series (vintages align within NIPA; not daily “tariff headlines”). Compare to the welfare diagram below—which uses stylized $/unit tariffs.';
-        }
-
-        renderTariffHistoryChart(hist);
+        renderTariffHistoryChart(hist, 'policy');
+        renderTariffHistoryChart(hist, 'sim');
       } catch (e) {
         console.warn('US tariff dashboard fetch error', e);
-        if (statusEl) statusEl.textContent = 'Tariff series load error. Check FRED key and console.';
-        renderTariffHistoryChart(null);
+        const err = 'Tariff series load error. Check FRED key and console.';
+        if (statusEl) statusEl.textContent = err;
+        if (statusSim) statusSim.textContent = err;
+        renderTariffHistoryChart(null, 'policy');
+        renderTariffHistoryChart(null, 'sim');
       }
       touchDataRefresh('tariff');
     }
 
-    function renderTariffHistoryChart(observations) {
-      const ctx = document.getElementById('tariffHistoryChart');
+    function renderTariffHistoryChart(observations, panel) {
+      const sim = panel === 'sim';
+      const canvasId = sim ? 'tariffSimHistoryChart' : 'tariffHistoryChart';
+      const ctx = document.getElementById(canvasId);
       if (!ctx) return;
-      if (tariffHistoryChartInstance) {
+      if (sim) {
+        if (tariffSimHistoryChartInstance) {
+          tariffSimHistoryChartInstance.destroy();
+          tariffSimHistoryChartInstance = null;
+        }
+      } else if (tariffHistoryChartInstance) {
         tariffHistoryChartInstance.destroy();
         tariffHistoryChartInstance = null;
       }
@@ -2288,7 +2316,7 @@
         return m === '01' ? y : `${m}/${y.slice(2)}`;
       });
       const data = observations.map((o) => o.value);
-      tariffHistoryChartInstance = new Chart(ctx, {
+      const chart = new Chart(ctx, {
         type: 'line',
         data: {
           labels,
@@ -2297,6 +2325,155 @@
             data,
             borderColor: col.gold,
             backgroundColor: 'rgba(245, 158, 11, 0.12)',
+            fill: true,
+            borderWidth: 2,
+            tension: 0.2,
+            pointRadius: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { labels: { color: col.text } } },
+          scales: {
+            x: { ticks: { color: col.text, maxTicksLimit: 16 }, grid: { color: col.grid } },
+            y: {
+              ticks: { color: col.text },
+              grid: { color: col.grid },
+              title: { display: true, text: 'Billions USD (SAAR)', color: col.text, font: { size: 11 } }
+            }
+          }
+        }
+      });
+      if (sim) tariffSimHistoryChartInstance = chart;
+      else tariffHistoryChartInstance = chart;
+    }
+
+    /** U.S. aggregate trade openness & balance (NIPA / FRED) for Comparative Advantage (T1). */
+    async function fetchIntlTradeOpennessDashboard() {
+      const statusEl = document.getElementById('ca-live-status');
+      const kpisEl = document.getElementById('ca-live-kpis');
+      const drvEl = document.getElementById('ca-live-drivers');
+      const fredOk = FRED_API_KEY && !FRED_API_KEY.startsWith('__FRED');
+      if (!fredOk) {
+        if (statusEl) statusEl.textContent = 'Add a FRED API key for live exports, imports, and GDP (same key as macro).';
+        renderIntlTradeChart(null);
+        return;
+      }
+      if (statusEl) statusEl.textContent = 'Loading exports, imports, and GDP from FRED (BEA NIPA)…';
+      try {
+        const [expg, impg, gdpN, netExp, expYoy, hist] = await Promise.all([
+          fetchFredSeries('EXPGS', 'lin'),
+          fetchFredSeries('IMPGS', 'lin'),
+          fetchFredSeries('GDP', 'lin'),
+          fetchFredSeries('NETEXP', 'lin'),
+          fetchFredSeries('EXPGS', 'pc1'),
+          fetchFredObservations('NETEXP', 'lin', 80)
+        ]);
+
+        let openPct = null;
+        if (expg != null && impg != null && gdpN != null && Math.abs(gdpN) > 1e-6) {
+          openPct = ((expg + impg) / gdpN) * 100;
+        }
+
+        if (kpisEl) {
+          const parts = [];
+          if (expg != null) {
+            parts.push(
+              `<div class="kpi-card" style="min-width:158px;flex:1 1 150px;"><div class="kpi-label">Exports G&amp;S</div>` +
+              `<div class="kpi-val teal">$${expg.toFixed(0)}B</div>` +
+              `<div class="small-text" style="color:var(--gray-400);margin-top:4px;">EXPGS · SAAR</div></div>`
+            );
+          }
+          if (impg != null) {
+            parts.push(
+              `<div class="kpi-card" style="min-width:158px;flex:1 1 150px;"><div class="kpi-label">Imports G&amp;S</div>` +
+              `<div class="kpi-val gold">$${impg.toFixed(0)}B</div>` +
+              `<div class="small-text" style="color:var(--gray-400);margin-top:4px;">IMPGS · SAAR</div></div>`
+            );
+          }
+          if (openPct != null) {
+            parts.push(
+              `<div class="kpi-card" style="min-width:158px;flex:1 1 150px;"><div class="kpi-label">(X+M) ÷ GDP</div>` +
+              `<div class="kpi-val purple">${openPct.toFixed(1)}%</div>` +
+              `<div class="small-text" style="color:var(--gray-400);margin-top:4px;">Trade intensity</div></div>`
+            );
+          }
+          if (netExp != null) {
+            const def = netExp < 0;
+            parts.push(
+              `<div class="kpi-card" style="min-width:158px;flex:1 1 150px;"><div class="kpi-label">Net exports</div>` +
+              `<div class="kpi-val" style="color:${def ? 'var(--red)' : 'var(--teal)'}">$${netExp.toFixed(0)}B</div>` +
+              `<div class="small-text" style="color:var(--gray-400);margin-top:4px;">NETEXP · SAAR</div></div>`
+            );
+          }
+          if (expYoy != null && !isNaN(expYoy)) {
+            const pos = expYoy >= 0;
+            parts.push(
+              `<div class="kpi-card" style="min-width:158px;flex:1 1 150px;"><div class="kpi-label">Exports YoY</div>` +
+              `<div class="kpi-val" style="color:${pos ? 'var(--teal)' : 'var(--red)'}">${(pos ? '+' : '') + expYoy.toFixed(1)}%</div>` +
+              `<div class="small-text" style="color:var(--gray-400);margin-top:4px;">EXPGS · % vs year ago</div></div>`
+            );
+          }
+          kpisEl.innerHTML = parts.length
+            ? `<div style="display:flex;flex-wrap:wrap;gap:12px;">${parts.join('')}</div>`
+            : '<p class="small-text">No trade series returned.</p>';
+        }
+
+        if (drvEl) {
+          let dh = '<ul style="margin:0;padding-left:18px;line-height:1.65;color:var(--gray-200);font-size:13px;">';
+          dh +=
+            '<li><strong>Gains from trade (theory):</strong> The two-country model above shows specialization by <em>comparative</em> advantage. In data, openness (imports plus exports relative to GDP) measures how integrated the economy is with world markets.</li>';
+          if (openPct != null) {
+            dh += `<li><strong>Trade intensity:</strong> (EXPGS + IMPGS) / GDP is about ${openPct.toFixed(
+              1
+            )}% in the latest NIPA quarter—both sides of trade matter for specialization and variety.</li>`;
+          }
+          dh +=
+            '<li><strong>Net exports:</strong> The U.S. often runs a goods-and-services deficit (negative NETEXP) while still gaining from trade through lower prices, variety, and capital inflows financing the gap.</li>';
+          dh +=
+            '<li><strong>Not in these aggregates:</strong> bilateral balances, supply chains, or who has comparative advantage in which industry—those require detailed industry or factor data.</li>';
+          dh += '</ul>';
+          drvEl.innerHTML = dh;
+        }
+
+        if (statusEl) {
+          statusEl.textContent =
+            'Quarterly BEA NIPA (latest vintage). The classroom sliders above are a two-good parable; these series describe aggregate U.S. trade in the national accounts.';
+        }
+
+        renderIntlTradeChart(hist);
+      } catch (e) {
+        console.warn('International trade openness dashboard fetch error', e);
+        if (statusEl) statusEl.textContent = 'Trade series load error. Check FRED key and console.';
+        renderIntlTradeChart(null);
+      }
+      touchDataRefresh('intlTrade');
+    }
+
+    function renderIntlTradeChart(observations) {
+      const ctx = document.getElementById('intlTradeChart');
+      if (!ctx) return;
+      if (intlTradeChartInstance) {
+        intlTradeChartInstance.destroy();
+        intlTradeChartInstance = null;
+      }
+      if (!observations || observations.length < 2) return;
+      const col = getChartColors();
+      const labels = observations.map((o) => {
+        const [y, m] = o.date.split('-');
+        return m === '01' ? y : `${m}/${y.slice(2)}`;
+      });
+      const data = observations.map((o) => o.value);
+      intlTradeChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Net exports ($B, SAAR)',
+            data,
+            borderColor: col.teal,
+            backgroundColor: 'rgba(0, 180, 216, 0.12)',
             fill: true,
             borderWidth: 2,
             tension: 0.2,
@@ -2371,7 +2548,7 @@
       return (date || new Date()).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'medium' });
     }
 
-    /** kind: 'macro' | 'market' | 'fx' | 'debt' | 'tariff' — updates top bar + section footers */
+    /** kind: 'macro' | 'market' | 'fx' | 'debt' | 'tariff' | 'intlTrade' — updates top bar + section footers */
     function touchDataRefresh(kind) {
       const s = formatDataRefreshTime(new Date());
       if (kind === 'macro') _macroRefreshAt = s;
@@ -2379,6 +2556,7 @@
       if (kind === 'fx') _fxRefreshAt = s;
       if (kind === 'debt') _debtRefreshAt = s;
       if (kind === 'tariff') _tariffRefreshAt = s;
+      if (kind === 'intlTrade') _intlTradeRefreshAt = s;
 
       const top = document.getElementById('lastUpdatedTime');
       if (top) {
@@ -2388,6 +2566,7 @@
         if (_fxRefreshAt) bits.push('FX ' + _fxRefreshAt);
         if (_debtRefreshAt) bits.push('Debt ' + _debtRefreshAt);
         if (_tariffRefreshAt) bits.push('Tariff ' + _tariffRefreshAt);
+        if (_intlTradeRefreshAt) bits.push('Trade ' + _intlTradeRefreshAt);
         top.textContent = bits.length ? ('Refresh · ' + bits.join(' · ')) : ('Updated ' + s);
       }
       const mEl = document.getElementById('macroLastUpdated');
@@ -2400,6 +2579,10 @@
       if (debtEl && kind === 'debt') debtEl.textContent = 'U.S. debt series last refreshed: ' + s;
       const tariffEl = document.getElementById('tariffLiveLastUpdated');
       if (tariffEl && kind === 'tariff') tariffEl.textContent = 'Tariff / trade tax series last refreshed: ' + s;
+      const tariffSimEl = document.getElementById('tariffSimLiveLastUpdated');
+      if (tariffSimEl && kind === 'tariff') tariffSimEl.textContent = 'Tariff / trade tax series last refreshed: ' + s;
+      const caEl = document.getElementById('caLiveLastUpdated');
+      if (caEl && kind === 'intlTrade') caEl.textContent = 'U.S. aggregate trade series last refreshed: ' + s;
     }
 
     async function fetchMacroData() {
@@ -3279,11 +3462,24 @@
     function updateBusinessCycle() {
       const vol = pf('bc-vol'), days = pf('bc-days');
       ['bc-vol', 'bc-days'].forEach(id => document.getElementById(id + '-val').textContent = document.getElementById(id).value);
-      const ctx = document.getElementById('bcChart'); if (!ctx) return;
+      const ctx = document.getElementById('businessCycleChart');
+      if (!ctx) return;
       const col = getChartColors(), labels = [], data = [];
       for (let i = 0; i < days; i++) { labels.push(i); data.push(100 + vol * Math.sin(i / 5) + (i * 0.2)); }
       if (busCycleChartInstance) busCycleChartInstance.destroy();
-      busCycleChartInstance = new Chart(ctx, { type: 'line', data: { labels, datasets: [{ label: 'Real GDP', data: data, borderColor: col.teal, backgroundColor: 'rgba(0,180,216,0.1)', fill: true }] }, options: { responsive: true, maintainAspectRatio: false } });
+      busCycleChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: { labels, datasets: [{ label: 'Real GDP (index)', data, borderColor: col.teal, backgroundColor: 'rgba(0,180,216,0.1)', fill: true, borderWidth: 2, tension: 0.2, pointRadius: 0 }] },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { labels: { color: col.text } } },
+          scales: {
+            x: { ticks: { color: col.text }, grid: { color: col.grid }, title: { display: true, text: 'Time period', color: col.text, font: { size: 11 } } },
+            y: { ticks: { color: col.text }, grid: { color: col.grid }, title: { display: true, text: 'Index', color: col.text, font: { size: 11 } } }
+          }
+        }
+      });
     }
 
     function updatePublicGoods() {
@@ -4542,10 +4738,12 @@
         refreshMacroLinkedExperience();
         fetchUsDebtLiveDashboard();
         fetchUsTariffLiveDashboard();
+        fetchIntlTradeOpennessDashboard();
       }).catch(() => {
         refreshMacroLinkedExperience();
         fetchUsDebtLiveDashboard();
         fetchUsTariffLiveDashboard();
+        fetchIntlTradeOpennessDashboard();
       });
       fetchStockData();
       fetchFxLiveDashboard();
@@ -4553,6 +4751,7 @@
         fetchFxLiveDashboard();
         fetchUsDebtLiveDashboard();
         fetchUsTariffLiveDashboard();
+        fetchIntlTradeOpennessDashboard();
       }, LIVE_CONFIG.refreshMs);
       setInterval(() => {
         Object.keys(demoStockData).forEach(s => {
@@ -7280,7 +7479,7 @@
   <div class="chart-card">
     <div class="chart-title">Real GDP Fluctuations</div>
     <div class="chart-subtitle">Sine-wave model of the business cycle</div>
-    <div class="chart-wrap h-320"><canvas id="bcChart"></canvas></div>
+    <div class="chart-wrap h-320"><canvas id="businessCycleChart"></canvas></div>
   </div>
 </div>
 </section>
@@ -7417,6 +7616,19 @@
   <p class="section-subtitle">Two-country, two-good model showing gains from specialization.</p>
   <span class="source-tag source-openstax">📗 OpenStax Macro 3e · Ch.10</span>
 </div>
+<div class="card" style="margin-bottom:16px;">
+  <div class="card-title">📡 U.S. aggregate trade — live series (FRED)</div>
+  <p id="ca-live-status" class="small-text" style="margin-bottom:10px;color:var(--gray-300);">Loading…</p>
+  <div id="ca-live-kpis" style="margin-bottom:12px;"></div>
+  <div id="ca-live-drivers" style="margin-bottom:12px;"></div>
+  <p id="caLiveLastUpdated" class="small-text" style="margin-bottom:10px;color:var(--gray-400);">U.S. aggregate trade series last refreshed: —</p>
+  <button type="button" class="btn btn-outline" onclick="fetchIntlTradeOpennessDashboard()">🔄 Refresh trade data</button>
+</div>
+<div class="chart-card" style="margin-bottom:16px;">
+  <div class="chart-title">Net exports of goods &amp; services (history)</div>
+  <div class="chart-subtitle">NETEXP — quarterly, billions of dollars, seasonally adjusted annual rate</div>
+  <div class="chart-wrap h-280"><canvas id="intlTradeChart"></canvas></div>
+</div>
 <div class="grid-2">
   <div class="card">
     <div class="card-title">🌍 Production Capabilities (units/hour)</div>
@@ -7480,6 +7692,19 @@
   <h2 class="section-title">Tariff & Quota Impact Simulator</h2>
   <p class="section-subtitle">Apply tariffs or quotas and observe effects on price, quantity, and welfare.</p>
   <span class="source-tag source-openstax">📗 OpenStax Micro 3e · Ch.18-19</span>
+</div>
+<div class="card" style="margin-bottom:16px;">
+  <div class="card-title">📡 U.S. tariffs &amp; trade taxes — live series (FRED)</div>
+  <p id="tariff-sim-live-status" class="small-text" style="margin-bottom:10px;color:var(--gray-300);">Loading…</p>
+  <div id="tariff-sim-live-kpis" style="margin-bottom:12px;"></div>
+  <div id="tariff-sim-live-drivers" style="margin-bottom:12px;"></div>
+  <p id="tariffSimLiveLastUpdated" class="small-text" style="margin-bottom:10px;color:var(--gray-400);">Tariff / trade tax series last refreshed: —</p>
+  <button type="button" class="btn btn-outline" onclick="fetchUsTariffLiveDashboard()">🔄 Refresh tariff data</button>
+</div>
+<div class="chart-card" style="margin-bottom:16px;">
+  <div class="chart-title">Federal customs duties (history)</div>
+  <div class="chart-subtitle">B235RC1Q027SBEA — quarterly, billions of dollars, seasonally adjusted annual rate</div>
+  <div class="chart-wrap h-280"><canvas id="tariffSimHistoryChart"></canvas></div>
 </div>
 <div class="grid-2">
   <div class="card">
