@@ -1838,6 +1838,22 @@
       return null;
     }
 
+    /** Multiple FRED observations (ascending by date) for charts. */
+    async function fetchFredObservations(seriesId, units = 'lin', limit = 52) {
+      if (!FRED_API_KEY || FRED_API_KEY.startsWith('__FRED')) return null;
+      const url = `https://api.stlouisfed.org/fred/series/observations?series_id=${seriesId}&api_key=${FRED_API_KEY}&file_type=json&sort_order=asc&limit=${limit}&units=${units}`;
+      const data = await fetchViaProxy(url);
+      if (!data || !data.observations || !data.observations.length) return null;
+      const pts = [];
+      for (const o of data.observations) {
+        if (o.value === '.' || o.value === undefined) continue;
+        const v = parseFloat(o.value);
+        if (isNaN(v)) continue;
+        pts.push({ date: o.date, value: v });
+      }
+      return pts.length ? pts : null;
+    }
+
     async function fetchAlphaVantageQuote(symbol) {
       if (!AV_API_KEY || AV_API_KEY.startsWith('__AV')) return null;
       const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${AV_API_KEY}`;
@@ -1940,6 +1956,8 @@
 
     let fxMultiChartInstance = null;
     let _fxRefreshAt = null;
+    let _debtRefreshAt = null;
+    let _tariffRefreshAt = null;
 
     async function fetchFxLiveDashboard() {
       const statusEl = document.getElementById('fx-live-status');
@@ -2051,6 +2069,301 @@
       });
     }
 
+    let debtHistoryChartInstance = null;
+
+    async function fetchUsDebtLiveDashboard() {
+      const statusEl = document.getElementById('debt-live-status');
+      const kpisEl = document.getElementById('debt-live-kpis');
+      const drvEl = document.getElementById('debt-live-drivers');
+      const fredOk = FRED_API_KEY && !FRED_API_KEY.startsWith('__FRED');
+      if (!fredOk) {
+        if (statusEl) statusEl.textContent = 'Add a FRED API key for live U.S. federal debt and flow statistics (same key as macro).';
+        renderDebtHistoryChart(null);
+        return;
+      }
+      if (statusEl) statusEl.textContent = 'Loading Treasury / BEA debt series (FRED)…';
+      try {
+        const [gfdebtn, debtgdp, fyfsd, gdpNom, fygdpun, hist] = await Promise.all([
+          fetchFredSeries('GFDEBTN', 'lin'),
+          fetchFredSeries('GFDEGDQ188S', 'lin'),
+          fetchFredSeries('FYFSD', 'lin'),
+          fetchFredSeries('GDP', 'lin'),
+          fetchFredSeries('FYGFDPUN', 'lin'),
+          fetchFredObservations('GFDEGDQ188S', 'lin', 56)
+        ]);
+        const d10 = economicState.DGS10;
+
+        const debtT = gfdebtn != null ? gfdebtn / 1e6 : null;
+        const pubPct = gfdebtn > 0 && fygdpun != null ? (fygdpun / gfdebtn) * 100 : null;
+        const defB = fyfsd != null ? fyfsd / 1000 : null;
+        let deficitPct = null;
+        if (fyfsd != null && gdpNom != null && Math.abs(gdpNom) > 1e-9) {
+          deficitPct = (-fyfsd / gdpNom) / 10;
+        }
+
+        if (kpisEl) {
+          const parts = [];
+          if (debtT != null) {
+            parts.push(`<div class="kpi-card" style="min-width:158px;flex:1 1 150px;"><div class="kpi-label">Total public debt</div><div class="kpi-val teal">$${debtT.toFixed(2)}T</div><div class="small-text" style="color:var(--gray-400);margin-top:4px;">GFDEBTN</div></div>`);
+          }
+          if (debtgdp != null) {
+            parts.push(`<div class="kpi-card" style="min-width:158px;flex:1 1 150px;"><div class="kpi-label">Federal debt / GDP</div><div class="kpi-val gold">${debtgdp.toFixed(1)}%</div><div class="small-text" style="color:var(--gray-400);margin-top:4px;">GFDEGDQ188S</div></div>`);
+          }
+          if (pubPct != null) {
+            parts.push(`<div class="kpi-card" style="min-width:158px;flex:1 1 150px;"><div class="kpi-label">Held by public</div><div class="kpi-val green">${pubPct.toFixed(1)}%</div><div class="small-text" style="color:var(--gray-400);margin-top:4px;">FYGFDPUN ÷ GFDEBTN</div></div>`);
+          }
+          if (defB != null) {
+            const neg = defB <= 0;
+            parts.push(`<div class="kpi-card" style="min-width:158px;flex:1 1 150px;"><div class="kpi-label">Surplus (+) / deficit (−)</div><div class="kpi-val" style="color:${neg ? 'var(--red)' : 'var(--teal)'}">$${defB.toFixed(1)}B</div><div class="small-text" style="color:var(--gray-400);margin-top:4px;">FYFSD (latest)</div></div>`);
+          }
+          if (d10 != null) {
+            parts.push(`<div class="kpi-card" style="min-width:158px;flex:1 1 150px;"><div class="kpi-label">10Y Treasury (proxy r)</div><div class="kpi-val purple">${d10.toFixed(2)}%</div><div class="small-text" style="color:var(--gray-400);margin-top:4px;">DGS10</div></div>`);
+          }
+          kpisEl.innerHTML = parts.length
+            ? `<div style="display:flex;flex-wrap:wrap;gap:12px;">${parts.join('')}</div>`
+            : '<p class="small-text">No debt series returned.</p>';
+        }
+
+        if (drvEl) {
+          let dhtml = '<ul style="margin:0;padding-left:18px;line-height:1.65;color:var(--gray-200);font-size:13px;">';
+          dhtml += '<li><strong>Stock vs income:</strong> Debt-to-GDP (GFDEGDQ188S) compares total federal debt to the size of the economy.</li>';
+          dhtml += '<li><strong>Primary flow:</strong> FYFSD is the federal surplus (+) or deficit (−) for the latest reporting period (fiscal vs calendar timing may differ from GDP).</li>';
+          if (pubPct != null) {
+            dhtml += `<li><strong>Holdings:</strong> Debt held by the public (~${pubPct.toFixed(0)}%) is traded in credit markets; the rest is intragovernmental holdings.</li>`;
+          }
+          if (d10 != null) {
+            dhtml += `<li><strong>Crowding out channel:</strong> Higher ${d10.toFixed(2)}% long rates raise Treasury borrowing costs and can squeeze private investment (see r vs g below).</li>`;
+          } else {
+            dhtml += '<li><strong>Crowding out channel:</strong> Government borrowing competes for loanable funds, pushing up interest rates when deficits persist.</li>';
+          }
+          if (deficitPct != null) {
+            dhtml += `<li><strong>Deficit ≈ % of GDP (rough):</strong> ${Math.abs(deficitPct).toFixed(1)}% using FYFSD vs nominal GDP (mixed frequency—illustrative).</li>`;
+          }
+          dhtml += '</ul>';
+          drvEl.innerHTML = dhtml;
+        }
+
+        if (statusEl) {
+          statusEl.textContent = 'Latest U.S. federal debt & flows from FRED (Treasury / OMB / BEA). Series vintages may not align exactly quarter-to-quarter.';
+        }
+
+        if (d10 != null) sf('nd-rate', clampValue(d10, 0, 10));
+        if (economicState.GDP != null) sf('nd-growth', clampValue(economicState.GDP, -3, 8));
+        if (debtgdp != null) {
+          const mpDebt = document.getElementById('mp-debt');
+          if (mpDebt) sf('mp-debt', clampValue(debtgdp, 10, 200));
+        }
+        if (deficitPct != null) sf('nd-deficit', clampValue(deficitPct, -5, 15));
+
+        renderDebtHistoryChart(hist);
+        updateNationalDebt();
+        if (typeof updateMacroPolicy === 'function') try { updateMacroPolicy(); } catch (e) { }
+      } catch (e) {
+        console.warn('US debt dashboard fetch error', e);
+        if (statusEl) statusEl.textContent = 'Debt series load error. Check FRED key and console.';
+        renderDebtHistoryChart(null);
+      }
+      touchDataRefresh('debt');
+    }
+
+    let tariffHistoryChartInstance = null;
+
+    /** U.S. tariff / trade tax revenue & proxies (BEA via FRED). */
+    async function fetchUsTariffLiveDashboard() {
+      const statusEl = document.getElementById('tariff-live-status');
+      const kpisEl = document.getElementById('tariff-live-kpis');
+      const drvEl = document.getElementById('tariff-live-drivers');
+      const fredOk = FRED_API_KEY && !FRED_API_KEY.startsWith('__FRED');
+      if (!fredOk) {
+        if (statusEl) statusEl.textContent = 'Add a FRED API key for live customs duties and trade series (same key as macro).';
+        renderTariffHistoryChart(null);
+        return;
+      }
+      if (statusEl) statusEl.textContent = 'Loading customs duties & import series (FRED / BEA)…';
+      try {
+        const [customsB, impGoodsB, customsYoy, netExpB, hist] = await Promise.all([
+          fetchFredSeries('B235RC1Q027SBEA', 'lin'),
+          fetchFredSeries('A255RC1Q027SBEA', 'lin'),
+          fetchFredSeries('B235RC1Q027SBEA', 'pc1'),
+          fetchFredSeries('NETEXP', 'lin'),
+          fetchFredObservations('B235RC1Q027SBEA', 'lin', 80)
+        ]);
+
+        let implicitPct = null;
+        if (customsB != null && impGoodsB != null && Math.abs(impGoodsB) > 1e-6) {
+          implicitPct = (customsB / impGoodsB) * 100;
+        }
+
+        if (kpisEl) {
+          const parts = [];
+          if (customsB != null) {
+            parts.push(
+              `<div class="kpi-card" style="min-width:158px;flex:1 1 150px;"><div class="kpi-label">Federal customs duties</div>` +
+              `<div class="kpi-val teal">$${customsB.toFixed(1)}B</div>` +
+              `<div class="small-text" style="color:var(--gray-400);margin-top:4px;">B235RC1Q027SBEA · SAAR</div></div>`
+            );
+          }
+          if (impGoodsB != null) {
+            parts.push(
+              `<div class="kpi-card" style="min-width:158px;flex:1 1 150px;"><div class="kpi-label">Imports of goods</div>` +
+              `<div class="kpi-val gold">$${impGoodsB.toFixed(0)}B</div>` +
+              `<div class="small-text" style="color:var(--gray-400);margin-top:4px;">A255RC1Q027SBEA · SAAR</div></div>`
+            );
+          }
+          if (implicitPct != null) {
+            parts.push(
+              `<div class="kpi-card" style="min-width:158px;flex:1 1 150px;"><div class="kpi-label">Duties ÷ goods imports</div>` +
+              `<div class="kpi-val purple">${implicitPct.toFixed(2)}%</div>` +
+              `<div class="small-text" style="color:var(--gray-400);margin-top:4px;">Rough implicit average</div></div>`
+            );
+          }
+          if (customsYoy != null && !isNaN(customsYoy)) {
+            const pos = customsYoy >= 0;
+            parts.push(
+              `<div class="kpi-card" style="min-width:158px;flex:1 1 150px;"><div class="kpi-label">Duties YoY</div>` +
+              `<div class="kpi-val" style="color:${pos ? 'var(--teal)' : 'var(--red)'}">${(pos ? '+' : '') + customsYoy.toFixed(1)}%</div>` +
+              `<div class="small-text" style="color:var(--gray-400);margin-top:4px;">B235 · % change from year ago</div></div>`
+            );
+          }
+          if (netExpB != null) {
+            const def = netExpB < 0;
+            parts.push(
+              `<div class="kpi-card" style="min-width:158px;flex:1 1 150px;"><div class="kpi-label">Net exports (NIPA)</div>` +
+              `<div class="kpi-val" style="color:${def ? 'var(--red)' : 'var(--teal)'}">$${netExpB.toFixed(0)}B</div>` +
+              `<div class="small-text" style="color:var(--gray-400);margin-top:4px;">NETEXP · SAAR</div></div>`
+            );
+          }
+          kpisEl.innerHTML = parts.length
+            ? `<div style="display:flex;flex-wrap:wrap;gap:12px;">${parts.join('')}</div>`
+            : '<p class="small-text">No tariff-related series returned.</p>';
+        }
+
+        if (drvEl) {
+          let dhtml = '<ul style="margin:0;padding-left:18px;line-height:1.65;color:var(--gray-200);font-size:13px;">';
+          dhtml +=
+            '<li><strong>What this measures:</strong> BEA customs duties are federal receipts from border taxes on imports—<em>collections</em>, not the statutory tariff schedule.</li>';
+          dhtml +=
+            '<li><strong>Drivers of collections:</strong> statutory and effective tariff rates, import volumes, import prices, exemptions, timing (e.g. refunds), and enforcement—all move revenue independently.</li>';
+          if (implicitPct != null) {
+            dhtml += `<li><strong>Implicit average (duties ÷ goods imports):</strong> ~${implicitPct.toFixed(
+              2
+            )}% is a rough “effective” wedge on goods imports only; services and pass-through pricing aren’t fully captured.</li>`;
+          }
+          dhtml +=
+            '<li><strong>Quotas &amp; VERs:</strong> Like tariffs, they raise domestic price, but <strong>rents</strong> go to license holders or foreign exporters—federal duty revenue may not rise the same way.</li>';
+          if (netExpB != null) {
+            dhtml += `<li><strong>Trade balance context:</strong> Net exports (NETEXP) at $${netExpB.toFixed(
+              0
+            )}B (SAAR) is the NIPA goods &amp; services balance; tariffs alone do not guarantee a smaller deficit.</li>`;
+          }
+          dhtml += '</ul>';
+          drvEl.innerHTML = dhtml;
+        }
+
+        if (statusEl) {
+          statusEl.textContent =
+            'Latest quarterly BEA series (vintages align within NIPA; not daily “tariff headlines”). Compare to the welfare diagram below—which uses stylized $/unit tariffs.';
+        }
+
+        renderTariffHistoryChart(hist);
+      } catch (e) {
+        console.warn('US tariff dashboard fetch error', e);
+        if (statusEl) statusEl.textContent = 'Tariff series load error. Check FRED key and console.';
+        renderTariffHistoryChart(null);
+      }
+      touchDataRefresh('tariff');
+    }
+
+    function renderTariffHistoryChart(observations) {
+      const ctx = document.getElementById('tariffHistoryChart');
+      if (!ctx) return;
+      if (tariffHistoryChartInstance) {
+        tariffHistoryChartInstance.destroy();
+        tariffHistoryChartInstance = null;
+      }
+      if (!observations || observations.length < 2) return;
+      const col = getChartColors();
+      const labels = observations.map((o) => {
+        const [y, m] = o.date.split('-');
+        return m === '01' ? y : `${m}/${y.slice(2)}`;
+      });
+      const data = observations.map((o) => o.value);
+      tariffHistoryChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Federal customs duties ($B, SAAR)',
+            data,
+            borderColor: col.gold,
+            backgroundColor: 'rgba(245, 158, 11, 0.12)',
+            fill: true,
+            borderWidth: 2,
+            tension: 0.2,
+            pointRadius: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { labels: { color: col.text } } },
+          scales: {
+            x: { ticks: { color: col.text, maxTicksLimit: 16 }, grid: { color: col.grid } },
+            y: {
+              ticks: { color: col.text },
+              grid: { color: col.grid },
+              title: { display: true, text: 'Billions USD (SAAR)', color: col.text, font: { size: 11 } }
+            }
+          }
+        }
+      });
+    }
+
+    function renderDebtHistoryChart(observations) {
+      const ctx = document.getElementById('debtHistoryChart');
+      if (!ctx) return;
+      if (debtHistoryChartInstance) {
+        debtHistoryChartInstance.destroy();
+        debtHistoryChartInstance = null;
+      }
+      if (!observations || observations.length < 2) return;
+      const col = getChartColors();
+      const labels = observations.map((o) => {
+        const [y, m] = o.date.split('-');
+        return m === '01' ? y : `${m}/${y.slice(2)}`;
+      });
+      const data = observations.map((o) => o.value);
+      debtHistoryChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Federal debt / GDP (%)',
+            data,
+            borderColor: col.teal,
+            backgroundColor: 'rgba(0,180,216,0.12)',
+            fill: true,
+            borderWidth: 2,
+            tension: 0.2,
+            pointRadius: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { labels: { color: col.text } } },
+          scales: {
+            x: { ticks: { color: col.text, maxTicksLimit: 14 }, grid: { color: col.grid } },
+            y: {
+              ticks: { color: col.text },
+              grid: { color: col.grid },
+              title: { display: true, text: '% of GDP', color: col.text, font: { size: 11 } }
+            }
+          }
+        }
+      });
+    }
+
     let _macroRefreshAt = null;
     let _marketRefreshAt = null;
 
@@ -2058,12 +2371,14 @@
       return (date || new Date()).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'medium' });
     }
 
-    /** kind: 'macro' | 'market' | 'fx' — updates top bar + section footers */
+    /** kind: 'macro' | 'market' | 'fx' | 'debt' | 'tariff' — updates top bar + section footers */
     function touchDataRefresh(kind) {
       const s = formatDataRefreshTime(new Date());
       if (kind === 'macro') _macroRefreshAt = s;
       if (kind === 'market') _marketRefreshAt = s;
       if (kind === 'fx') _fxRefreshAt = s;
+      if (kind === 'debt') _debtRefreshAt = s;
+      if (kind === 'tariff') _tariffRefreshAt = s;
 
       const top = document.getElementById('lastUpdatedTime');
       if (top) {
@@ -2071,6 +2386,8 @@
         if (_macroRefreshAt) bits.push('Macro ' + _macroRefreshAt);
         if (_marketRefreshAt) bits.push('Market ' + _marketRefreshAt);
         if (_fxRefreshAt) bits.push('FX ' + _fxRefreshAt);
+        if (_debtRefreshAt) bits.push('Debt ' + _debtRefreshAt);
+        if (_tariffRefreshAt) bits.push('Tariff ' + _tariffRefreshAt);
         top.textContent = bits.length ? ('Refresh · ' + bits.join(' · ')) : ('Updated ' + s);
       }
       const mEl = document.getElementById('macroLastUpdated');
@@ -2079,6 +2396,10 @@
       if (mkEl && kind === 'market') mkEl.textContent = 'Market quote last refreshed: ' + s;
       const fxEl = document.getElementById('fxRatesLastUpdated');
       if (fxEl && kind === 'fx') fxEl.textContent = 'FX spot rates last refreshed: ' + s;
+      const debtEl = document.getElementById('debtLiveLastUpdated');
+      if (debtEl && kind === 'debt') debtEl.textContent = 'U.S. debt series last refreshed: ' + s;
+      const tariffEl = document.getElementById('tariffLiveLastUpdated');
+      if (tariffEl && kind === 'tariff') tariffEl.textContent = 'Tariff / trade tax series last refreshed: ' + s;
     }
 
     async function fetchMacroData() {
@@ -4217,10 +4538,22 @@
       economicState = { ...fredData };
       setupMacroListeners();
       refreshMacroLinkedExperience();
-      fetchMacroData().then(() => refreshMacroLinkedExperience()).catch(() => refreshMacroLinkedExperience());
+      fetchMacroData().then(() => {
+        refreshMacroLinkedExperience();
+        fetchUsDebtLiveDashboard();
+        fetchUsTariffLiveDashboard();
+      }).catch(() => {
+        refreshMacroLinkedExperience();
+        fetchUsDebtLiveDashboard();
+        fetchUsTariffLiveDashboard();
+      });
       fetchStockData();
       fetchFxLiveDashboard();
-      setInterval(() => { fetchFxLiveDashboard(); }, LIVE_CONFIG.refreshMs);
+      setInterval(() => {
+        fetchFxLiveDashboard();
+        fetchUsDebtLiveDashboard();
+        fetchUsTariffLiveDashboard();
+      }, LIVE_CONFIG.refreshMs);
       setInterval(() => {
         Object.keys(demoStockData).forEach(s => {
           const st = demoStockData[s];
@@ -8214,15 +8547,28 @@
     <p class="section-subtitle">Sustainability of national debt depends on the primary deficit, interest rates, and GDP growth. High debt can lead to "Crowding Out"—where government borrowing raises interest rates, reducing private investment.</p>
     <div><span class="source-tag source-openstax">📗 OpenStax Macro Ch.17 · Government Budgets</span></div>
   </div>
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-title">📡 U.S. federal debt — live series (FRED)</div>
+    <p id="debt-live-status" class="small-text" style="margin-bottom:10px;color:var(--gray-300);">Loading…</p>
+    <div id="debt-live-kpis" style="margin-bottom:12px;"></div>
+    <div id="debt-live-drivers" style="margin-bottom:12px;"></div>
+    <p id="debtLiveLastUpdated" class="small-text" style="margin-bottom:10px;color:var(--gray-400);">U.S. debt series last refreshed: —</p>
+    <button type="button" class="btn btn-outline" onclick="fetchUsDebtLiveDashboard()">🔄 Refresh debt data</button>
+  </div>
+  <div class="chart-card" style="margin-bottom:16px;">
+    <div class="chart-title">Federal debt as % of GDP (history)</div>
+    <div class="chart-subtitle">GFDEGDQ188S — quarterly, seasonally adjusted</div>
+    <div class="chart-wrap h-280"><canvas id="debtHistoryChart"></canvas></div>
+  </div>
   <div class="grid-2">
     <div class="card">
-      <div class="card-title">🏛️ Fiscal Variables</div>
+      <div class="card-title">🏛️ Fiscal variables (linked to live series when available)</div>
       ${sl('nd-deficit', 'Annual Deficit (% GDP)', -5, 15, 3, 0.5, 'updateNationalDebt', '', '%')}
       ${sl('nd-rate', 'Interest Rate (r)', 0, 10, 4, 0.1, 'updateNationalDebt', '', '%')}
       ${sl('nd-growth', 'GDP Growth (g)', -3, 8, 2.5, 0.1, 'updateNationalDebt', '', '%')}
     </div>
     <div class="card">
-      <div class="card-title">📉 Debt Dynamics</div>
+      <div class="card-title">📉 Debt dynamics (r vs g)</div>
       <div class="kpi-card purple"><div class="kpi-label">Debt-to-GDP Trend</div><div class="kpi-val" id="nd-trend">Scanning...</div></div>
       <p id="nd-insight" class="insight-card" style="margin-top:10px;">Calculations pending...</p>
     </div>
@@ -8236,6 +8582,20 @@
   <h2 class="section-title">Trade Policy: Tariffs, Quotas & VERs</h2>
   <p class="section-subtitle">Governments use trade barriers to protect domestic industries. Compare the welfare effects: Tariffs generate tax revenue, Quotas create rents for license holders, and Voluntary Export Restraints (VERs) transfer rents to foreign exporters.</p>
   <div><span class="source-tag source-openstax">📗 OpenStax Macro Ch.20 · Globalization and Protectionism</span></div>
+</div>
+
+<div class="card" style="margin-bottom:16px;">
+  <div class="card-title">📡 U.S. tariffs &amp; trade taxes — live series (FRED)</div>
+  <p id="tariff-live-status" class="small-text" style="margin-bottom:10px;color:var(--gray-300);">Loading…</p>
+  <div id="tariff-live-kpis" style="margin-bottom:12px;"></div>
+  <div id="tariff-live-drivers" style="margin-bottom:12px;"></div>
+  <p id="tariffLiveLastUpdated" class="small-text" style="margin-bottom:10px;color:var(--gray-400);">Tariff / trade tax series last refreshed: —</p>
+  <button type="button" class="btn btn-outline" onclick="fetchUsTariffLiveDashboard()">🔄 Refresh tariff data</button>
+</div>
+<div class="chart-card" style="margin-bottom:16px;">
+  <div class="chart-title">Federal customs duties (history)</div>
+  <div class="chart-subtitle">B235RC1Q027SBEA — quarterly, billions of dollars, seasonally adjusted annual rate</div>
+  <div class="chart-wrap h-280"><canvas id="tariffHistoryChart"></canvas></div>
 </div>
 
 <div class="grid-3">
